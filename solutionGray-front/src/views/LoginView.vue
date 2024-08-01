@@ -14,6 +14,7 @@
           <div class="mb-4">
             <label class="block text-primary-50 text-md font-bold mb-2" for="email"> Email </label>
             <input
+            v-model="email"
               class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="email"
               type="email"
@@ -25,6 +26,7 @@
               Contraseña
             </label>
             <input
+            v-model="password"
               class="appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               id="password"
               type="password"
@@ -39,6 +41,7 @@
               Crear Cuenta
             </button>
             <button
+            @click="loginUser"
               class="bg-primary-400 hover:bg-primary-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="button"
             >
@@ -46,8 +49,42 @@
             </button>
           </div>
         </form>
+        <span>{{message}}</span>
         <span class="text-primary-50 hover:">Terminos y Condiciones de Privacidad</span>
       </div>
     </div>
   </section>
 </template>
+
+<script>
+import {login} from '../apiServices/index'
+
+export default{
+  data(){
+    return {
+      message: null,
+      email: null,
+      password: null
+    }
+  },
+  methods: {
+    async loginUser(){
+      try{        
+        if(!this.email || !this.password){
+          this.message = 'Por favor ingresa todos los datos'
+          return 
+        }
+        const email = this.email
+        const password = this.password
+        
+        const response = await login({email,password})
+        this.message = response.message
+
+      }catch(e){
+        this.message = e.message
+      }
+    }
+  }
+}
+
+</script>
