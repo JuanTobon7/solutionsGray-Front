@@ -3,6 +3,7 @@ import Cookies from 'js-cookie'
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_PROXY_HOST,
+    withCredentials: true,
     maxContentLength: 25000000,
     maxBodyLength: 25000000
 })
@@ -24,6 +25,8 @@ api.interceptors.request.use ((config)=>{
     
     const access_token = Cookies.get('access_token')
     const refresh_token = Cookies.get('refresh_token')
+    console.log('access_token', access_token)
+    console.log('refresh_token', refresh_token)
     if(access_token){
         config.headers['Authorization'] = `Bearer ${access_token}`
         config.headers['x-access-token'] = true

@@ -1,4 +1,4 @@
-import api from './axiosConfig.js'
+import api from './axiosConfig'
 
 export const start = async () => {
   const response = await api.get('/');
@@ -21,5 +21,16 @@ export const login = async (data) => {
 
 export const getChurchInfo = async()=>{
   const response = await api.get('/church');
+  return response.data;
+}
+
+export const getSheeps = async()=>{
+  console.log('here')
+  const response = await api.get('/sheeps');
+  return response.data;
+}
+
+export const getSheepById = async(id)=>{
+  const response = await api.get(`/sheep/${id}`);
   return response.data;
 }

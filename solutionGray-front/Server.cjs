@@ -5,8 +5,11 @@ const router = require('./router/index.cjs');
 const app = express();
 
 const PORT = process.env.PORT_PROXY || 3002;
-
-app.use(cors());
+const corsOptions = {
+  origin: process.env.CLIENT_HOST,
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use('/proxy/', router);
 

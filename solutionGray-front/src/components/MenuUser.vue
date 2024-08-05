@@ -1,5 +1,8 @@
 <template>
   <aside class="bg-primary-700 sm:w-full md:w-[40%] lg:w-[20%] fixed h-full py-2 flex flex-col gap-2">
+        <div class="flex justify-end pr-4 pt-4 lg:hidden">
+        <i class="material-icons cursor-pointer text-primary-50">close</i>
+      </div>
     <div class="flex flex-col items-center p-4">
       <img src="../assets/solutionGrayLOGO-removebg.png" class="sm:w-15 sm:h-15 md:w-[30vh]">
       <h2 class="text-2xl font-semibold text-primary-50">{{rol}}</h2>
@@ -11,12 +14,12 @@
           <router-link to="/" class="block">Inicio</router-link>
         </li>
         <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
-          <i class="material-icons">info</i>
-          <router-link to="/about" class="block">Acerca de</router-link>
+          <i class="material-icons">people</i>
+          <router-link to="/about" class="block">Servants</router-link>
         </li>
         <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
-          <i class="material-icons">contacts</i>
-          <router-link to="/contact" class="block">Contacto</router-link>
+          <i class="material-icons">sheeps</i>
+          <router-link to="/sheeps" class="block">Ovejas</router-link>
         </li>
       </ul>
     </div>

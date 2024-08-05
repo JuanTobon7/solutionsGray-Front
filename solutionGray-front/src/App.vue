@@ -2,7 +2,7 @@
   <NavBar v-if="showNavBar" @toggle-menu="toggleMenu" />
     <MenuUser v-if="showNavBar && showMenuUser" />
 
-  <main :class="[showNavBar ? 'md:pl-[20%] md:py-[11%] lg:py-[5%]' : 'ml-0']">
+  <main :class="[showNavBar ? 'md:pl-[20%] md:py-[10%] lg:py-[4.4%]' : 'ml-0']">
     <RouterView/>
   </main>
 </template>
