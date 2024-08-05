@@ -1,6 +1,6 @@
-import api from './axiosConfig'
+import api from './axiosConfig.js'
 
-export const get = async () => {
+export const start = async () => {
   const response = await api.get('/');
   return response.data;
 }
@@ -11,9 +11,15 @@ export const login = async (data) => {
   if (response.data.name || response.data.email) {
     const user = {
       name: response.data.name,
-      email: response.data.email
+      email: response.data.email,
+      rol: response.data.rol
     }
     sessionStorage.setItem('user',JSON.stringify(user));
   }
+  return response.data;
+}
+
+export const getChurchInfo = async()=>{
+  const response = await api.get('/church');
   return response.data;
 }

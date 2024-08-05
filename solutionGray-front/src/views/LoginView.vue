@@ -79,6 +79,7 @@ export default{
         
         const response = await login({email,password})
         this.message = response.message
+        this.$router.push('/')
 
       }catch(e){
         this.message = e.message
