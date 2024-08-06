@@ -1,7 +1,7 @@
 <template>
-  <aside class="bg-primary-700 sm:w-full md:w-[40%] lg:w-[20%] fixed h-full py-2 flex flex-col gap-2">
+  <aside class="bg-primary-700 sm:w-full md:w-[40%] lg:w-[20%] fixed h-full py-2 flex flex-col gap-2 z-0">
         <div class="flex justify-end pr-4 pt-4 lg:hidden">
-        <i class="material-icons cursor-pointer text-primary-50">close</i>
+        <i class="material-symbols-outlined cursor-pointer text-primary-50">close</i>
       </div>
     <div class="flex flex-col items-center p-4">
       <img src="../assets/solutionGrayLOGO-removebg.png" class="sm:w-15 sm:h-15 md:w-[30vh]">
@@ -10,28 +10,61 @@
     <div>
       <ul class="text-primary-50 text-xl">
         <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
-          <i class="material-icons">home</i>
+          <i class="material-symbols-outlined">home</i>
           <router-link to="/" class="block">Inicio</router-link>
         </li>
         <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
-          <i class="material-icons">people</i>
+          <i class="material-symbols-outlined">people</i>
           <router-link to="/about" class="block">Servants</router-link>
         </li>
-        <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
-          <i class="material-icons">sheeps</i>
-          <router-link to="/sheeps" class="block">Ovejas</router-link>
+        <li  @click="toggleSheepMenu" class="px-4 py-2 hover:bg-primary-600 flex flex-col gap-4">
+          <div class="flex items-center"> 
+            <i class="material-symbols-outlined text-primary-50">digital_wellbeing</i>
+            <span to="/sheeps" class="block">Ovejas</span>
+          </div>
+          
         </li>
+        <div v-if="showMenuSheep" class="pl-8 w-3/4 flex flex-col">
+        <ul class="list-disc list-inside mb-2 w-auto">
+          <li @click="redirectTo(item.path)" v-for="item in menuItemsSheep" :key="item.label" class="text-primary-50 px-2 py-2 hover:bg-primary-600 transition-all duration-300 rounded-md">
+            {{ item.label }}
+          </li>
+        </ul>
+      </div>
       </ul>
     </div>
   </aside>
 </template>
 
 <script>
+
+
+
 export default {
   name: 'MenuUser',
   data(){
     return {
-      rol: null
+      rol: null,
+      showMenuSheep: false,
+      menuItemsSheep: [
+        {
+          label: 'Ver ovejas en la iglesia',
+          path: '/sheeps'     
+        },
+        {
+          label: 'Ver mis ovejas',
+        }
+      ],
+      items: [
+                {
+                    label: 'Refresh',
+                    icon: 'pi pi-refresh'
+                },
+                {
+                    label: 'Export',
+                    icon: 'pi pi-upload'
+                }
+            ]
     }
   },
   methods: {
@@ -42,6 +75,12 @@ export default {
       }      
       const user = JSON.parse(session)
       this.rol = user.rol
+    },
+    toggleSheepMenu() {
+            this.showMenuSheep = !this.showMenuSheep;
+    },
+    redirectTo(path){
+      this.$router.push(path)
     }
   }, 
   mounted(){
@@ -51,4 +90,8 @@ export default {
 </script>
 
 <style scoped>
+li{
+  @apply cursor-pointer;
+}
+
 </style>

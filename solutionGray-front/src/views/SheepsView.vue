@@ -9,8 +9,8 @@
         <div class="p-6">
           <DataTable :value="sheepsInfo" class="w-full border-collapse" tableStyle="min-width: 80rem">
             <Column field="name" header="Name" class="p-4 text-left border-b border-primary-200 text-second-800"></Column>
-            <Column field="description" header="Description" class="p-2 text-left text-second-800 border-b  border-primary-200"></Column>
             <Column field="email" header="Email" class="p-4 text-left border-b  border-primary-200 text-second-800"></Column>
+            <Column field="description" header="Description" class="p-2 text-left text-second-800 border-b  border-primary-200"></Column>
             <Column field="arrival_date" header="Fecha de inicio" class="p-4 text-left border-b  border-primary-200 text-second-800">
               <template #body="slotProps">
                 <Tag :value="slotProps.data.arrival_date">
@@ -34,26 +34,29 @@
             </Column>
             <Column field="Información" header="Informacion" class="p-4 text-center border-b  border-primary-200 ">
               <template #body="slotProps">
-                <i @click="handleSheepInfo(slotProps.data.id)" class="material-icons cursor-pointer">info</i>
+                <i @click="handleSheepInfo(slotProps.data.id)" class="material-symbols-outlined cursor-pointer">info</i>
               </template>
             </Column>
           </DataTable>
         </div>
       </div>
+      <SheepInfoCard v-if="sheepInfoById" :sheep="sheepInfoById" @close="sheepInfoById = null" />
     </section>
   </template>
   
   <script>
+  import { getSheeps,getSheepById } from '../apiServices/index'
+  import SheepInfoCard from '../components/SheepInfoCard.vue';
   import DataTable from 'primevue/datatable';
   import Column from 'primevue/column';
   import Tag from 'primevue/tag';
-  import { getSheeps,getSheepById } from '../apiServices/index'
   
   export default {
     components: {
       DataTable,
       Column,
-      Tag
+      Tag,
+      SheepInfoCard
     },
     data() {
       return {
@@ -88,3 +91,8 @@
   };
   </script>
   
+<style scoped>
+tr:hover{
+  @apply bg-white
+}
+</style>

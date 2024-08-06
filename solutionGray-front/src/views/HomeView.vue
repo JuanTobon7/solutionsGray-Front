@@ -7,7 +7,7 @@
         <div>
           <div class="flex items-center gap-3 text-5xl mb-4">
             <h1 class="text-second-800"><strong>Iglesia {{ churchName }}</strong></h1>
-            <i class="material-icons text-second-500 text-5xl"><strong>church</strong></i>
+            <i class="material-symbols-outlined text-second-500 text-5xl"><strong>church</strong></i>
           </div>
           <h2 class="text-second-800 text-2xl mb-2"><strong>Estadísticas e Información de Iglesia</strong></h2>
           <div class="w-full h-[50vh] flex justify-center items-center">
@@ -55,8 +55,7 @@
         address: null,
         quantityservants: null,
         quantitysheeps: null,
-        quantitygroups: null,
-
+        quantitygroups: null        
       }
     },
     methods: {
