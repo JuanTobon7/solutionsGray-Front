@@ -15,10 +15,10 @@
         </li>
         <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
           <i class="material-symbols-outlined">people</i>
-          <router-link to="/about" class="block">Servants</router-link>
+          <router-link to="/servants" class="block">Servidores</router-link>
         </li>
         <li  @click="toggleSheepMenu" class="px-4 py-2 hover:bg-primary-600 flex flex-col gap-4">
-          <div class="flex items-center"> 
+          <div class="flex items-center gap-4"> 
             <i class="material-symbols-outlined text-primary-50">digital_wellbeing</i>
             <span to="/sheeps" class="block">Ovejas</span>
           </div>
@@ -47,13 +47,8 @@ export default {
       rol: null,
       showMenuSheep: false,
       menuItemsSheep: [
-        {
-          label: 'Ver ovejas en la iglesia',
-          path: '/sheeps'     
-        },
-        {
-          label: 'Ver mis ovejas',
-        }
+      { label: 'Ver ovejas en la iglesia', path: '/sheeps' },
+      { label: 'Ver mis ovejas', path: '/my-sheeps' },
       ],
       items: [
                 {
@@ -93,5 +88,7 @@ export default {
 li{
   @apply cursor-pointer;
 }
-
+i {
+      unicode-bidi: isolate;
+    }
 </style>

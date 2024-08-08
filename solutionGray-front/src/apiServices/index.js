@@ -34,3 +34,28 @@ export const getSheepById = async(id)=>{
   const response = await api.get(`/sheep/${id}`);
   return response.data;
 }
+
+export const getMySheeps = async()=>{
+  const response = await api.get('/my-sheeps');
+  return response.data
+}
+
+export const editInfoSheepById = async(id,data)=>{
+  const response = await api.put(`/sheep/${id}`);
+  return response.data;
+}
+
+export const getServants = async()=>{
+  const response = await api.get('/servants');
+  return response.data;
+}
+
+export const getServantById = async(id)=>{
+  const response = await api.get(`/servant/${id}`);
+  return response.data;
+}
+
+export const sendInvitationBoarding = async(data)=>{
+  const response = await api.post('/invitation-boarding',{email:data.email});
+  return response.data;
+}

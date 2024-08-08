@@ -44,4 +44,7 @@ export default {
 #app {
   min-height: 100vh;
 }
+i {
+      unicode-bidi: isolate;
+    }
 </style>
