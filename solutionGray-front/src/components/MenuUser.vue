@@ -38,8 +38,6 @@
 
 <script>
 
-
-
 export default {
   name: 'MenuUser',
   data(){
@@ -63,13 +61,16 @@ export default {
     }
   },
   methods: {
-    getRol(){
-      const session = sessionStorage.getItem('user')
-      if(!session){
-        return false
-      }      
-      const user = JSON.parse(session)
-      this.rol = user.rol
+    getRol() {
+      const session = this.$store.getters.userSession;
+
+      if (!session) {
+        return false;
+      }
+
+      const user = JSON.parse(session);
+      this.rol = user.rol;
+      return true;
     },
     toggleSheepMenu() {
             this.showMenuSheep = !this.showMenuSheep;

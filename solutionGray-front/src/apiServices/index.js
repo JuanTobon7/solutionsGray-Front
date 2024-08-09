@@ -1,4 +1,5 @@
 import api from './axiosConfig'
+import store from '@/store';
 
 export const start = async () => {
   const response = await api.get('/');
@@ -14,7 +15,7 @@ export const login = async (data) => {
       email: response.data.email,
       rol: response.data.rol
     }
-    sessionStorage.setItem('user',JSON.stringify(user));
+    store.dispatch('login', user);
   }
   return response.data;
 }
@@ -57,5 +58,10 @@ export const getServantById = async(id)=>{
 
 export const sendInvitationBoarding = async(data)=>{
   const response = await api.post('/invitation-boarding',{email:data.email});
+  return response.data;
+}
+
+export const verifyInvitationBoarding = async(data)=>{
+  const response = await api.post('/accept-invitation',{emailToken:data.token});
   return response.data;
 }

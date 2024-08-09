@@ -4,6 +4,8 @@ import LoginView from '../views/LoginView.vue'
 import SheepsView from '../views/SheepsView.vue'
 import MySheepsView from '../views/MySheepsView.vue'
 import ServantsView from '../views/ServantsView.vue'
+import InvitationBoarding from '@/views/InvitationBoarding.vue'
+import SingIn from '@/views/SingIn.vue'
 
 const routes = [
   {
@@ -25,10 +27,21 @@ const routes = [
     path: '/my-sheeps',
     name: 'mysheeps',
     component: MySheepsView,
-  },{
+  },
+  {
     path: '/servants',
     name: 'servants',
     component: ServantsView,
+  },
+  {
+    path: '/invitation-boarding',
+    name: 'invitation-boarding',
+    component: InvitationBoarding,
+  },
+  {
+    path: '/sing-in',
+    name: 'sing-in',
+    component: SingIn,
   }
 ];
 

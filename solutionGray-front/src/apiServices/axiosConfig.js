@@ -25,8 +25,7 @@ api.interceptors.request.use ((config)=>{
     
     const access_token = Cookies.get('access_token')
     const refresh_token = Cookies.get('refresh_token')
-    console.log('access_token', access_token)
-    console.log('refresh_token', refresh_token)
+
     if(access_token){
         config.headers['Authorization'] = `Bearer ${access_token}`
         config.headers['x-access-token'] = true

@@ -62,7 +62,6 @@
       async getChurch() {
         try {
           const response = await getChurchInfo()
-          console.log('Response from API:', response)
           this.churchName = response.name
           this.countryid = response.countryid
           this.stateid = response.stateid
