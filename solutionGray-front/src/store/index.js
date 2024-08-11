@@ -1,4 +1,11 @@
 import { createStore } from 'vuex';
+import VuexPersistence from 'vuex-persist';
+
+// Configura vuex-persist para usar sessionStorage
+const vuexSession = new VuexPersistence({
+  storage: window.sessionStorage, // Cambia a localStorage si quieres persistencia entre sesiones
+});
+
 
 const store = createStore({
   state() {
@@ -29,7 +36,8 @@ const store = createStore({
     logout({ commit }) {
       commit('flushSession');
     }
-  }
+  },
+  plugins: [vuexSession.plugin],
 });
 
 export default store;

@@ -1,5 +1,4 @@
 import axios from 'axios'
-import Cookies from 'js-cookie'
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_PROXY_HOST,
@@ -18,26 +17,28 @@ const api = axios.create({
     return now > expires;
   }; */
 
-api.interceptors.request.use ((config)=>{
-   /*  if(isCookieExpired){
-        const response  = await api.post('')
-    } */
-    
-    const access_token = Cookies.get('access_token')
-    const refresh_token = Cookies.get('refresh_token')
+async function refreshToken() {
+  const response = await api.post('/refresh-token');
+  return response.data;
+}
 
-    if(access_token){
-        config.headers['Authorization'] = `Bearer ${access_token}`
-        config.headers['x-access-token'] = true
-    }
-    if(refresh_token){
-        config.headers['x-refresh-token'] = refresh_token
-    }
-
-    return config
-    },
-    (error)=>{
-        return Promise.reject(error)
+api.interceptors.response.use (
+  function(response){
+    // Si la respuesta es exitosa, retornar directamente los datos
+    return response
+  },
+  async function(error){
+        const originalRequest = error.config; // Guardamos la petición original
+        if (error.response.data && error.response.data.message === 'Token Expired') {
+          try{            
+            // El servidor respondió con un código de estado fuera del rango 2xx
+            await refreshToken()
+            return api(originalRequest)
+          }catch(refreshError){
+            return Promise.reject(refreshError);
+          }            
+       }
+        return Promise.reject(error);
     }
 )
 

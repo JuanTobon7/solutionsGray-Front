@@ -15,7 +15,7 @@ export const login = async (data) => {
       email: response.data.email,
       rol: response.data.rol
     }
-    store.dispatch('login', user);
+    store.dispatch('login', user);  
   }
   return response.data;
 }
@@ -64,4 +64,23 @@ export const sendInvitationBoarding = async(data)=>{
 export const verifyInvitationBoarding = async(data)=>{
   const response = await api.post('/accept-invitation',{emailToken:data.token});
   return response.data;
+}
+
+export const refreshToken = async()=>{
+  const response = await api.post('/refresh-token');
+  return response.data;
+}
+//try to implement an event listener like before of open the spa i dont know
+export const basicUserInfo = async()=>{
+  const response = await api.get('/basic-info-user');
+  if(response.data.message){
+    return
+  }
+  const user = {
+    name: response.data.name,
+    email: response.data.email,
+    rol: response.data.rol
+  }
+  store.dispatch('login', user);  
+  return user
 }
