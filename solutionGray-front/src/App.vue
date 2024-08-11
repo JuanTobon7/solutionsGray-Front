@@ -25,7 +25,11 @@ export default {
   },
   computed:{
     showNavBar(){
-      return this.$route.path !== '/login';
+      if(this.$route.path === '/login' || this.$route.path === '/sing-in'){                 
+        return false
+      }
+      return true
+      
     },
     isLogin(){
       return true

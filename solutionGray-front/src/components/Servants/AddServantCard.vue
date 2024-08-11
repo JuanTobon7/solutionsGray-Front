@@ -40,7 +40,7 @@ export default {
         const email = this.email;
         console.log(email);
         const response = await sendInvitationBoarding({email});
-        this.message = response;
+        this.message = response.message;
         this.$emit('close');
       } catch (error) {
         console.log(error);

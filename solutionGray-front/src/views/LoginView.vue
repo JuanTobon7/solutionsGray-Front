@@ -1,5 +1,5 @@
 <template>
-  <section class="w-full h-screen flex items-center justify-center bg-second-200">
+  <section class="w-full h-screen flex items-center justify-center ctn-cllg">
     <div
       class="w-[60vh] h-auto md:h-[80vh] shadow-lg shadow-primary-900 rounded-lg bg-gradient-to-b from-primary-800 to-primary-600 p-8 flex flex-col items-center container"
     >
@@ -34,12 +34,7 @@
             />
           </div>
           <div class="flex items-center justify-around mb-8">
-            <button
-              class="bg-primary-400 hover:bg-primary-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="button"
-            >
-              Crear Cuenta
-            </button>
+           
             <button
             @click="loginUser"
               class="bg-primary-400 hover:bg-primary-800 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -89,3 +84,14 @@ export default{
 }
 
 </script>
+
+<style scoped>
+.ctn-cllg {
+  background-image: url('../assets/vid.png');
+  background-position: left;
+  background-size: cover;
+  background-repeat: no-repeat;
+  max-height: 50%;
+  max-width: 100%;
+}
+</style>

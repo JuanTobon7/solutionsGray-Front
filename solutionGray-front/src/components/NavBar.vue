@@ -5,7 +5,7 @@
         <i @click="$emit('toggle-menu')" class="cursor-pointer material-symbols-outlined text-white lg:hidden">menu</i>
         <div class="flex items-center gap-4 ml-auto">
           <img class="h-11 w-11" src="../assets/solutionGrayLOGO-removebg.png" />
-          <p class="text-xl text-primary-50">{{ userName || 'Invitado' }}</p>
+          <p class="text-xl text-primary-50">{{ userName }}</p>
         </div>
       </nav>
     </div>
@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     isLogin() {
-      const session = sessionStorage.getItem('user');
+      const session = this.$store.getters.userSession;
       if (!session) {
         return false;
       }
@@ -31,7 +31,7 @@ export default {
       return true;
     }
   },
-  mounted() {
+  created() {
     this.isLogin();
   }
 };
