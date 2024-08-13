@@ -29,13 +29,15 @@ api.interceptors.response.use (
   },
   async function(error){
         const originalRequest = error.config; // Guardamos la petición original
-        if (error.response.data && error.response.data.message === 'Token Expired') {
+        console.log('error: ',error.response)
+        if (error.response.status === 401 && error.response.data.message === 'Token Expired') {
           try{            
+            console.log('entro en el condicional')
             // El servidor respondió con un código de estado fuera del rango 2xx
             await refreshToken()
             return api(originalRequest)
           }catch(refreshError){
-            return Promise.reject(refreshError);
+            return Promise.reject(refreshError.message);
           }            
        }
         return Promise.reject(error);

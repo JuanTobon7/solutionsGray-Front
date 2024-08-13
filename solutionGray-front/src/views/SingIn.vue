@@ -2,6 +2,7 @@
     <section 
     class="w-full h-screen flex items-center justify-center right-0 ctn-cllg">
       <div
+        v-if="isAuthInvitation"
         class="w-[60vh] h-auto md:h-[90vh] shadow-lg shadow-primary-900 rounded-lg bg-gradient-to-b from-primary-800 to-primary-600 p-8 flex flex-col items-center container"
       >
         <div class="flex justify-center mb-2">
@@ -97,7 +98,11 @@ export default {
             birdthday: null,
             genero: null,
             backgroundImage: vidImage,
+            isAuthInvitation: null
         }
+    },
+    mounted(){
+      this.isAuthInvitation = this.$store.getters.authInvitation ? true : false;
     }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div v-if="sheep" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-second-50 p-8 rounded shadow-md shadow-primary-700 w-[50vh]">
+      <div class="bg-second-50 p-8 rounded shadow-md shadow-primary-700 w-[50vh] animate-fade-down animate-once animate-duration-[300ms]  animate-ease-linear">
         <h2 class="text-2xl font-bold mb-4 text-primary-900">{{ sheep.name }}</h2>
         <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-4">
           <div class="flex-col gap-2">

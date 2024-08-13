@@ -1,29 +1,45 @@
 <template>
-    <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="w-[40vh] p-8 bg-second-50 rounded-md shadow-md shadow-second-700">
-        <div class="flex flex-col items-center justify-center  mb-4">
-          <h2 class="text-3xl mb-2 font-bold text-second-900"><strong>Invitar nuevo servidor</strong></h2>          
-          <p class="text-second-900">Aqui podrás digitar el correo electronico de la persona a la cual quieres invitar a ser parte de este ministerio</p>
-        </div>
-        <div class="relative mb-4">
-            <i class="absolute left-3 top-1/2 transform -translate-y-1/2 material-symbols-outlined text-second-700 text-md">email</i>
-            <input
-                type="text"
-                id="email"
-                class="pl-10 p-2 border border-second-200 rounded-md outline-none focus:bg-second-100 hover:bg-second-100"
-                v-model="email"
-            />
-        </div>
-        <button @click="$emit('close')" class="mr-4 bg-red-500 text-white p-2 rounded">Cerrar</button>
-        <button @click="sendInvitation" class=" bg-green-500 text-white p-2 rounded">Enviar</button>
-        <span>{{ message }}</span>
+  <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+    <div class="bg-primary-50 dark:bg-primary-700 p-8 rounded-lg shadow-lg max-w-md w-full animate-fade-down animate-once animate-duration-[300ms]  animate-ease-linear">
+      <h2 class="text-3xl font-bold text-primary-900 dark:text-white mb-4">
+        Invitar a un nuevo voluntario
+      </h2>
+      <p class="text-gray-700 dark:text-gray-100 mb-6">
+        Aquí podrás digitar el correo electrónico de la persona a la cual quieres invitar a ser parte de este ministerio.
+      </p>
+      <div class="relative">
+        <input 
+          type="email" 
+          placeholder="Correo electrónico" 
+          class="w-full p-3 pl-10 text-primary-50 bg-white dark:bg-primary-900 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-700 placeholder:text-primary-200"
+          v-model="email"
+        />
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
+          <svg class="h-5 w-5 text-primary-400 dark:text-primary-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12h1m-8-8v1m0 14v1m-8-8h1M4.93 4.93l1.414 1.414M18.36 18.36l1.414 1.414M15 12a3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3 3 3 0 003-3z" />
+          </svg>
+        </span>
+      </div>
+      <div class="flex justify-end mt-4">
+        <button 
+           @click="$emit('close')"
+          class="mr-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md shadow-sm">
+          Cerrar
+        </button>
+        <button 
+          @click="sendInvitation" 
+          class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md shadow-sm">
+          Enviar
+        </button>
+      </div>
     </div>
-    </div>
-  </template>
+  </div>
+</template>
     
 <script>
 import { sendInvitationBoarding } from '@/apiServices';
-export default {
+export default {  
+  emits: ['close','toast-status'], 
   data() {
     return {
       email: null,
@@ -32,20 +48,41 @@ export default {
   },
   methods: {
     async sendInvitation() {
+      let status
       try {
-        if(this.email === null) {
+        if (this.email === null) {
           this.message = 'Por favor digita un correo electronico';
           return;
         }
         const email = this.email;
-        console.log(email);
-        const response = await sendInvitationBoarding({email});
+        const response = await sendInvitationBoarding({ email });
+        status = response.status;
         this.message = response.message;
+      } catch (error) {      
+        this.message = error.response.data.message;
+        console.log('message: ', this.message);
+        status = error.response.status;
+      } finally {
+        this.showResponse(status);
         this.$emit('close');
-      } catch (error) {
-        console.log(error);
       }
-    }
+    },
+    showResponse(status) {
+     const severity = status === 400 || status === 401 ? 'error' : 'success';
+     this.$emit('toast-status',severity)
+
+      this.$toast.add({
+        severity,
+        summary: status === 400 || status === 401 ? 'Error' : 'Exitoso',
+        detail: this.message,
+        life: 3000,
+      });
+      return this.message;
+    },
+  },
+
+     
+  computed: {
   }
 }
 </script>

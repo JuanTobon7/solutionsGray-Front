@@ -7,7 +7,6 @@ export const start = async () => {
 }
 
 export const login = async (data) => {
-  console.log('entro a axios login');
   const response = await api.post('/login', { email: data.email, password: data.password });  
   if (response.data.name || response.data.email) {
     const user = {
@@ -26,7 +25,6 @@ export const getChurchInfo = async()=>{
 }
 
 export const getSheeps = async()=>{
-  console.log('here')
   const response = await api.get('/sheeps');
   return response.data;
 }
@@ -58,7 +56,11 @@ export const getServantById = async(id)=>{
 
 export const sendInvitationBoarding = async(data)=>{
   const response = await api.post('/invitation-boarding',{email:data.email});
-  return response.data;
+  return {
+    ...response.data,
+    status: response.status
+  }
+  ;
 }
 
 export const verifyInvitationBoarding = async(data)=>{

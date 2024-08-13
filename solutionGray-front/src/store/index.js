@@ -10,7 +10,8 @@ const vuexSession = new VuexPersistence({
 const store = createStore({
   state() {
     return {
-      user: null
+      user: null,
+      authInvitation: null
     };
   },
   getters: {
@@ -19,6 +20,9 @@ const store = createStore({
     },
     userSession(state) {
       return state.user ? JSON.stringify(state.user) : null;
+    },
+    authInvitation(state) {
+      return state.authInvitation;
     }
   },
   mutations: {
@@ -27,6 +31,9 @@ const store = createStore({
     },
     flushSession(state) {
       state.user = null;
+    },
+    setAuthInvitation(state, isInvitated) {
+      state.authInvitation = isInvitated;
     }
   },
   actions: {
@@ -35,7 +42,10 @@ const store = createStore({
     },
     logout({ commit }) {
       commit('flushSession');
-    }
+    },
+    loadInvitation({ commit }, isInvitated) {
+      commit('setAuthInvitation', isInvitated);
+    },
   },
   plugins: [vuexSession.plugin],
 });

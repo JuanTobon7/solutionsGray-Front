@@ -15,9 +15,6 @@ const proxyConfig = {
       })
     },
     proxyReq(proxyReq, req, res) {
-      console.log(`Proxying ${req.method} request to ${req.url}`);
-      console.log('Request headers:', JSON.stringify(req.headers));
-      console.log('Cookies:', req.cookies);
       if (req.method === 'POST' && req.body) {
         
         const stringBody = {

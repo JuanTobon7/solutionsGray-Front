@@ -44,5 +44,7 @@ export default {
       }
     }
   },
-  plugins: []
+  plugins: [
+    require('tailwindcss-animated') // Asegúrate de tener esto
+  ],
 }

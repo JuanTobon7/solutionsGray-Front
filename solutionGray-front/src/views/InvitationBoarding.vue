@@ -1,51 +1,32 @@
 <template>
-  <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg max-w-md w-full animate-fadeIn">
-      <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-        Espera, estamos verificando...
-      </h2>
-      <p class="text-gray-700 dark:text-gray-300 mb-6">
-        Aquí podrás digitar el correo electrónico de la persona a la cual quieres invitar a ser parte de este ministerio.
-      </p>
-      <div class="relative">
-        <input 
-          type="email" 
-          placeholder="Correo electrónico" 
-          class="w-full p-3 pl-10 text-gray-700 bg-gray-100 dark:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          v-model="email"
-        />
-        <span class="absolute inset-y-0 left-0 pl-3 flex items-center">
-          <svg class="h-5 w-5 text-gray-400 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12h1m-8-8v1m0 14v1m-8-8h1M4.93 4.93l1.414 1.414M18.36 18.36l1.414 1.414M15 12a3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3 3 3 0 003-3z" />
-          </svg>
-        </span>
+   <section 
+    class="w-full h-screen flex items-center justify-center right-0 ctn-cllg">
+      <div
+        class="w-[65vh] h-auto md:h-[50vh] shadow-lg shadow-primary-900 rounded-lg bg-gradient-to-b from-primary-800 to-primary-600 p-8 flex flex-col items-center container"
+      >
+      <div class="flex justify-center mb-4">
+        <img src="../assets/solutionGrayLOGO-removebg.png" class="h-[30vh] w-[30vh]" />
       </div>
-      <div class="flex justify-end mt-4">
-        <button 
-          @click="closeModal" 
-          class="mr-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md shadow-sm">
-          Cerrar
-        </button>
-        <button 
-          @click="sendInvitation" 
-          class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md shadow-sm">
-          Enviar
-        </button>
+      <div class="w-full flex flex-col items-center">
+        <h1 class="text-center text-primary-50 text-2xl mb-8">     
+          Espera estamos verificando tu invitacion pronto te redireccionaremosx
+        </h1>
+        <i class="material-symbols-outlined text-4xl text-primary-50 animate-spin animate-infinite">rotate_right</i>
       </div>
     </div>
-  </div>
+   </section>
 </template>
 
 
 <script>
 import { verifyInvitationBoarding } from '@/apiServices';
+import store from '@/store';
 
 export default {
-  name: 'InvitationBoarding',
   data() {
     return {
       token: null,
-      message: null
+      message: null,
     };
   },
   methods: {
@@ -54,20 +35,37 @@ export default {
         const url = window.location.href;
         const tokenParam = url.split('token=')[1];
         this.token = tokenParam;
+
         const response = await verifyInvitationBoarding({ token: this.token });
-        this.message = response.message;
+
+        this.message = response.message; // Asigna el mensaje de la respuesta
+
+        // Muestra el mensaje en el toast
+        this.showResponse();
+
         if (this.message === 'Ya Haz sido aceptado') {
-          this.$router.push({path: '/sing-in'});
+          store.dispatch('loadInvitation', true);
+          this.$router.push({ path: '/sing-in' });
         }
-        console.log(response);
-        console.log(this.token);
       } catch (error) {
-        console.log(error);
+        console.log('Error en la invitación: ', error);
       }
-    }
+    },   
   },
   mounted() {
     this.catchToken();
-  }
+  },
 };
 </script>
+
+<style scoped>
+.ctn-cllg {
+  background-image: url('../assets/vid.png');
+  background-position: left;
+  background-size: cover;
+  background-repeat: no-repeat;
+  max-height: 50%;
+  max-width: 100%;
+}
+</style>
+

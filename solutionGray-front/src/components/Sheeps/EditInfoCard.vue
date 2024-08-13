@@ -1,48 +1,48 @@
 <template>
-    <div v-if="sheep" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-second-50 p-8 rounded shadow-md shadow-primary-700 w-[70vh]">
-        <h2 class="text-3xl font-bold mb-8 text-second-900">Informacion por editar de {{ sheep.name }}</h2>
+   <div v-if="sheep" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+    <div class="bg-primary-50 dark:bg-primary-700 p-8 rounded-lg shadow-lg  max-w-2xl animate-fade-down animate-once animate-duration-[300ms]  animate-ease-linear">
+        <h2 class="text-3xl font-bold mb-8 text-primary-50">Informacion por editar de {{ sheep.name }}</h2>
         <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-4 items-start">
           <div class="flex flex-col gap-2">
             <div class="flex flex-col">
-              <label class="text-second-900" for="email"><strong>Email: </strong></label>
+              <label class="text-primary-50" for="email"><strong>Email: </strong></label>
               <input v-model="sheep.email" 
                 id="email" 
                 type="text" 
                 placeholder="Email" 
-                class="rounded-md bg-second-200 p-1 text-second-950 outline-1 outline-second-500">
+                class="rounded-md bg-white p-1 text-primary-950 focus:outline-none focus:ring-2 focus:ring-stone-700">
             </div>  
             <div class="flex flex-col">
-              <label for="status" class="text-second-900"><strong>Estado: </strong></label>
+              <label for="status" class="text-primary-50"><strong>Estado: </strong></label>
               <input v-model="sheep.status" 
                 id="status" 
                 type="text" 
                 placeholder="Estado" 
-                class="rounded-md bg-second-200 p-1 text-second-950 outline-1 outline-second-500">
+              class="rounded-md bg-white p-1 text-primary-950 focus:outline-none focus:ring-2 focus:ring-stone-700">
             </div>  
             <div class="flex flex-col">
-                <label for="arrival-date" class="text-second-900"><strong>Fecha de Ingreso:</strong></label>
-                <p id="arrival-date" class="rounded-md bg-second-200 p-1 text-second-950 ">{{ formatDate(sheep.arrival_date) }}</p>
+                <label for="arrival-date" class="text-primary-50"><strong>Fecha de Ingreso:</strong></label>
+                <p id="arrival-date" class="rounded-md bg-primary-50 p-1 text-primary-950 ">{{ formatDate(sheep.arrival_date) }}</p>
             </div>
         </div>
         <div class="flex flex-col gap-2">
 
           <div class="flex flex-col">
-              <label for="last_visit" class="text-second-900"><strong>Ultima Visita:</strong></label>
-              <p id="last_visit" class="rounded-md bg-second-200 p-1 text-second-950 ">{{ formatDate(sheep.last_visit) }}</p>
+              <label for="last_visit" class="text-primary-50"><strong>Ultima Visita:</strong></label>
+              <p id="last_visit" class="rounded-md bg-primary-50 p-1 text-primary-950 ">{{ formatDate(sheep.last_visit) }}</p>
             </div>
             <div class="flex flex-col">
-                <label for="cuantity_visits" class="text-second-900"><strong>Cantidad de Visitas:</strong></label>
-                <p id="cuantity_visits" class="rounded-md bg-second-200 p-1 text-second-950 ">{{sheep.cuantity_visits}}</p>
+                <label for="cuantity_visits" class="text-primary-50"><strong>Cantidad de Visitas:</strong></label>
+                <p id="cuantity_visits" class="rounded-md bg-primary-50 p-1 text-primary-950 ">{{sheep.cuantity_visits}}</p>
             </div>
             <div class="flex flex-col">
-              <label for="progress" class="text-second-900"><strong>Progreso: </strong></label>
+              <label for="progress" class="text-primary-50"><strong>Progreso: </strong></label>
               <textarea
                 v-model="sheep.description"
                 id="progress"
                 placeholder="Progreso"
                 rows="3"
-                class="rounded-md bg-second-200 p-1 text-second-950 outline-1 outline-second-500 focus:border-second-800 focus:outline-none resize-none">
+                class="rounded-md bg-primary-50 p-1 text-primary-950 outline-1 outline-primary-500 focus:border-primary-800 focus:outline-none resize-none">
               </textarea>
             </div>  
           </div>
