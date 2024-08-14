@@ -1,17 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import ChurchView from '../views/ChurchView.vue'
 import LoginView from '../views/LoginView.vue'
 import SheepsView from '../views/SheepsView.vue'
 import MySheepsView from '../views/MySheepsView.vue'
 import ServantsView from '../views/ServantsView.vue'
 import InvitationBoarding from '@/views/InvitationBoarding.vue'
 import SingIn from '@/views/SingIn.vue'
+import MinisterServices from '@/views/MinisterServices.vue'
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView,
+    path: '/my-church',
+    name: 'church',
+    component: ChurchView,
+  },
+  {
+    path: '/worship-services',
+    name: 'worship-services',
+    component: MinisterServices,
   },
   {
     path: '/login',

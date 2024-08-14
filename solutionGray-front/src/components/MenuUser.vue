@@ -9,10 +9,20 @@
     </div>
     <div>
       <ul class="text-primary-50 text-xl">
-        <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
-          <i class="material-symbols-outlined">home</i>
-          <router-link to="/" class="block">Inicio</router-link>
+        <li  @click="toogleChurchMenu" class="px-4 py-2 hover:bg-primary-600 flex flex-col gap-4">
+          <div class="flex items-center gap-4"> 
+            <i class="material-symbols-outlined text-primary-50">church</i>
+            <span to="/sheeps" class="block">Church</span>
+          </div>
+          
         </li>
+        <div v-if="showMenuChurch" class="pl-8 w-3/4 flex flex-col">
+          <ul class="list-disc list-inside mb-2 w-auto">
+            <li @click="redirectTo(item.path)" v-for="item in menuItemsChurch" :key="item.label" class="text-primary-50 px-2 py-2 hover:bg-primary-600 transition-all duration-300 rounded-md">
+              {{ item.label }}
+            </li>
+          </ul>
+        </div>
         <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
           <i class="material-symbols-outlined">people</i>
           <router-link to="/servants" class="block">Servidores</router-link>
@@ -25,12 +35,12 @@
           
         </li>
         <div v-if="showMenuSheep" class="pl-8 w-3/4 flex flex-col">
-        <ul class="list-disc list-inside mb-2 w-auto">
-          <li @click="redirectTo(item.path)" v-for="item in menuItemsSheep" :key="item.label" class="text-primary-50 px-2 py-2 hover:bg-primary-600 transition-all duration-300 rounded-md">
-            {{ item.label }}
-          </li>
-        </ul>
-      </div>
+          <ul class="list-disc list-inside mb-2 w-auto">
+            <li @click="redirectTo(item.path)" v-for="item in menuItemsSheep" :key="item.label" class="text-primary-50 px-2 py-2 hover:bg-primary-600 transition-all duration-300 rounded-md">
+              {{ item.label }}
+            </li>
+          </ul>
+        </div>
       </ul>
     </div>
   </aside>
@@ -44,6 +54,11 @@ export default {
     return {
       rol: null,
       showMenuSheep: false,
+      showMenuChurch: false,
+      menuItemsChurch: [
+        {label: 'Mi iglesia',path:'/my-church'},
+        {label: 'Cultos',path:'/worship-services'}
+      ],
       menuItemsSheep: [
       { label: 'Ver ovejas en la iglesia', path: '/sheeps' },
       { label: 'Ver mis ovejas', path: '/my-sheeps' },
@@ -74,6 +89,9 @@ export default {
     },
     toggleSheepMenu() {
             this.showMenuSheep = !this.showMenuSheep;
+    },
+    toogleChurchMenu() {
+            this.showMenuChurch = !this.showMenuChurch;
     },
     redirectTo(path){
       this.$router.push(path)

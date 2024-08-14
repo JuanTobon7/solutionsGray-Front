@@ -68,14 +68,20 @@ export default {
       }
     },
     showResponse(status) {
-     const severity = status === 400 || status === 401 ? 'error' : 'success';
+     let severity = 'Exitoso'
+      if(status === 400){
+        severity = 'Error'
+      }else if(status === 401){
+        severity = 'Info'
+      }
      this.$emit('toast-status',severity)
 
       this.$toast.add({
         severity,
-        summary: status === 400 || status === 401 ? 'Error' : 'Exitoso',
+        summary: severity,
         detail: this.message,
-        life: 3000,
+        life: 4000,
+        closable: false
       });
       return this.message;
     },
