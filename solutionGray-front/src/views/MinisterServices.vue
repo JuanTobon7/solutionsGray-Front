@@ -1,75 +1,16 @@
 <template>
     <section class="h-screen p-8 container">
-      <div class="mb-6 container">
-        <p class="text-primary-900 text-3xl font-serif"><strong>
-         Yo me alegré con los que me decían: A la casa de Jehová iremos. Salmos 112:1
-        </strong></p>
-      </div>
-      <div class="p-2 shadow-md bg-second-50 shadow-second-600 rounded-md h-auto">
-        <h1 class="text-5xl mb-4 text-second-800"><strong>Cultos</strong></h1>
-        <h2 class="text-second-800 text-2xl mb-2"><strong>Mira el registro de cultos</strong></h2>
-        <div class="p-6">
-          <DataTable :value="sheepsInfo" class="w-full border-collapse" tableStyle="min-width: 80rem">
-            <Column field="name" header="Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
-            <Column field="email" header="Email" class="p-4 text-center border-b  border-primary-200 text-second-800"></Column>
-            <Column field="description" header="Description" class="p-2 text-center text-second-800 border-b  border-primary-200"></Column>
-            <Column field="arrival_date" header="Fecha de inicio" class="p-4 text-center border-b  border-primary-200 text-second-800">
-              <template #body="slotProps">
-                <Tag :value="slotProps.data.arrival_date">
-                  {{ formatDate(slotProps.data.arrival_date) }}
-                </Tag>
-              </template>
-          </Column> 
-          <Column field="last_visit" header="Ultima Visita" class="p-4 text-center border-b  border-primary-200 text-second-800">
-            <template #body="slotProps">
-                <Tag :value="slotProps.data.last_visit">
-                  {{ formatDate(slotProps.data.last_visit) }}
-                </Tag>
-              </template>
-          </Column>
-            <Column field="status" header="Estado" class="p-4 text-center border-b  border-primary-200 text-second-800">
-            <template #body="slotProps">
-                <Tag :value="slotProps.data.status" class="p-2 text-center border-b rounded-md bg-green-200 text-green-900 uppercase">
-                  <strong> {{ slotProps.data.status }} </strong>
-                </Tag>
-              </template>
-            </Column>
-            <Column field="Información" header="Informacion" class="p-4 text-center border-b  border-primary-200 ">
-              <template #body="slotProps">
-                <i @click="handleSheepInfo(slotProps.data.id)" class="material-symbols-outlined cursor-pointer">info</i>
-              </template>
-            </Column>
-            <Column field="Acciones" header="Acciones" class="p-4 text-center border-b border-primary-200">
-              <template #body="slotProps">
-                <div class="flex items-center justify-around text-xl">
-                  <i @click="editInfoSheep(slotProps.data.id)" class="material-symbols-outlined cursor-pointer text-yellow-500">edit</i>
-                  <i class="material-symbols-outlined cursor-pointer text-red-600">delete</i>
-                </div>
-              </template>
-            </Column>
-          </DataTable>
-        </div>
-      </div>
-      <SheepInfoCard v-if="showSheepInfoCard" :sheep="sheepInfoById" @close="closeSheepInfoCard" />
-      <EditInfoCard v-if="showEditInfoCard" :sheep="sheepInfoById" @close="closeEditInfoCard" />
+      <div v-for="items in cultos" :key="">
+
+      </div>      
     </section>
   </template>
   
   <script>
   import { getMySheeps,getSheepById } from '../apiServices/index'
-  import SheepInfoCard from '@/components/Sheeps/SheepInfoCard.vue';
-  import EditInfoCard from '@/components/Sheeps/EditInfoCard.vue';
-  import DataTable from 'primevue/datatable';
-  import Column from 'primevue/column';
-  import Tag from 'primevue/tag';
   
   export default {
     components: {
-      DataTable,
-      EditInfoCard,
-      SheepInfoCard,
-      Column,
-      Tag,
     },
     data() {
       return {
