@@ -1,5 +1,5 @@
 <template>
-  <aside class="bg-primary-700 sm:w-full md:w-[40%] lg:w-[20%] fixed h-full py-2 flex flex-col gap-2 z-0">
+  <aside class="bg-primary-700 sm:w-full md:w-[40%] lg:w-[20%] fixed h-full py-2 flex flex-col gap-2">
         <div class="flex justify-end pr-4 pt-4 lg:hidden">
         <i class="material-symbols-outlined cursor-pointer text-primary-50">close</i>
       </div>

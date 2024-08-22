@@ -8,7 +8,7 @@
       <h1 class="text-5xl mb-4 text-second-800"><strong>Tus ovejas</strong></h1>
       <h2 class="text-second-800 text-2xl mb-2"><strong>Estadísticas e Información de tus Ovejas</strong></h2>
       <div class="p-6">
-        <DataTable :value="sheepsInfo" class="w-full border-collapse" tableStyle="min-width: 80rem">
+        <DataTable :value="sheepsInfo" class="w-full border-collapse z-0" tableStyle="min-width: 80rem">
           <Column field="name" header="Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
           <Column field="email" header="Email" class="p-4 text-center border-b  border-primary-200 text-second-800"></Column>
           <Column field="description" header="Description" class="p-2 text-center text-second-800 border-b  border-primary-200"></Column>

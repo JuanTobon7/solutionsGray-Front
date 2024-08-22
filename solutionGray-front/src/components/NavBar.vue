@@ -1,6 +1,6 @@
 <template>
   <section class="w-full">
-    <div class="fixed top-0 right-0 w-full md:w-[60%] lg:w-[80%] bg-primary-500 py-5">
+    <div class="fixed top-0 right-0 w-full md:w-[60%] lg:w-[80%] bg-primary-500 py-5 z-100">
       <nav class="flex justify-between items-center container px-8">
         <div class="flex items-center ml-auto">
           <div @click="toggleMenu" class="relative rounded-full cursor-pointer inline-block">
