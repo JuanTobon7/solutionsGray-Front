@@ -8,13 +8,25 @@
         <h2 class="text-second-800 text-2xl mb-2"><strong>Estadísticas e Información de los servidores</strong></h2>
           <button class="bg-primary-500 text-white p-2 rounded-md mr-2">Actualizar</button>
           <button @click="addServants" class="bg-primary-500 text-white p-2 rounded-md" >Invitar</button>
-        <div class="p-6">
+        
+        <div v-if="loading" class="p-6 space-y-4">
+          <div class="animate-pulse">
+            <div class="h-6 bg-gray-300 rounded mb-4"></div>
+            <div class="h-4 bg-gray-300 rounded mb-2"></div>
+            <div class="h-4 bg-gray-300 rounded mb-2"></div>
+            <div class="h-4 bg-gray-300 rounded mb-2 w-5/6"></div>
+          </div>
+        
+        </div>
+
+          <div v-else class="p-6">
           <DataTable 
           :value="servantsInfo" 
           class="w-full border-collapse" 
           tableStyle="min-width: 80rem; max-height: 80rem;"
           >           
-            <Column field="name" header="Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
+            <Column field="first_name" header="Primer Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
+            <Column field="last_name" header="Primer Apellido" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
             <Column field="email" header="Email" class="p-4 text-center border-b  border-primary-200 text-second-800"></Column>
             <Column field="usual_rol" header="Rol de Servicio Habitual" class="p-2 text-center text-second-800 border-b  border-primary-200">
                 <template #body="slotProps">
@@ -74,12 +86,14 @@
       return {
         servantsInfo: [],
         newServantsVisible: false,
-        servantInfoById: null
+        servantInfoById: null,
+        loading:true
       };
     },
     methods: {
       async getServants() {
         this.servantsInfo = await getServants();
+        this.loading = false;
       },
       addServants() {
       this.newServantsVisible = true;
@@ -97,6 +111,7 @@
         }
       },
       formatDate(dateString) {
+        if (!dateString) return 'N/A';
         const date = new Date(dateString);
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses en JavaScript son 0-indexados

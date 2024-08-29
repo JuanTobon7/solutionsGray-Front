@@ -47,8 +47,12 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 /* Ajusta el contenido principal para que no se superponga con el menú lateral */
+.personal-animated{
+  @apply animate-fade-down animate-once animate-duration-[200ms]  animate-ease-linear
+}
+
 #app {
   min-height: 100vh;
 }

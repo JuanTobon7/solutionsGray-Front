@@ -1,39 +1,60 @@
 <template>
   <section class="h-screen p-8 container">
     <div class="mb-6 container">
-      <p class="text-primary-900 text-3xl font-serif"><strong>
-        Apacentad la grey de Dios que está entre vosotros, cuidando de ella, no por fuerza, sino voluntariamente; no por ganancia deshonesta, sino con ánimo pronto; 1 Pedro 5:2</strong></p>
+      <p class="text-primary-900 text-3xl font-serif">
+        <strong>
+          Apacentad la grey de Dios que está entre vosotros, cuidando de ella, no por fuerza, sino voluntariamente; no por ganancia deshonesta, sino con ánimo pronto; 1 Pedro 5:2
+        </strong>
+      </p>
     </div>
     <div class="p-2 shadow-md bg-second-50 shadow-second-600 rounded-md h-auto">
-      <h1 class="text-5xl mb-4 text-second-800"><strong>Tus ovejas</strong></h1>
-      <h2 class="text-second-800 text-2xl mb-2"><strong>Estadísticas e Información de tus Ovejas</strong></h2>
-      <div class="p-6">
+      <h1 class="text-5xl mb-4 text-second-800">
+        <strong>Tus ovejas</strong>
+      </h1>
+      <h2 class="text-second-800 text-2xl mb-2">
+        <strong>Estadísticas e Información de tus Ovejas</strong>
+      </h2>
+      
+      <!-- Efecto de carga -->
+      <div v-if="loading" class="p-6 space-y-4">
+        <div class="animate-pulse">
+          <div class="h-6 bg-gray-300 rounded mb-4"></div>
+          <div class="h-4 bg-gray-300 rounded mb-2"></div>
+          <div class="h-4 bg-gray-300 rounded mb-2"></div>
+          <div class="h-4 bg-gray-300 rounded mb-2 w-5/6"></div>
+        </div>
+       
+      </div>
+
+      <!-- Tabla de datos -->
+      <div v-else class="p-6">
         <DataTable :value="sheepsInfo" class="w-full border-collapse z-0" tableStyle="min-width: 80rem">
-          <Column field="name" header="Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
-          <Column field="email" header="Email" class="p-4 text-center border-b  border-primary-200 text-second-800"></Column>
-          <Column field="description" header="Description" class="p-2 text-center text-second-800 border-b  border-primary-200"></Column>
-          <Column field="arrival_date" header="Fecha de inicio" class="p-4 text-center border-b  border-primary-200 text-second-800">
+          <Column field="first_name" header="Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
+          <Column field="last_name" header="Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
+          <Column field="email" header="Email" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
+          <Column field="description" header="Description" class="p-2 text-center text-second-800 border-b border-primary-200"></Column>
+          <Column field="arrival_date" header="Fecha de inicio" class="p-4 text-center border-b border-primary-200 text-second-800">
             <template #body="slotProps">
               <Tag :value="slotProps.data.arrival_date">
                 {{ formatDate(slotProps.data.arrival_date) }}
               </Tag>
             </template>
-        </Column> 
-        <Column field="last_visit" header="Ultima Visita" class="p-4 text-center border-b  border-primary-200 text-second-800">
-          <template #body="slotProps">
+          </Column>
+          <Column field="last_visit" header="Ultima Visita" class="p-4 text-center border-b border-primary-200 text-second-800">
+            <template #body="slotProps">
               <Tag :value="slotProps.data.last_visit">
                 {{ formatDate(slotProps.data.last_visit) }}
               </Tag>
             </template>
-        </Column>
-          <Column field="status" header="Estado" class="p-4 text-center border-b  border-primary-200 text-second-800">
-          <template #body="slotProps">
+          </Column>
+          <Column field="status" header="Estado" class="p-4 text-center border-b border-primary-200 text-second-800">
+            <template #body="slotProps">
               <Tag :value="slotProps.data.status" class="p-2 text-center border-b rounded-md bg-green-200 text-green-900 uppercase">
-                <strong> {{ slotProps.data.status }} </strong>
+                <strong>{{ slotProps.data.status }}</strong>
               </Tag>
             </template>
           </Column>
-          <Column field="Información" header="Informacion" class="p-4 text-center border-b  border-primary-200 ">
+          <Column field="Información" header="Informacion" class="p-4 text-center border-b border-primary-200">
             <template #body="slotProps">
               <i @click="handleSheepInfo(slotProps.data.id)" class="material-symbols-outlined cursor-pointer">info</i>
             </template>
@@ -49,13 +70,14 @@
         </DataTable>
       </div>
     </div>
+
     <SheepInfoCard v-if="showSheepInfoCard" :sheep="sheepInfoById" @close="closeSheepInfoCard" />
     <EditInfoCard v-if="showEditInfoCard" :sheep="sheepInfoById" @close="closeEditInfoCard" />
   </section>
 </template>
 
 <script>
-import { getMySheeps,getSheepById } from '../apiServices/index'
+import { getMySheeps, getSheepById } from '../apiServices/index';
 import SheepInfoCard from '@/components/Sheeps/SheepInfoCard.vue';
 import EditInfoCard from '@/components/Sheeps/EditInfoCard.vue';
 import DataTable from 'primevue/datatable';
@@ -76,19 +98,21 @@ export default {
       sheepInfoById: null,
       showSheepInfoCard: false,
       showEditInfoCard: false,
+      loading: true,
     };
   },
   methods: {
-    async getSheeps() {
-      this.sheepsInfo = await getMySheeps();
+    async getSheeps() {      
+        this.sheepsInfo = await getMySheeps();
+        this.loading = false;
     },
     async handleSheepInfo(id) {
-      try{
+      try {
         const sheepsInfo = await getSheepById(id);
         this.sheepInfoById = sheepsInfo;
         this.showSheepInfoCard = true;
         this.showEditInfoCard = false;
-      }catch(error){
+      } catch (error) {
         console.log(error);
       }
     },
@@ -113,7 +137,7 @@ export default {
     formatDate(dateString) {
       const date = new Date(dateString);
       const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses en JavaScript son 0-indexados
+      const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     }
@@ -125,7 +149,7 @@ export default {
 </script>
 
 <style scoped>
-tr:hover{
-@apply bg-white
+tr:hover {
+  @apply bg-white;
 }
 </style>

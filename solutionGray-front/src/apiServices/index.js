@@ -40,7 +40,7 @@ export const getMySheeps = async()=>{
 }
 
 export const editInfoSheepById = async(id,data)=>{
-  const response = await api.put(`/sheep/${id}`);
+  const response = await api.put(`/sheep/${id}`,data);
   return response.data;
 }
 
@@ -72,17 +72,13 @@ export const refreshToken = async()=>{
   const response = await api.post('/refresh-token');
   return response.data;
 }
-//try to implement an event listener like before of open the spa i dont know
-export const basicUserInfo = async()=>{
-  const response = await api.get('/basic-info-user');
-  if(response.data.message){
-    return
-  }
-  const user = {
-    name: response.data.name,
-    email: response.data.email,
-    rol: response.data.rol
-  }
-  store.dispatch('login', user);  
-  return user
+
+export const createWorshipService = async(data)=>{
+  const response = await api.post('/create-worship-service',data);
+  return response.data;
+}
+
+export const getWorshipServices = async()=>{
+  const response = await api.get('/worship-services');
+  return response.data;
 }

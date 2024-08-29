@@ -1,7 +1,7 @@
 <template>
    <div v-if="sheep" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-    <div class="bg-primary-50 dark:bg-primary-700 p-8 rounded-lg shadow-lg  max-w-2xl animate-fade-down animate-once animate-duration-[300ms]  animate-ease-linear">
-        <h2 class="text-3xl font-bold mb-8 text-primary-50">Informacion por editar de {{ sheep.name }}</h2>
+    <div class="bg-primary-50 dark:bg-primary-700 p-8 rounded-lg shadow-lg  max-w-2xl personal-animated">
+        <h2 class="text-3xl font-bold mb-8 text-primary-50">Informacion por editar de {{ sheep.first_name + ' ' + sheep.last_name}}</h2>
         <div class="grid sm:grid-cols-1 md:grid-cols-2 gap-4 items-start">
           <div class="flex flex-col gap-2">
             <div class="flex flex-col">
@@ -53,6 +53,7 @@
   </template>
   
   <script>
+
   export default {
     props: {
       sheep: {
@@ -62,6 +63,7 @@
     },
     methods: {
       formatDate(dateString) {
+        if(!dateString) return 'N/A';
         const date = new Date(dateString);
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses en JavaScript son 0-indexados

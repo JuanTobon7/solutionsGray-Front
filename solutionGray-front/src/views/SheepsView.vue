@@ -8,9 +8,18 @@
         <h2 class="text-second-800 text-2xl mb-2"><strong>Estadísticas e Información de Iglesia</strong></h2>
           <button class="bg-primary-500 text-white p-2 rounded-md mr-2" @click="getSheeps">Actualizar</button>
           <button class="bg-primary-500 text-white p-2 rounded-md" @click="addSheeps">Agregar</button>
-        <div class="p-6">
+          <div v-if="loading" class="p-6 space-y-4">
+            <div class="animate-pulse">
+              <div class="h-6 bg-gray-300 rounded mb-4"></div>
+              <div class="h-4 bg-gray-300 rounded mb-2"></div>
+              <div class="h-4 bg-gray-300 rounded mb-2"></div>
+              <div class="h-4 bg-gray-300 rounded mb-2 w-5/6"></div>
+            </div>        
+          </div>
+          <div v-else class="p-6">
           <DataTable :value="sheepsInfo" class="w-full border-collapse" tableStyle="min-width: 80rem">
-            <Column field="name" header="Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
+            <Column field="first_name" header="Primer Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
+            <Column field="last_name" header="Primer Apellido" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
             <Column field="email" header="Email" class="p-4 text-center border-b  border-primary-200 text-second-800"></Column>
             <Column field="description" header="Descripcion" class="p-2 text-center text-second-800 border-b  border-primary-200"></Column>
             <Column field="arrival_date" header="Fecha de inicio" class="p-4 text-center border-b  border-primary-200 text-second-800">
@@ -67,12 +76,14 @@
       return {
         sheepsInfo: [],
         newSheepVisible: false,
-        sheepInfoById: null
+        sheepInfoById: null,
+        loading: true
       };
     },
     methods: {
       async getSheeps() {
         this.sheepsInfo = await getSheeps();
+        this.loading = false;
       },
       addSheeps() {
         this.newSheepVisible = !this.newSheepVisible;
@@ -87,6 +98,7 @@
         }
       },
       formatDate(dateString) {
+        if (!dateString) return 'N/A';
         const date = new Date(dateString);
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses en JavaScript son 0-indexados

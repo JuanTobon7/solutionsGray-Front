@@ -1,6 +1,6 @@
 <template>
   <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-    <div class="bg-primary-50 dark:bg-primary-700 p-8 rounded-lg shadow-lg max-w-md w-full animate-fade-down animate-once animate-duration-[300ms]  animate-ease-linear">
+    <div class="bg-primary-50 dark:bg-primary-700 p-8 rounded-lg shadow-lg max-w-md w-full personal-animated">
       <h2 class="text-3xl font-bold text-primary-900 dark:text-white mb-4">
         Invitar a un nuevo voluntario
       </h2>

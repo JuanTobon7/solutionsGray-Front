@@ -1,6 +1,11 @@
+<!-- Hay que cambiarla toda y hacerla secuencial, primero hacer una request para obtener las personas nuevas o que no han iniciado el proceso de ser ovejas
+  Despues hacer que quede seleccionada con la opcion de que el usuario pueda tener en vista a quien eligio para ser oveja y a quien eligio para ser guia
+  ya que el guia es el que se encargara de llevar a cabo el proceso de discipulado con la oveja
+  y enmarcar la oracion o peticion al momento de agregar una nueva oveja
+-->
 <template>
   <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-    <div class="bg-primary-50 dark:bg-primary-700 p-8 rounded-lg shadow-lg  max-w-2xl animate-fade-down animate-once animate-duration-[300ms]  animate-ease-linear">
+    <div class="bg-primary-50 dark:bg-primary-700 p-8 rounded-lg shadow-lg  max-w-2xl personal-animated">
       <div class="flex justify-between items-center mb-2">
         <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4"><strong>Agregar nueva oveja</strong></h2>
         <img src="../../assets/shepPNG-removebg-preview.png" class="w-28 right-0"/>
@@ -66,7 +71,8 @@ export default {
   data() {
     return {
       newSheep: {
-        name: null,
+        first_name: null,
+        last_name: null,
         email: null,
         description: null,
         arrival_date: null,
@@ -74,25 +80,14 @@ export default {
         last_visit: null,
         status: null
       },
-      servants: [
-      { id: 1, name: 'Juan Perez', cuantity_sheeps_guide: 5 },
-        { id: 2, name: 'Maria Lopez', cuantity_sheeps_guide: 3 },
-        { id: 3, name: 'Carlos Martinez', cuantity_sheeps_guide: 7 },
-        { id: 4, name: 'Lucia Gomez', cuantity_sheeps_guide: 4 },
-        { id: 5, name: 'Jorge Ramirez', cuantity_sheeps_guide: 2 },
-        { id: 6, name: 'Ana Fernandez', cuantity_sheeps_guide: 6 },
-        { id: 7, name: 'Luis Torres', cuantity_sheeps_guide: 8 },
-        { id: 8, name: 'Elena Gutierrez', cuantity_sheeps_guide: 9 },
-        { id: 9, name: 'Pablo Diaz', cuantity_sheeps_guide: 1 },
-        { id: 10, name: 'Sofia Herrera', cuantity_sheeps_guide: 11 }
-      ]
+      servants: []
     }
   },
   methods: {
     async getServantsGuide() {
       try {
         const response = await getServants('/servants')
-        this.servants.push({id: response.id,name:response.name,cuantity_sheeps_guide:response.cuantity_sheeps_guide})
+        this.servants = response
       } catch (error) {
         console.log(error)
       }

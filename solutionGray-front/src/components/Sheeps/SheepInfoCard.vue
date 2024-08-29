@@ -1,7 +1,7 @@
 <template>
-    <div v-if="sheep" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div class="bg-second-50 p-8 rounded shadow-md shadow-primary-700 w-[50vh] animate-fade-down animate-once animate-duration-[300ms]  animate-ease-linear">
-        <h2 class="text-2xl font-bold mb-4 text-primary-900">{{ sheep.name }}</h2>
+    <div v-if="sheep" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div class="bg-second-50 p-8 rounded shadow-md shadow-primary-700 w-[50vh] personal-animated">
+        <h2 class="text-2xl font-bold mb-4 text-primary-900">{{ sheep.first_name + ' ' + sheep.last_name }}</h2>
         <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-4">
           <div class="flex-col gap-2">
           <p><strong>Email: </strong> {{ sheep.email }}</p>
@@ -29,6 +29,7 @@
     },
     methods: {
       formatDate(dateString) {
+        if(!dateString) return 'N/A';
         const date = new Date(dateString);
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses en JavaScript son 0-indexados
