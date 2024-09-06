@@ -43,7 +43,7 @@ export default {
     toggleMenu() {
       this.showMenuUser = !this.showMenuUser;
     },       
-  }
+  },
 };
 </script>
 
