@@ -8,47 +8,85 @@
         <strong>Cultos Programados</strong>
       </h1>
     </div>
+    
+    <!-- Barra de búsqueda y botones -->
     <div class="flex items-center gap-2 mb-4 w-full">
       <label for="search" class="text-second-800 text-xl">Buscar</label>
-      <input type="text" id="search" placeholder="Buscar" class="p-2 border border-gray-300 rounded-md w-1/2 outline-none bg-second-50" />
-      <button @click="toggleHistory" class="right-0 bg-primary-500 text-white p-2 rounded-md">
+      <input
+        type="text"
+        id="search"
+        placeholder="Buscar"
+        class="p-2 border border-gray-300 rounded-md w-1/2 outline-none bg-second-50"
+      />
+      <button
+        @click="toggleHistory"
+        class="right-0 bg-primary-500 text-white p-2 rounded-md transition-transform duration-200 hover:scale-105">
         {{ historyButtonText }}
       </button>
-      <button @click="addWorshipService" class="right-0 bg-primary-500 text-white p-2 rounded-md">Agregar Culto</button>
+      <button
+        @click="addWorshipService"
+        class="right-0 bg-primary-500 text-white p-2 rounded-md transition-transform duration-200 hover:scale-105">
+        Agregar Culto
+      </button>
     </div>
 
     <!-- Cultos Programados -->
-    <div v-if="cultos.length > 0 && !showHistoryService" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-    <div v-for="items in cultos" :key="items.id" class="w-full z-100">
-      <Card class="transition-transform duration-200 hover:-translate-y-2 shadow-md shadow-gray-400" style="width: 100%; overflow: hidden">
-        <template #header>
-          <img src="../assets/vid.png" alt="Culto Image" class="w-full h-48 object-cover" />
-        </template>
-        <template #title>
-          <h2 class="text-3xl text-second-900 font-bold">{{ items.tittleSermon }}</h2>
-        </template>
-        <template #subtitle>
-          <h3 class="text-xl text-second-800">{{ items.name }}</h3>
-        </template>
-        <template #content>
-          <span class="text-2xl text-gray-800">{{ formatDate(items.date) }}</span>
-          <p class="text-gray-800 mt-2">
-            {{ items.description }}
-          </p>
-        </template>
-        <template #footer>
-          <div class="bg-second-700 p-2 flex w-full rounded-lg">
-            <button class="w-full text-second-100 font-bold cursor-pointer">Ver información</button>
-          </div>
-        </template>
-      </Card>
+    <div v-if="cultos.length > 0 && !showHistoryService" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div v-for="items in cultos" :key="items.id" class="w-full z-100">
+        <Card class="transition-transform duration-200 hover:-translate-y-2 shadow-md shadow-gray-400 rounded-2xl" style="width: 100%; overflow: hidden">
+          
+          <!-- Imagen de fondo -->
+          <template #header>
+            <div class="relative w-full h-48 bg-cover bg-center bg-image">
+              <div class="absolute top-0 right-0 p-2">
+                <!-- Botón de editar estilizado -->
+                <button
+                  @click="showEdit(items)"
+                  class="bg-white text-primary-600 border border-primary-500 py-1 px-2 rounded-full shadow-md hover:bg-primary-50 transition-transform duration-200 hover:scale-110 focus:outline-none focus:ring-1 focus:ring-primary-300">
+                  <i class="material-symbols-outlined text-2xl">edit</i>
+                </button>
+              </div>
+            </div>
+          </template>
+        
+          <!-- Título y subtítulo -->
+          <template #title>
+            <h2 class="text-2xl font-semibold text-second-900">{{ items.sermon_tittle }}</h2>
+          </template>
+          <template #subtitle>
+            <h3 class="text-xl text-second-800">{{ items.worship_name }}</h3>
+          </template>
+        
+          <!-- Contenido -->
+          <template #content>
+            <div class="flex flex-col ">
+              <!-- Fecha y hora con icono -->
+              <div class="flex items-center gap-3 mb-2">
+                <i class="material-symbols-outlined text-gray-700">event</i>
+                <span class="text-xl text-gray-800">{{ formatDate(items.date) }}</span>
+              </div>
+              <!-- Descripción con efecto hover y tooltip -->
+              <div class="flex items-center gap-2 text-gray-800">
+                <span class="material-symbols-outlined">book</span>
+                <!-- Ajustar texto largo -->
+                <p class="whitespace-normal break-words overflow-hidden">{{items.description }}</p>
+              </div>
+            </div>
+          </template>
+        
+          <!-- Footer -->
+          <template #footer>
+            <div class="bg-second-700 p-2 flex w-full rounded-lg">
+              <button @click="showInfo(items)" class="w-full text-second-100 font-bold cursor-pointer">Ver información</button>
+            </div>
+          </template>
+        </Card>
+      </div>
     </div>
-  </div>
+
     <!-- Mensaje de no hay cultos programados -->
     <div v-else-if="cultos.length === 0" class="flex flex-col items-center justify-center h-96">
-      <span class="text-8xl material-symbols-outlined mb-4 text-primary-900">
-        sentiment_dissatisfied
-      </span>
+      <span class="text-8xl material-symbols-outlined mb-4 text-primary-900">sentiment_dissatisfied</span>
       <p class="text-2xl text-second-800">No hay cultos programados en este momento.</p>
       <p class="text-xl text-gray-600 mt-2">Por favor, vuelve más tarde o agrega un nuevo culto.</p>
     </div>
@@ -70,11 +108,21 @@
     </div>
 
     <!-- Componente para agregar culto -->
-    
     <AddWorshipService
       v-if="showAddWorshipService"
       @close="closeAddWorhipService"
       @worshipServiceAdded="worshipServices"
+    />
+    <InfoWorshipService 
+      v-if="showInfoService" 
+      :worshipService="selectedService"  
+      @close="showInfoService = false"
+    />
+    <EditInfoCard 
+      v-if="showEditService"
+      :worshipService="selectedService"
+      @close="showEditService = false"
+      @worshipServiceEdited="worshipServices"
     />
   </section>
 </template>
@@ -82,6 +130,8 @@
 <script>
 import { getWorshipServices } from '@/apiServices';
 import AddWorshipService from '../components/Church/AddWorshipService.vue';
+import InfoWorshipService from '../components/Church/InfoWorshipService.vue';
+import EditInfoCard from '@/components/Church/EditWorshipService.vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Tag from 'primevue/tag';
@@ -90,6 +140,8 @@ import Card from 'primevue/card';
 export default {
   components: {
     AddWorshipService,
+    EditInfoCard,
+    InfoWorshipService,
     DataTable,
     Column,
     Tag,
@@ -99,7 +151,10 @@ export default {
     return {
       showAddWorshipService: false,
       showHistoryService: false,
+      showInfoService: false,
+      showEditService: false,
       historyButtonText: 'Ver Historial de Cultos',
+      selectedService: null,
       message: null,
       cultos: [],
     };
@@ -117,18 +172,25 @@ export default {
     },
     formatDate(dateString) {
       const date = new Date(dateString);
-      const options = { month: 'long', day: 'numeric', weekday: 'long',hour: 'numeric', minute: 'numeric' };
+      const options = { month: 'long', day: 'numeric', weekday: 'long', hour: 'numeric', minute: 'numeric' };
       let dateFormated = date.toLocaleDateString('es-ES', options);
       dateFormated = dateFormated.charAt(0).toUpperCase() + dateFormated.slice(1);
       return dateFormated.replace(/,/g, ' ');
     },
+    selectService(service) {
+      this.selectedService = service;
+    },
+    showEdit(selectedService) {
+      this.selectedService = selectedService;
+      this.showEditService = true;
+    },
+    showInfo(selectedService) {
+      this.selectedService = selectedService;
+      this.showInfoService = true;
+    },
     async worshipServices() {
       try {
-        const response = await getWorshipServices();
-        if (response.length === 0) {
-          this.message = 'No hay cultos programados';
-        }
-        this.cultos = response;
+        this.cultos = await getWorshipServices();
       } catch (error) {
         console.error(error);
       }
@@ -140,4 +202,10 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.bg-image{
+  background-image: url('../assets/vid.png');
+  background-repeat: no-repeat;
+  background-position: top;  
+}
+</style>

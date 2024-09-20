@@ -42,11 +42,11 @@
       <h4 class="text-xl font-semibold text-gray-800 mb-4">Servicios Asignados</h4>
       <div>
         <Carousel 
-          v-if="assignedServices.length" 
-          :value="assignedServices" 
+          v-if="allAssignedServices.length" 
+          :value="allAssignedServices" 
           :numVisible="numVisible"
           :containerClass="'flex justify-center items-center w-full'"
-          :showNavigators="assignedServices.length > numVisible"
+          :showNavigators="allAssignedServices.length > numVisible"
         >
           <template #item="slotProps">
             <div class="p-4 bg-white shadow-lg rounded-lg flex flex-col items-center justify-center mr-4 max-w-[50vh]">
@@ -65,11 +65,16 @@
                   shape="circle"
                 />
               </div>
-              <p class="text-lg font-semibold text-center">{{ slotProps.data.person.name }}</p>
+              <p class="text-lg font-semibold text-center">{{ slotProps.data.person.first_name + ' ' + slotProps.data.person.last_name }}</p>
               <p class="text-sm text-center text-gray-600">{{ slotProps.data.service.name }}</p>
-              <button @click="removeAssignment(slotProps.index)" class="material-symbols-outlined text-red-500 cursor-pointer mt-4">
-                delete
-              </button>
+              <div class="flex items-center justify-center gap-2"> 
+                <button @click="removeAssignment(slotProps.index, slotProps.data.isNew)" class="material-symbols-outlined text-orange-500 cursor-pointer mt-4">
+                  edit
+                </button>
+                <button @click="removeAssignment(slotProps.index, slotProps.data.isNew)" class="material-symbols-outlined text-red-500 cursor-pointer mt-4">
+                  delete
+                </button>
+              </div>
             </div>
           </template>
         </Carousel>
@@ -85,6 +90,7 @@ import Button from 'primevue/button';
 import Carousel from 'primevue/carousel';
 import Avatar from 'primevue/avatar';
 import { getServants, getRolesServices } from '@/apiServices/index';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
@@ -99,8 +105,8 @@ export default {
       selectedServant: null,
       services: [],
       servants: [],
-      assignedServices: [],
-      numVisible: 3
+      newAssignedServices: [], // Array para manejar los nuevos servicios
+      numVisible: 3,
     };
   },
   computed: {
@@ -109,54 +115,71 @@ export default {
         ...servant,
         name: `${servant.first_name} ${servant.last_name}`
       }));
-    }
+    },
+    ...mapGetters({
+      storedAssignedServices: 'assignedServices', // Servicios ya persistidos en Vuex
+    }),
+    allAssignedServices() {
+      return [
+        ...this.storedAssignedServices.map(service => ({ ...service, isNew: false })),
+        ...this.newAssignedServices.map(service => ({ ...service, isNew: true }))
+      ];
+    },
   },
   methods: {
-  getInitials(person) {
-    const initials = person.first_name.charAt(0) + person.last_name.charAt(0);
-    return initials.toUpperCase();
-  },
-  assignService() {
-    if (this.selectedService && this.selectedServant) {
-      // Contar cuántas veces la persona ya ha sido asignada
-      const count = this.assignedServices.filter(
-        (assignment) => assignment.person.id === this.selectedServant.id
-      ).length;
+    getInitials(person) {
+      const initials = person.first_name.charAt(0) + person.last_name.charAt(0);
+      return initials.toUpperCase();
+    },
+    assignService() {
+      if (this.selectedService && this.selectedServant) {
+        const count = this.newAssignedServices.filter(
+          (assignment) => assignment.person.id === this.selectedServant.id
+        ).length + this.storedAssignedServices.filter(
+          (assignment) => assignment.person.id === this.selectedServant.id
+        ).length;
 
-      // Si la persona ya ha sido asignada 3 veces, mostrar un mensaje
-      if (count >= 3) {
-        alert(`${this.selectedServant.first_name} ${this.selectedServant.last_name} ya ha sido asignado(a) 3 veces. No se le puede asignar más servicios.`);
+        if (count >= 3) {
+          alert(`${this.selectedServant.first_name} ${this.selectedServant.last_name} ya ha sido asignado(a) 3 veces. No se le puede asignar más servicios.`);
+        } else {
+          const newAssignment = {
+            service: this.selectedService,
+            person: this.selectedServant
+          };
+
+          this.newAssignedServices.push(newAssignment); // Añade al array de nuevos
+          this.selectedService = null;
+          this.selectedServant = null;
+        }
+      }
+    },
+    removeAssignment(index, isNew) {
+      if (isNew) {
+        this.newAssignedServices.splice(index, 1); // Elimina del array de nuevos
       } else {
-        // De lo contrario, asignar el servicio
-        this.assignedServices.push({
-          service: this.selectedService,
-          person: this.selectedServant
-        });
-        this.$store.dispatch('addAssignedServices', this.assignedServices);
-        this.selectedService = null;
-        this.selectedServant = null;
+        this.$store.dispatch('removeAssignedService', index); // Elimina del array persistido
+      }
+    },
+    async getRolesServices() {
+      try {
+        const response = await getRolesServices();
+        this.services = response;
+      } catch (error) {
+        console.error("Error fetching services:", error);
+      }
+    },
+    async getServants() {
+      try {
+        const response = await getServants();
+        this.servants = response;
+      } catch (error) {
+        console.error("Error fetching servants:", error);
       }
     }
   },
-  removeAssignment(index) {
-    this.assignedServices.splice(index, 1);
-  },
-  async getRolesServices() {
-    const response = await getRolesServices();
-    this.services = response;
-  },
-  async getServants() {
-    try {
-      const response = await getServants();
-      this.servants = response;
-    } catch(e) {
-      console.log(e.response.data);
-    }
-  }
-},
   async mounted() {
     await this.getRolesServices();
-    await this.getServants();
+    await this.getServants();    
   }
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
     <!-- Cultos Section -->
-    <div v-if="culto && culto.titleSermon" class="flex items-center justify-center">
+    <div v-if="culto && culto.sermonTittle" class="flex items-center justify-center">
       <Card class="transition-transform duration-200 hover:-translate-y-2 shadow-md shadow-gray-400 overflow-hidden">
         <template #header>
           <img src="../../assets/vid.png" alt="Culto Image" class="w-full h-44 object-cover" />
@@ -13,7 +13,7 @@
           <h3 class="text-xl text-second-800">{{ culto.name }}</h3>
         </template>
         <template #content>
-          <span class="text-2xl text-gray-800">{{ formatDate(culto.date) }}</span>
+          <span class="text-2xl text-gray-800">{{ formatDate(culto.date)}}</span>
           <p class="text-gray-800 mt-2">
             {{ culto.description }}
           </p>
@@ -52,7 +52,7 @@
                   shape="circle"
                 />
               </div>
-              <p class="text-lg font-semibold text-center">{{ slotProps.data.person.name }}</p>
+              <p class="text-lg font-semibold text-center">{{ slotProps.data.person.first_name + ' ' + slotProps.data.person.last_name }}</p>
               <p class="text-sm text-center text-gray-600">{{ slotProps.data.service.name }}</p>
               <button @click="removeAssignment(slotProps.index)" class="material-symbols-outlined text-red-500 cursor-pointer mt-4">
                 delete
@@ -63,6 +63,14 @@
         <p v-else class="text-gray-600">No hay servicios asignados todavía.</p>
       </div>
     </div>
+
+    <!-- Confirm Button Section -->
+    <div class="flex justify-end mt-4">      
+      <button @click="handleSumbit" class="flex items-center bg-green-500 text-second-50 rounded-md p-2">
+        <span class="material-symbols-outlined mr-2">check</span>
+        Confirmar
+      </button>
+    </div>
   </div>
 </template>
 
@@ -71,10 +79,11 @@ import { mapGetters } from 'vuex';
 import Avatar from 'primevue/avatar';
 import Carousel from 'primevue/carousel';
 import Card from 'primevue/card';
-import {createWorshipService,assingService} from '@/apiServices/index'
+import { createWorshipService, assingService, updateWorshipService, updateAssingServices } from '@/apiServices/index';
 
 export default {
-  name: 'ConfirmatioWorshipService',
+  props: ['edit'],
+  name: 'ConfirmationWorshipService',
   components: {
     Avatar,
     Carousel,
@@ -83,7 +92,7 @@ export default {
   data() {
     return {
       numVisible: 3,
-      culto: null,
+      culto: null, // Inicializado como null
       assignedServices: [],
     };
   },
@@ -95,14 +104,16 @@ export default {
   },
   watch: {
     storedCulto(newCulto) {
-      this.culto = newCulto;
+      this.culto = newCulto || {}; // Asignar culto o un objeto vacío
+      console.log('epa this is the vulto',this.culto)
     },
     storedAssignedServices(newAssignedServices) {
-      this.assignedServices = newAssignedServices;
+      this.assignedServices = newAssignedServices || []; // Asegurarse de asignar una lista vacía si no hay datos
     },
   },
   mounted() {
     this.initializeData();
+    console.log('edit: ', this.edit);
   },
   beforeUnmount() {
     this.cleanupComponent();
@@ -110,10 +121,11 @@ export default {
   methods: {
     initializeData() {
       this.culto = this.storedCulto || {};
+      console.log('culto in initializeData: ',this.culto)
+      // Asegurarse de que culto tenga un valor inicial
       this.assignedServices = this.storedAssignedServices || [];
     },
     cleanupComponent() {
-      // Any necessary cleanup when the component is destroyed
       this.culto = null;
       this.assignedServices = [];
     },
@@ -121,42 +133,128 @@ export default {
       if (!dateString) return '';
       const date = new Date(dateString);
       const options = { month: 'long', day: 'numeric', weekday: 'long', hour: 'numeric', minute: 'numeric' };
-      let formattedDate = date.toLocaleDateString('es-ES', options);
-      formattedDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
-      return formattedDate.replace(/,/g, ' ');
+      let dateFormated = date.toLocaleDateString('es-ES', options);
+      dateFormated = dateFormated.charAt(0).toUpperCase() + dateFormated.slice(1);
+      return dateFormated.replace(/,/g, ' ');
     },
     getInitials(person) {
       if (!person) return '';
-      return person.name.charAt(0) + (person.surname ? person.surname.charAt(0) : '');
+      return person.first_name.charAt(0) + person.last_name.charAt(0);
     },
     removeAssignment(index) {
       this.assignedServices.splice(index, 1);
     },
-    async createWosrhisService(){
-      try{        
-        if(!this.culto || !this.culto.titleSermon || !this.culto.name || !this.culto.date || !this.culto.description || !this.assignedServices.length){
-          this.$toast.add({severity:'error', summary:'Error', detail:'Por favor, complete todos los campos.'});
-          return
+    async createWorshipService() {
+      try {
+        console.log('Im in create worshipService')
+        console.log('date: ',this.culto.date)
+        if (!this.culto || !this.culto.sermonTittle || !this.culto.date || !this.culto.description || !this.assignedServices.length) {
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos.', life: 3000 });
+          return;
         }
-        const culto = this.culto
-        const assignedServices = this.assignedServices.map(service => service.id)
-        let result = await createWorshipService(culto)       
-        
-        this.$toast.add({severity:'success', summary:'Éxito', detail:result.message});
 
-        result = await assingService(assignedServices)
-        this.$toast.add({severity:'success', summary:'Éxito', detail:result.message});
-        
-        this.$store.dispatch('flushAssignedServices')
-        this.$store.dispatch('flushWorshipService')
-        this.$emit('close')
-      }catch(e){
-        this.$toast.add({severity:'error', summary:'Error', detail:'Ha ocurrido un error al crear el culto.'});
+        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const date = new Date(this.culto.date);
+        console.log('lolllll',date)
+
+        const time = new Date(this.culto.time);
+
+        date.setHours(time.getHours());
+        date.setMinutes(time.getMinutes());
+
+        const fullDate = date.toISOString();
+        console.log('fullDate: ', fullDate);
+        const assignedServices = this.assignedServices.map(service => ({ personId: service.person.id, rolService: service.service.id }));
+
+        const culto = {
+          sermonTittle: this.culto.sermonTittle,
+          description: this.culto.description,
+          typeWorshipId: this.culto.selectedTypeWorship,
+          date: fullDate,
+          timeZone: userTimeZone
+        };
+
+        let result = await createWorshipService(culto);
+        this.$toast.add({ severity: 'success', summary: 'Éxito', detail: result.message, life: 3000 });
+
+        result = await assingService({ assignedServices, id: result.id });
+        this.$toast.add({ severity: 'success', summary: 'Éxito', detail: result.message, life: 3000 });
+
+        this.$store.dispatch('flushAssignedServices');
+        this.$store.dispatch('flushWorshipService');
+        this.$emit('close');
+      } catch (e) {
+        console.log(e);
+        if (e.response.data.status !== 401 && e.response.data.message === 'Token has expired') {
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el culto.', life: 3000 });
+        }
       }
+    },
+    async editWorshipService(){
+      // Validar los campos requeridos
+      console.log('Im in edit worshipService')
+    try{
+      console.log('culto: ',this.culto)
+      if (!this.culto || !this.culto.sermonTittle || !this.culto.date || !this.culto.description || !this.assignedServices.length) {
+        this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos.',life: 3000 });
+      return;
     }
-  }
-}
+    console.log('time: ',this.culto.time)
+    // Obtener la zona horaria del usuario
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    
+    // Combinar la fecha y la hora
+    const date = new Date(this.culto.date); // Asegúrate de que esto sea un objeto Date
+    console.log('date: ',date)
+    // Ajustar las horas y minutos del campo time en el campo date
+    // Convertir la fecha completa a formato ISO (incluye fecha, hora y zona horaria)
+    const fullDate = date.toISOString();
+    console.log('fullDate: ',fullDate)
+    // Asignar los servicios
+    const assignedServices = this.assignedServices.map(service => ({personId: service.person.id, rolService: service.service.id}));
+    
+    // Crear el culto con la fecha completa y zona horaria
+    const culto = {
+      id: this.culto.id,
+      sermonTittle: this.culto.sermonTittle,
+      description: this.culto.description,    
+      typeWorshipId: this.culto.selectedTypeWorship,  
+      date: fullDate,
+      timeZone: userTimeZone // Añadir la zona horaria al culto
+    };
+    
+    let result = await updateWorshipService(culto)
+    // Mostrar mensaje de éxito
+    this.$toast.add({ severity: 'success', summary: 'Éxito', detail: result.message,life: 3000 });
 
+    console.log('im going to updateAssignedServices')
+    // Asignar los servicios al culto
+    result = await updateAssingServices({assignedServices,id:result.id});
+    this.$toast.add({ severity: 'success', summary: 'Éxito', detail: result.message,life: 3000 });
+
+    // Limpiar los datos en Vuex
+    this.$store.dispatch('flushAssignedServices');
+    this.$store.dispatch('flushWorshipService');
+
+    // Cerrar el modal o el componente
+    this.$emit('close');
+
+  }catch(e){
+    console.log(e)
+  }
+    },
+    async handleSumbit() {
+      console.log('Im in handle submit')
+      console.log('edit: ',this.edit)
+      if (this.edit) {
+        await this.editWorshipService();
+      } else {
+        await this.createWorshipService();
+      }
+      this.$emit('close');
+    },
+  }
+};
 </script>
 
 <style scoped>

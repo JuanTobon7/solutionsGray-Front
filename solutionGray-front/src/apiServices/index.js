@@ -107,3 +107,21 @@ export const assingService = async(data)=>{
   const response = await api.post('/assing-services',data);
   return response.data;
 }
+
+export const getServices = async(eventId)=>{
+  console.log('eventID: ',eventId);
+  const response = await api.get(`/assigned-services/${eventId}`);
+  return response.data;
+}
+
+export const updateAssingServices = async(data)=>{
+  console.log('hehe hehe hehe')
+  const response = await api.put('/update-assign-service',data)
+  return response.data
+}
+
+export const updateWorshipService = async(data)=>{
+  console.log('here in update worship',data)
+  const response = await api.put('/update-worship-services',data)
+  return response.data
+}

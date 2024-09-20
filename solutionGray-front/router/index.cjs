@@ -15,7 +15,7 @@ const proxyConfig = {
       })
     },
     proxyReq(proxyReq, req, res) {
-      if (req.method === 'POST' && req.body) {
+      if (req.method === 'POST' || req.method === 'PUT' && req.body) {
         
         const stringBody = {
           ...req.body,
@@ -24,7 +24,6 @@ const proxyConfig = {
         };
 
         const body = JSON.stringify(stringBody);
-        
         console.log(`Request body: ${body}`);
         proxyReq.setHeader('Content-Type', 'application/json');
         proxyReq.setHeader('Content-Length', Buffer.byteLength(body));
