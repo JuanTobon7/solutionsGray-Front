@@ -1,10 +1,10 @@
 import { createStore } from 'vuex';
 import VuexPersistence from 'vuex-persist';
 
-// Configura vuex-persist para usar sessionStorage
+//Configura vuex-persist para usar sessionStorage
 const vuexSession = new VuexPersistence({
   storage: window.sessionStorage, // Cambia a localStorage si quieres persistencia entre sesiones
-});
+})
 
 
 const store = createStore({
@@ -14,6 +14,8 @@ const store = createStore({
       authInvitation: null,
       selectPerson: null,
       selectGuide: null,
+      worshipService: null,
+      assignedServices: [],
     };
   },
   getters: {
@@ -32,6 +34,12 @@ const store = createStore({
     selectGuide(state) {
       return state.selectGuide;
     },
+    assignedServices(state) {
+      return state.assignedServices;
+    },
+    worshipService(state) {
+      return state.worshipService;
+    }
   },
   mutations: {
     setUser(state, user) {
@@ -39,6 +47,11 @@ const store = createStore({
     },
     flushSession(state) {
       state.user = null;
+      state.authInvitation = null;
+      state.selectPerson = null;
+      state.selectGuide = null;
+      state.worshipService = null;
+      state.assignedServices = [];
     },
     setAuthInvitation(state, isInvitated) {
       state.authInvitation = isInvitated;
@@ -46,9 +59,27 @@ const store = createStore({
     setSelectPerson(state, person) {
       state.selectPerson = person;
     },
+    flushSelectPerson(state) {
+      state.selectPerson = null;
+    },
     setSelectGuide(state, guide) {
       state.selectGuide = guide;
     },
+    flushSelectGuide(state) {
+      state.selectGuide = null;
+    },
+    setAssignedServices(state, services) {
+      state.assignedServices = services;
+    },
+    flushAssignedServices(state) {
+      state.assignedServices = [];
+    },
+    setWorshipService(state, service) {
+      state.worshipService = service;
+    },
+    flushWorshipService(state) {
+      state.worshipService = null;
+    }
   },
   actions: {
     login({ commit }, user) {
@@ -66,6 +97,24 @@ const store = createStore({
     selectGuide({ commit }, guide) {
       commit('setSelectGuide', guide);
     },
+    addAssignedServices({ commit }, services) {
+      commit('setAssignedServices', services);
+    },
+    flushAssignedServices({ commit }) {
+      commit('flushAssignedServices');
+    },
+    flushSelectPerson({ commit }) {
+      commit('flushSelectPerson');
+    },
+    flushSelectGuide({ commit }) {
+      commit('flushSelectGuide');
+    },
+    addWorshipService({ commit }, service) {
+      commit('setWorshipService', service);
+    },
+    flushWorshipService({ commit }) {
+      commit('flushWorshipService');
+    }
   },
   plugins: [vuexSession.plugin],
 });

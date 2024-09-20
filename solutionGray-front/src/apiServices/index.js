@@ -78,6 +78,11 @@ export const createWorshipService = async(data)=>{
   return response.data;
 }
 
+export const getTypesWorship = async()=>{
+  const response = await api.get('/types-worship-services');
+  return response.data;
+}
+
 export const getWorshipServices = async()=>{
   const response = await api.get('/worship-services');
   return response.data;
@@ -91,4 +96,32 @@ export const getPeople = async () => {
 export const registerSheep = async(data)=>{
   const response = await api.post('/register-sheeps',data);
   return response.data;
+}
+//llama los servicios osea los tipos de servicios (ujier, predicador, etc)
+export const getRolesServices = async()=>{
+  const response = await api.get('/services');
+  return response.data;
+}
+
+export const assingService = async(data)=>{
+  const response = await api.post('/assing-services',data);
+  return response.data;
+}
+
+export const getServices = async(eventId)=>{
+  console.log('eventID: ',eventId);
+  const response = await api.get(`/assigned-services/${eventId}`);
+  return response.data;
+}
+
+export const updateAssingServices = async(data)=>{
+  console.log('hehe hehe hehe')
+  const response = await api.put('/update-assign-service',data)
+  return response.data
+}
+
+export const updateWorshipService = async(data)=>{
+  console.log('here in update worship',data)
+  const response = await api.put('/update-worship-services',data)
+  return response.data
 }

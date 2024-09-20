@@ -117,6 +117,8 @@ export default {
         });
         status = response.status;
         this.message = response;
+        this.$store.dispatch('flushSelectPerson');
+        this.$store.dispatch('flushSelectGuide');
       } catch (error) {
         this.message = error.response.data.message || 'Ocurrió un error.';
         console.log('message: ', this.message);

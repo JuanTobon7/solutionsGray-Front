@@ -152,4 +152,7 @@ export default {
 tr:hover {
   @apply bg-white;
 }
+.p-datatable{
+  @apply bg-second-50;
+}
 </style>
