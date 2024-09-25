@@ -55,7 +55,7 @@ export const getServantById = async(id)=>{
 }
 
 export const sendInvitationBoarding = async(data)=>{
-  const response = await api.post('/invitation-boarding',{email:data.email});
+  const response = await api.post('/invitation-boarding',data);
   return {
     ...response.data,
     status: response.status
@@ -75,6 +75,7 @@ export const refreshToken = async()=>{
 
 export const createWorshipService = async(data)=>{
   const response = await api.post('/create-worship-service',data);
+  console.log('response from back: ',response)
   return response.data;
 }
 
@@ -124,4 +125,15 @@ export const updateWorshipService = async(data)=>{
   console.log('here in update worship',data)
   const response = await api.put('/update-worship-services',data)
   return response.data
+}
+
+export const deleteAssingServices = async(serviceId)=>{
+  console.log('hehe hehe hehe delete', serviceId)
+  const response = await api.delete(`/delete-assign-service/${serviceId}`)
+  return response.data
+}
+
+export const getTypesPeople = async()=>{
+  const response = await api.get('/get-types-people');
+  return response.data;
 }

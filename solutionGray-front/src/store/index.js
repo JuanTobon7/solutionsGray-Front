@@ -114,6 +114,9 @@ const store = createStore({
     },
     flushWorshipService({ commit }) {
       commit('flushWorshipService');
+    },
+    updateAssingServices({ commit }, services) {
+      commit('setAssignedServices', services);
     }
   },
   plugins: [vuexSession.plugin],

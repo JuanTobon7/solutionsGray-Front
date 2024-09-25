@@ -94,7 +94,7 @@
 
       <div class="flex justify-end">
         <Button 
-          :label="worshipService ? 'Actualizar Culto' : 'Agendar Culto'" 
+          label="Guardar Configuracion" 
           icon="pi pi-calendar-plus" 
           @click="scheduleWorshipService"
         />
@@ -125,32 +125,46 @@ export default {
   data() {
     return {
       worshipName: this.worshipService ? this.worshipService.sermon_tittle : null,
-      // Parse the date and time from worshipService if available
       date: this.worshipService ? this.parseDate(this.worshipService.date) : null,
       time: this.worshipService ? this.parseTime(this.worshipService.date) : null,
       description: this.worshipService ? this.worshipService.description : null,
       typesWorship: [],
-      selectedTypeWorship:null,
+      selectedTypeWorship: null,
       errorMessage: null,
+      initialState: null,
+      isEdited: false,
     };
   },
   methods: {
     parseDate(datetime) {
       const date = new Date(datetime);
-      return new Date(date.getFullYear(), date.getMonth(), date.getDate()); // Only keep the date part
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
     },
     parseTime(datetime) {
       const date = new Date(datetime);
-      return new Date(0, 0, 0, date.getHours(), date.getMinutes()); // Only keep the time part
+      return new Date(0, 0, 0, date.getHours(), date.getMinutes());
+    },
+    deepClone(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    },
+    saveWorshipServiceToStore() {
+      store.dispatch('addWorshipService', {
+        id: this.worshipService ? this.worshipService.id : null,
+        sermonTittle: this.worshipName,
+        date: this.date,
+        time: this.time,
+        description: this.description,
+        selectedTypeWorship: this.selectedTypeWorship ? this.selectedTypeWorship.id : null,
+        selectedTypeWorshipName: this.selectedTypeWorship ? this.selectedTypeWorship.name : null,
+        edited: this.isEdited,
+      });
     },
     scheduleWorshipService() {
-      // Check for required fields
       if (!this.worshipName || !this.date || !this.time || !this.selectedTypeWorship) {
         this.errorMessage = 'Por favor, complete todos los campos obligatorios.';
         return;
       }
 
-      // Validar que la fecha esté al menos 4 días en el futuro
       const currentDate = new Date();
       const cultoDate = new Date(this.date);
       const differenceInDays = (cultoDate - currentDate) / (1000 * 60 * 60 * 24);
@@ -160,7 +174,6 @@ export default {
         return;
       }
 
-      // Combine the date and time
       const combinedDateTime = new Date(
         this.date.getFullYear(),
         this.date.getMonth(),
@@ -169,27 +182,17 @@ export default {
         this.time.getMinutes()
       );
 
-      // Clear error message
       this.errorMessage = null;
 
-      // Check if editing or creating
-        // Dispatch the action to add a new service
-        store.dispatch('addWorshipService', {
-          id:this.worshipService.id,
-          sermonTittle: this.worshipName,
-          date: combinedDateTime,
-          description: this.description,
-          selectedTypeWorship: this.selectedTypeWorship.id,
-        });
-        
-        this.$toast.add({ severity: 'success', summary: 'Éxito', detail: 'Guardada configuración culto.', life: 3000 });
-    },
-    resetForm() {
-      this.worshipName = null;
-      this.date = null;
-      this.time = null;
-      this.description = null;
-      this.selectedTypeWorship = null;
+      store.dispatch('addWorshipService', {
+        id: this.worshipService ? this.worshipService.id : null,
+        sermonTittle: this.worshipName,
+        date: combinedDateTime,
+        description: this.description,
+        selectedTypeWorship: this.selectedTypeWorship.id,
+        selectedTypeWorshipName: this.selectedTypeWorship.name,
+        edited: this.isEdited,
+      });
     },
     async getTypeWorship() {
       try {
@@ -199,15 +202,40 @@ export default {
         console.log(error.response?.data || error.message);
       }
     },
+    checkIfEdited() {
+      const currentState = {
+        worshipName: this.worshipName,
+        date: this.date,
+        time: this.time,
+        selectedTypeWorship: this.selectedTypeWorship,
+        description: this.description,
+      };
+
+      this.isEdited = JSON.stringify(this.initialState) !== JSON.stringify(currentState);
+    },
+  },
+  watch: {
+    worshipName: 'checkIfEdited',
+    date: 'checkIfEdited',
+    time: 'checkIfEdited',
+    selectedTypeWorship: 'checkIfEdited',
+    description: 'checkIfEdited',
   },
   async mounted() {
     await this.getTypeWorship();
-    if (this.worshipService) {      
-      console.log(this.typesWorship)
-      this.selectedTypeWorship = this.typesWorship.find(type => type.id === this.worshipService.worship_service_type_id);
-      console.log(this.selectedTypeWorship)
 
-    }    
+    if (this.worshipService) {
+      this.selectedTypeWorship = this.typesWorship.find(type => type.id === this.worshipService.worship_service_type_id);
+      this.saveWorshipServiceToStore();  // Guarda el culto en Vuex inmediatamente
+    }
+
+    this.initialState = this.deepClone({
+      worshipName: this.worshipName,
+      date: this.date,
+      time: this.time,
+      selectedTypeWorship: this.selectedTypeWorship,
+      description: this.description,
+    });
   },
 };
 </script>

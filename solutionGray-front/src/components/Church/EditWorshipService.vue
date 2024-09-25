@@ -6,7 +6,7 @@
               <span @click="close" class="material-symbols-outlined text-2xl cursor-pointer text-gray-600 hover:text-gray-800 transition duration-200">close</span>
           </div>
           <div class="flex-grow flex flex-col">
-              <Stepper class="flex-grow">
+              <Stepper>
                   <StepperPanel header="Agendar Culto">
                       <template #content="{ nextCallback }">
                           <div class="flex-grow mb-8">
@@ -96,11 +96,11 @@ export default {
                     } ,
                     service: {
                         id: service.rol_id,
+                        service_id: service.service_id,
                         name: service.rol_servant,
                     }
                 }
             })
-            console.log('EPA assigned services',service)
             store.dispatch('addAssignedServices', service)
         }catch(e){
             console.log(e)
@@ -108,7 +108,6 @@ export default {
     }
   },
   mounted() {
-    console.log('EPA worshipService',this.worshipService)
     this.getAssignedServices()
   }
 }

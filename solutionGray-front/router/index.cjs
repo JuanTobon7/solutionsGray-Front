@@ -15,8 +15,11 @@ const proxyConfig = {
       })
     },
     proxyReq(proxyReq, req, res) {
-      if (req.method === 'POST' || req.method === 'PUT' && req.body) {
+      if (req.method === 'POST' || req.method === 'PUT' || req.method === 'DELETE' && req.body) {
         
+        console.log(`Request body: ${JSON.stringify(req.body)}`);
+        console.log(`Request headers: ${JSON.stringify(req.headers)}`);
+
         const stringBody = {
           ...req.body,
           client_secret: process.env.SSR_CLIENT,
@@ -24,7 +27,6 @@ const proxyConfig = {
         };
 
         const body = JSON.stringify(stringBody);
-        console.log(`Request body: ${body}`);
         proxyReq.setHeader('Content-Type', 'application/json');
         proxyReq.setHeader('Content-Length', Buffer.byteLength(body));
         proxyReq.write(body);

@@ -93,7 +93,10 @@
 
     <!-- Historial de Cultos -->
     <div v-else class="p-2 shadow-md bg-second-50 shadow-second-600 rounded-md h-auto">
-      <DataTable :value="cultos" class="w-full border-collapse" tableStyle="min-width: 80rem; max-height: 80rem;">
+      <DataTable 
+          :value="cultos" 
+          class="w-full border-collapse" tableStyle="min-width: 80rem; max-height: 80rem;"
+        >
         <Column field="name" header="Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
         <Column field="typeService" header="Tipo de Culto" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
         <Column field="date" header="Fecha" class="p-4 text-center border-b border-primary-200 text-second-800">
