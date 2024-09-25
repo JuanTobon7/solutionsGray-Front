@@ -6,3 +6,6 @@ i {
     unicode-bidi: isolate;
   }
   
+.personal-animated {
+  @apply animate-fade-down animate-once animate-duration-150 animate-ease-linear
+}

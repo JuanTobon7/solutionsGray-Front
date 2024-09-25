@@ -18,7 +18,7 @@
         <h2 class="text-3xl font-bold text-gray-800 mb-4">{{ worshipService.worship_name }}</h2>
 
         <div class="mb-4 text-lg">
-          <strong class="text-gray-700">Título del sermón:</strong> {{ worshipService.sermon_tittle }}
+          <strong class="text-gray-700">Título del sermón:</strong> {{ worshipService.sermon_title }}
         </div>
 
         <div class="mb-4 text-lg">
@@ -36,44 +36,40 @@
         <!-- Espacio para el carrusel -->
         <div>
           <h3 class="text-2xl font-bold text-gray-700 mb-4">Personas con servicio asignado:</h3>
-            <!-- Aquí irá el carrusel de las personas con servicio -->
-            <div>
-        <Carousel 
-          v-if="servicesAssigned.length" 
-          :value="servicesAssigned" 
-          :numVisible="numVisible"
-          :containerClass="'flex justify-center items-center w-full bg-gray-100 p-2 rounded-md'"
-          :showNavigators="servicesAssigned.length > numVisible"
-        >
-          <template #item="slotProps">
-            <div class="p-4 bg-white shadow-lg rounded-lg flex flex-col items-center justify-center mr-4 max-w-[50vh]">
-              <div class="w-20 h-20 rounded-full overflow-hidden mb-2">
-                <Avatar
-                  v-if="slotProps.data.avatar"
-                  :image="slotProps.data.avatar"
-                  size="xlarge"
-                  shape="circle"
-                />
-                <Avatar
-                  v-else
-                  :label="getInitials(slotProps.data)"
-                  class="bg-primary-100 flex items-center justify-center text-primary-800"
-                  size="xlarge"
-                  shape="circle"
-                />
-              </div>
-              <p class="text-lg font-semibold text-center">{{ slotProps.data.first_name + ' ' + slotProps.data.last_name }}</p>
-              <p class="text-sm text-center text-gray-600">{{ slotProps.data.rol_servant }}</p>
-              <button @click="removeAssignment(slotProps.index)" class="material-symbols-outlined text-red-500 cursor-pointer mt-4">
-                delete
-              </button>
-            </div>
-          </template>
-        </Carousel>
-        <p v-else class="text-gray-600">No hay servicios asignados todavía.</p>
-      </div>
+          <!-- Aquí irá el carrusel de las personas con servicio -->
+          <div>
+            <Carousel 
+              v-if="servicesAssigned.length" 
+              :value="servicesAssigned" 
+              :numVisible="numVisible"
+              :containerClass="'flex justify-center items-center w-full bg-gray-100 p-2 rounded-md'"
+              :showNavigators="servicesAssigned.length > numVisible"
+            >
+              <template #item="slotProps">
+                <div class="p-4 bg-white shadow-lg rounded-lg flex flex-col items-center justify-center mr-4 max-w-[50vh]">
+                  <div class="w-20 h-20 rounded-full overflow-hidden mb-2">
+                    <Avatar
+                      v-if="slotProps.data.person.avatar"
+                      :image="slotProps.data.person.avatar"
+                      size="xlarge"
+                      shape="circle"
+                    />
+                    <Avatar
+                      v-else
+                      :label="getInitials(slotProps.data.person)"
+                      class="bg-primary-100 flex items-center justify-center text-primary-800"
+                      size="xlarge"
+                      shape="circle"
+                    />
+                  </div>
+                  <p class="text-lg font-semibold text-center">{{ slotProps.data.person.first_name + ' ' + slotProps.data.person.last_name }}</p>
+                  <p class="text-sm text-center text-gray-600">{{ slotProps.data.service.name }}</p>      
+                </div>
+              </template>
+            </Carousel>
+            <p v-else class="text-gray-600">No hay servicios asignados todavía.</p>
+          </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -90,28 +86,44 @@ export default {
     Carousel,
     Avatar
   },
-  data(){
+  data() {
     return {
-      servicesAssigned: []
+      servicesAssigned: [],
+      numVisible: 3 // Número de elementos visibles en el carrusel, ajustable según el diseño
     }
   },
-  methods:{
-    async getServicesAssigned(){
-      try{ 
-        console.log(this.worshipService.id);       
+  methods: {
+    async getServicesAssigned() {
+      try {
         const response = await getServices(this.worshipService.id);
-        this.servicesAssigned = response;      
-      }catch(error){
-        this.message = error.response.data.message;
+        const service = response.map((service) => ({
+          person: {
+            id: service.id,
+            first_name: service.first_name,                        
+            last_name: service.last_name,
+            avatar: service.avatar, // Assuming you have an avatar field
+            email: service.email,
+            phone: service.phone,
+            type_person_id: service.type_person_id,
+            state_id: service.state_id,
+            church_id: service.church_id,
+          },
+          service: {
+            id: service.rol_id,
+            name: service.rol_servant,
+          }
+        }));
+        this.servicesAssigned = service;
+      } catch (e) {
+        console.log(e);
       }
     },
     getInitials(person) {
       if (!person) return '';
       return person.first_name.charAt(0) + person.last_name.charAt(0);
-    },
+    },    
   },
   computed: {
-    // Formatear la fecha para mostrarla correctamente
     formattedDate() {
       const date = new Date(this.worshipService.date);
       return date.toLocaleDateString('es-ES', {
@@ -123,12 +135,11 @@ export default {
         minute: 'numeric'
       });
     },
-    // Esto es solo un ejemplo, puedes cambiarlo según lo que realmente necesites
     placeName() {
       return this.worshipService.church_id ? 'Nombre de la iglesia' : 'Lugar no especificado';
     }
   },
-  mounted(){
+  mounted() {
     this.getServicesAssigned();
   }
 }

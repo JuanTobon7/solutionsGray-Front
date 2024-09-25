@@ -1,11 +1,11 @@
 <template>
-  <div class="w-full space-y-6">
+  <div class="w-full">
     <div v-if="selectedPerson && selectedGuide" class="grid md:grid-cols-2 gap-6">
       <!-- Card for selected person -->
       <div class="bg-primary-50 shadow-lg rounded-lg overflow-hidden">
-        <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-28"></div>
-        <div class="p-6 -mt-14 relative z-10">
-          <div class="bg-white p-4 rounded-lg shadow-lg relative z-10">
+        <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-20"></div>
+        <div class="px-6 -mt-14 relative z-10">
+          <div class="bg-white px-4 rounded-lg shadow-lg relative z-10">
             <div class="flex items-center space-x-4">
               <div class="w-16 h-16 rounded-full overflow-hidden">
                 <Avatar
@@ -37,7 +37,7 @@
 
       <!-- Card for selected guide -->
       <div class="bg-second-50 shadow-lg rounded-lg overflow-hidden">
-        <div class="bg-gradient-to-r from-green-500 to-green-800 h-28"></div>
+        <div class="bg-gradient-to-r from-green-500 to-green-800 h-26"></div>
         <div class="p-6 -mt-14 relative z-10">
           <div class="bg-white p-4 rounded-lg shadow-lg relative z-10">
             <div class="flex items-center space-x-4">
@@ -78,7 +78,7 @@
       </p>
     </div>
 
-    <div v-if="selectedPerson && selectedGuide" class="flex items-center justify-center w-full mt-4">
+    <div v-if="selectedPerson && selectedGuide" class="flex items-center justify-center w-full">
       <button @click="createSheep" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg shadow-md transition duration-300 flex items-center gap-2">
         Registrar
         <span class="material-symbols-outlined">check</span>
@@ -108,7 +108,6 @@ export default {
       return firstName.charAt(0) + lastName.charAt(0);
     },
     async createSheep() {
-      console.log('here');
       let status;
       try {
         const response = await registerSheep({
@@ -121,7 +120,6 @@ export default {
         this.$store.dispatch('flushSelectGuide');
       } catch (error) {
         this.message = error.response.data.message || 'Ocurrió un error.';
-        console.log('message: ', this.message);
         status = error.response.status;
       } finally {
         this.showResponse(status);

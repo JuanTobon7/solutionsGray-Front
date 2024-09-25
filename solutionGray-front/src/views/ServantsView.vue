@@ -64,7 +64,10 @@
           </DataTable>
         </div>
       </div>
-      <AddServantCard v-if="newServantsVisible" @close="closeAddServantCard" />
+      <AddServantCard 
+        v-if="newServantsVisible" 
+        @close="closeAddServantCard" 
+      />
     </section>
   </template>
   
