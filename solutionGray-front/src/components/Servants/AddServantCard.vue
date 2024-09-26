@@ -1,12 +1,12 @@
 <template>
   <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 min-h-screen mx-auto">
-    <div class="bg-white p-8 rounded-lg shadow-lg max-w-full personal-animated relative">      
+    <div class="bg-white px-10 pt-2  pb-3 rounded-lg shadow-lg max-w-full personal-animated">      
       <button @click="$emit('close')" class="absolute top-4 right-4 text-gray-700 hover:text-gray-800 material-symbols-outlined text-3xl">
         close
       </button>
-      <div class="text-center">        
-        <img src="../../assets/shepPNG-removebg-preview.png" alt="Logo" class="w-28 mx-auto" shape="circle">
-        <h2 class="text-4xl font-bold text-second-800">
+      <div class="text-center mb-2">        
+        <img src="../../assets/shepPNG-removebg-preview.png" alt="Logo" class="w-32 mx-auto" shape="circle">
+        <h2 class="text-3xl font-bold text-second-800">
           Invitar a un nuevo voluntario
         </h2>
       </div>
@@ -22,7 +22,7 @@
       </div>
       
       <!-- Formulario para invitar nuevo voluntario -->
-      <div v-if="optionSelected === 'new'" class="px-8 pt-8 pb-2">
+      <div v-if="optionSelected === 'new'" class="p-1">
         <SheduleNewPerson @personCreated="handlePersonCreated" @close="resetSelection" />
         <div v-if="isLoading" class="flex justify-center mt-4">
           <span>Cargando...</span>
@@ -87,7 +87,7 @@
       </Dialog>
 
       <!-- Botón de Volver -->
-      <div v-if ="optionSelected" class="flex justify-end mt-6">
+      <div v-if ="optionSelected" class="flex justify-end mt-4">
         <button @click="resetSelection" class="flex items-center justify-center px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
           <i class="material-symbols-outlined mr-2">arrow_back</i>
           Volver

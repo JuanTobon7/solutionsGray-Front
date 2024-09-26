@@ -135,5 +135,15 @@ export const deleteAssingServices = async(serviceId)=>{
 
 export const getTypesPeople = async()=>{
   const response = await api.get('/get-types-people');
+  return response.data;  
+}
+
+export const getCountries = async()=>{
+  const response = await api.get('/get-countries');
+  return response.data;
+}
+
+export const getStatesByCountry = async(idCountry)=>{
+  const response = await api.get(`/get-states-by-country/${idCountry}`);
   return response.data;
 }
