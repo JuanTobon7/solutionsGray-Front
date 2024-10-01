@@ -1,11 +1,11 @@
 <template>
   <div class="w-full">
-    <div v-if="selectedPerson && selectedGuide" class="grid md:grid-cols-2 gap-6">
+    <div v-if="selectedPerson && selectedGuide" class="grid md:grid-cols-2 gap-8 mb-10">
       <!-- Card for selected person -->
       <div class="bg-primary-50 shadow-lg rounded-lg overflow-hidden">
         <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-20"></div>
-        <div class="px-6 -mt-14 relative z-10">
-          <div class="bg-white px-4 rounded-lg shadow-lg relative z-10">
+        <div class="p-6 -mt-14 relative z-10">
+          <div class="bg-white p-4 rounded-lg shadow-lg relative z-10">
             <div class="flex items-center space-x-4">
               <div class="w-16 h-16 rounded-full overflow-hidden">
                 <Avatar
@@ -37,7 +37,7 @@
 
       <!-- Card for selected guide -->
       <div class="bg-second-50 shadow-lg rounded-lg overflow-hidden">
-        <div class="bg-gradient-to-r from-green-500 to-green-800 h-26"></div>
+        <div class="bg-gradient-to-r from-green-500 to-green-800 h-20"></div>
         <div class="p-6 -mt-14 relative z-10">
           <div class="bg-white p-4 rounded-lg shadow-lg relative z-10">
             <div class="flex items-center space-x-4">
@@ -72,10 +72,18 @@
       </div>
     </div>
 
-    <div v-else>
-      <p class="text-center text-gray-500">
-        Por favor, selecciona una persona y un guía espiritual.
-      </p>
+    <!-- Input field for description -->
+    <div class="mb-4">
+      <label for="description" class="block text-gray-700 text-sm font-bold mb-2">
+        Descripción de la necesidad o petición:
+      </label>
+      <textarea 
+        id="description" 
+        v-model="description" 
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+        rows="3"
+        placeholder="Escribe aquí la necesidad o petición..."
+      ></textarea>
     </div>
 
     <div v-if="selectedPerson && selectedGuide" class="flex items-center justify-center w-full">
@@ -86,6 +94,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import { mapGetters } from 'vuex';
@@ -101,6 +110,7 @@ export default {
     return {
       selectedPerson: null,
       selectedGuide: null,
+      description: '',  // Added data property for description
     };
   },
   methods: {
@@ -113,11 +123,13 @@ export default {
         const response = await registerSheep({
           personId: this.selectedPerson.id,
           guideId: this.selectedGuide.id,
+          description: this.description, // Include the description in the API call
         });
         status = response.status;
         this.message = response;
         this.$store.dispatch('flushSelectPerson');
         this.$store.dispatch('flushSelectGuide');
+        this.$emit('close');
       } catch (error) {
         this.message = error.response.data.message || 'Ocurrió un error.';
         status = error.response.status;

@@ -4,6 +4,10 @@ import VuexPersistence from 'vuex-persist';
 //Configura vuex-persist para usar sessionStorage
 const vuexSession = new VuexPersistence({
   storage: window.sessionStorage, // Cambia a localStorage si quieres persistencia entre sesiones
+  reducer: (state) => {
+    const { tempEmail, ...persistedState } = state;  // Excluir tempEmail
+    return persistedState;
+  }
 })
 
 
@@ -16,6 +20,7 @@ const store = createStore({
       selectGuide: null,
       worshipService: null,
       assignedServices: [],
+      tempEmail: null,  // Estado temporal para el email de los invitados
     };
   },
   getters: {
@@ -39,6 +44,9 @@ const store = createStore({
     },
     worshipService(state) {
       return state.worshipService;
+    },
+    tempEmail(state) {
+      return state.tempEmail;  // Agrega un getter para acceder al estado temporal
     }
   },
   mutations: {
@@ -52,6 +60,7 @@ const store = createStore({
       state.selectGuide = null;
       state.worshipService = null;
       state.assignedServices = [];
+      state.tempEmail = null;  // Limpiar el estado temporal al cerrar la sesión
     },
     setAuthInvitation(state, isInvitated) {
       state.authInvitation = isInvitated;
@@ -79,6 +88,12 @@ const store = createStore({
     },
     flushWorshipService(state) {
       state.worshipService = null;
+    },
+    setTempEmail(state, email) {
+      state.tempEmail = email;  // Mutación para establecer el email temporal
+    },
+    flushTempEmail(state) {
+      state.tempEmail = null;  // Mutación para limpiar el email temporal
     }
   },
   actions: {
@@ -117,9 +132,15 @@ const store = createStore({
     },
     updateAssingServices({ commit }, services) {
       commit('setAssignedServices', services);
+    },
+    setTempEmail({ commit }, email) {
+      commit('setTempEmail', email);  // Acción para establecer el email temporal
+    },
+    flushTempEmail({ commit }) {
+      commit('flushTempEmail');  // Acción para limpiar el email temporal
     }
   },
-  plugins: [vuexSession.plugin],
+  plugins: [vuexSession.plugin],  // Este plugin no afecta a `tempEmail`
 });
 
 export default store;

@@ -144,6 +144,16 @@ export const getCountries = async()=>{
 }
 
 export const getStatesByCountry = async(idCountry)=>{
-  const response = await api.get(`/get-states-by-country/${idCountry}`);
+  const response = await api.get(`/get-states/${idCountry}`);
+  return response.data;
+}
+
+export const savePeople = async(data)=>{
+  const response = await api.post('/save-people',data);
+  return response.data;
+}
+
+export const createUsers = async(data)=>{
+  const response = await api.post('/create-users',data);
   return response.data;
 }

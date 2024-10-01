@@ -3,10 +3,10 @@
         <div class="bg-white p-8 rounded-lg shadow-lg min-w-[70%] flex flex-col">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-semibold text-gray-800">Formulario de Registro</h2>
-                <span @click="$emit('close')" class="material-symbols-outlined text-2xl cursor-pointer text-gray-600 hover:text-gray-800 transition duration-200">close</span>
+                <span @click="closeForm" class="material-symbols-outlined text-2xl cursor-pointer text-gray-600 hover:text-gray-800 transition duration-200">close</span>
             </div>
             <div class="flex-grow flex flex-col">
-                <Stepper class="flex-grow">
+                <Stepper v-model:activeIndex="currentStep" class="flex-grow">
                     <StepperPanel header="Persona">
                         <template #content="{ nextCallback }">
                             <div class="flex-grow mb-8">
@@ -31,7 +31,9 @@
                     <StepperPanel header="Confirmación">
                         <template #content="{ prevCallback }">
                             <div class="flex-grow flex flex-col">
-                                <ConnfirmationSheep/>
+                                <ConnfirmationSheep
+                                    @close="closeForm"
+                                />
                             </div>
                             <div class="flex justify-start mt-6">
                                 <Button label="Atrás" icon="pi pi-arrow-left" class="p-button-secondary" @click="prevCallback" />
@@ -53,6 +55,11 @@ import SelectServant from '../subComponents/SelectServant.vue';
 import ConnfirmationSheep from '../subComponents/ConnfirmationSheep.vue';
 
 export default {
+    data() {
+        return {
+            currentStep: 0, // Step index starts from 0
+        };
+    },
     components: {
         Stepper,
         StepperPanel,
@@ -60,6 +67,12 @@ export default {
         SelectPerson,
         SelectServant,
         ConnfirmationSheep
+    },
+    methods: {
+        closeForm() {
+            this.currentStep = 0; // Reset to the first step
+            this.$emit('close'); // Emit the close event to parent
+        }
     }
 }
 </script>

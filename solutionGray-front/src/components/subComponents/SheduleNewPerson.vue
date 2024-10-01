@@ -1,6 +1,6 @@
 <template>
-  <form @submit.prevent="handleSubmit">
-    <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4">
+  <form @submit.prevent="createPerson">
+    <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4 lg:min-w-[80vh]">
       <!-- Columna 1: Campos de texto -->
       <div>
         <!-- Campo Cédula -->
@@ -37,7 +37,7 @@
       <!-- Columna 2: Dropdowns -->
       <div>
         <!-- Dropdown País -->
-        <div>
+        <div class="flex flex-col">
           <label class="block text-sm font-medium text-gray-700 mb-1">País</label>
           <Dropdown
             id="countries"
@@ -47,13 +47,13 @@
             optionValue="id"
             placeholder="Seleccione un país"
             required
-            class="w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="w-full min-w-[200px] max-w-[400px] shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             @change="onCountryChange"
           />
         </div>
 
         <!-- Dropdown Estado/Provincia -->
-        <div>
+        <div class="flex flex-col">
           <label class="block text-sm font-medium text-gray-700 mb-1">Estado/Provincia</label>
           <Dropdown
             id="states"
@@ -63,13 +63,13 @@
             optionValue="id"
             placeholder="Seleccione un estado/provincia"
             required
-            class="w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="w-full min-w-[200px] max-w-[400px] shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             :disabled="!states.length"
           />
         </div>
 
         <!-- Dropdown Tipo de Persona -->
-        <div>
+        <div class="flex flex-col">
           <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de persona</label>
           <Dropdown
             id="types_people"
@@ -79,7 +79,7 @@
             optionValue="id"
             placeholder="Seleccione un tipo de persona"
             required
-            class="w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            class="w-full min-w-[200px] max-w-[400px] shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
       </div>
@@ -96,68 +96,79 @@
     </div>
   </form>
 </template>
-  
-  <script>
-  import Dropdown from 'primevue/dropdown';
-  import { getTypesPeople, getCountries, getStatesByCountry } from '@/apiServices';
-  
-  export default {
-    components: {
-      Dropdown,
-    },
-    data() {
-      return {
-        newPerson: {
-          cc: '',
-          first_name: '',
-          last_name: '',
-          email: '',
-          phone: '',
-          country_id: '',
-          state_id: '',
-          type_person_id: '',
-          church_id: ''
-        },
-        countries: [], // Lista de países
-        states: [], // Lista de estados filtrados según el país seleccionado
-        typesPeople: []
-      };
-    },
-    methods: {
-      async getTypesPeople() {
-        try {
-          const response = await getTypesPeople();
-          this.typesPeople = response;
-        } catch (error) {
-          console.error(error);
-        }
+
+<script>
+import Dropdown from 'primevue/dropdown';
+import { getTypesPeople, getCountries, getStatesByCountry, savePeople } from '@/apiServices';
+
+export default {
+  components: {
+    Dropdown,
+  },
+  data() {
+    return {
+      newPerson: {
+        cc: null,
+        first_name: null,
+        last_name: null,
+        email: null,
+        phone: null,
+        country_id: '',
+        state_id: '',
+        type_person_id: '',
       },
-      async loadCountries() {
-        try {
-          const response = await getCountries(); // Obtener países desde la BD
-          this.countries = response;
-        } catch (error) {
-          console.error('Error al cargar los países:', error);
-        }
-      },
-      async onCountryChange() {
-        const countryId = this.newPerson.country_id;
-        try {
-          const response = await getStatesByCountry(countryId); // Obtener estados según el país seleccionado
-          this.states = response;
-        } catch (error) {
-          console.error('Error al cargar los estados:', error);
-        }
-      },
-      handleSubmit() {
-        // Emitir evento de persona creada con los datos
-        this.$emit('personCreated', this.newPerson);
+      countries: [], // Lista de países
+      states: [], // Lista de estados filtrados según el país seleccionado
+      typesPeople: []
+    };
+  },
+  methods: {
+    async getTypesPeople() {
+      try {
+        const response = await getTypesPeople();
+        this.typesPeople = response;
+      } catch (error) {
+        console.error(error);
       }
     },
-    mounted() {
-      this.getTypesPeople();
-      this.loadCountries(); // Cargar la lista de países al montar el componente
+    async loadCountries() {
+      try {
+        const response = await getCountries(); // Obtener países desde la BD
+        this.countries = response;
+      } catch (error) {
+        console.error('Error al cargar los países:', error);
+      }
+    },
+    async onCountryChange() {
+      const countryId = this.newPerson.country_id;
+      try {
+        const response = await getStatesByCountry(countryId); // Obtener estados según el país seleccionado
+        this.states = response;
+      } catch (error) {
+        console.error('Error al cargar los estados:', error);
+      }
+    },
+    async createPerson() {
+      // Emitir evento de persona creada con los datos
+      try {          
+        if (!this.newPerson.country_id || !this.newPerson.state_id || !this.newPerson.type_person_id || !this.newPerson.cc || !this.newPerson.first_name || !this.newPerson.last_name || !this.newPerson.email || !this.newPerson.phone) {
+          alert('Por favor, complete todos los campos');
+          return;
+        }
+        const response = await savePeople(this.newPerson);
+        this.$toast.add({ severity: 'success', summary: 'Persona creada', detail: 'La persona ha sido exitosamente guardada', life: 3000 });
+        this.$emit('personCreated', response);        
+      } catch (error) {
+        console.error(error);
+        if (error.response && error.response.status === 400) {
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: error.response.data.message, life: 3000 });
+        }
+      }
     }
-  };
-  </script>
-  
+  },
+  mounted() {
+    this.getTypesPeople();
+    this.loadCountries(); // Cargar la lista de países al montar el componente
+  }
+};
+</script>

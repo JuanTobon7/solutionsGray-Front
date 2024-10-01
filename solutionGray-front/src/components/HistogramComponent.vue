@@ -1,6 +1,6 @@
 <template>
-  <div class="flex justify-center items-center w-full max-h-96">
-    <canvas id="histogram-chart" class="w-full max-w-3xl max-h-96"></canvas>
+  <div class="w-full">
+    <canvas id="histogram-chart"></canvas>
   </div>
 </template>
 
@@ -15,7 +15,7 @@ export default {
 
     onMounted(() => {
       const ctx = document.getElementById('histogram-chart').getContext('2d');
-      new Chart(ctx, {
+      const chart = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo'],
@@ -36,24 +36,26 @@ export default {
               borderWidth: 2,
               pointBackgroundColor: 'rgba(255, 99, 132, 1)',
               pointBorderColor: 'rgba(255, 99, 132, 1)',
-              pointRadius: 5
+              pointRadius: 4
             }
           ]
         },
         options: {
-          
+          responsive: true, // Makes the chart responsive
+          maintainAspectRatio: false, // Allow the chart to resize with the container
           scales: {
-            y: {            
+            y: {
+              beginAtZero: true,
               ticks: {
                 font: {
-                  size: 16
+                  size: window.innerWidth < 640 ? 10 : 15 // Adjust font size for smaller screens
                 }
               }
             },
             x: {
               ticks: {
                 font: {
-                  size: 16
+                  size: window.innerWidth < 640 ? 10 : 11 // Adjust font size for smaller screens
                 }
               }
             }
@@ -61,20 +63,35 @@ export default {
           plugins: {
             title: {
               display: true,
-                text: 'Asistencia',
-                font: {
-                  size: 24
-                }
+              text: 'Asistencia',
+              font: {
+                size: window.innerWidth < 640 ? 14 : 18 // Adjust title font size based on screen size
+              }
             },
             legend: {
               labels: {
                 font: {
-                  size: 18
+                  size: window.innerWidth < 640 ? 12 : 18 // Smaller font size for legend on small screens
                 }
               }
             }
+          },
+          layout: {
+            padding: {
+              top: 10,
+              bottom: 10,
+            }
           }
         }
+      });
+
+      // Update chart size when window is resized
+      window.addEventListener('resize', () => {
+        chart.options.scales.x.ticks.font.size = window.innerWidth < 640 ? 10 : 12;
+        chart.options.scales.y.ticks.font.size = window.innerWidth < 640 ? 10 : 12;
+        chart.options.plugins.title.font.size = window.innerWidth < 640 ? 14 : 18;
+        chart.options.plugins.legend.labels.font.size = window.innerWidth < 640 ? 10 : 12;
+        chart.update();
       });
     });
 
@@ -86,10 +103,9 @@ export default {
 </script>
 
 <style scoped>
-/* Asegúrate de que el contenedor principal tenga un ancho completo y ajuste el contenido */
-.container {
+/* Ensure the canvas takes full width of the container */
+#histogram-chart {
   width: 100%;
-  max-width: 1200px; /* O el valor que necesites */
-  margin: 0 auto;
+  height: 400px; /* Set a base height; can be adjusted as needed */
 }
 </style>
