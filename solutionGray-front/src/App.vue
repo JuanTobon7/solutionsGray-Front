@@ -22,7 +22,7 @@
     <main 
       :class="[
         'transition-all duration-300',
-        showNavBar && showMenuUser ? 'ml-[12%] py-[25%] lg:py-[5%]' : 'ml-0 py-[25%] lg:py-[5%]'
+        showNavBar && showMenuUser ? 'ml-[10%] py-[30%] sm:py-[8%] lg:py-[5%]' : 'py-[30%] sm:py-[10%] lg:py-[5%]'
       ]"
     >
       <RouterView/>    

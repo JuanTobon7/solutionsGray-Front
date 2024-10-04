@@ -48,14 +48,7 @@
             <!-- Imagen de fondo -->
             <template #header>
               <div class="relative w-full h-36 sm:h-48 bg-cover bg-center bg-image">
-                <div class="absolute top-0 right-0 p-2">
-                  <!-- Botón de editar estilizado -->
-                  <button
-                    @click="showEdit(items)"
-                    class="bg-white text-primary-600 border border-primary-500 py-1 px-2 rounded-full shadow-md hover:bg-primary-50 transition-transform duration-200 hover:scale-110 focus:outline-none focus:ring-1 focus:ring-primary-300">
-                    <i class="material-symbols-outlined text-2xl">edit</i>
-                  </button>
-                </div>
+                
               </div>
             </template>
           
@@ -85,11 +78,7 @@
             </template>
           
             <!-- Footer -->
-            <template #footer>
-              <div class="bg-second-700 py-2 flex w-full rounded-lg">
-                <button @click="showInfo(items)" class="w-full text-second-100 font-bold cursor-pointer text-sm sm:text-base">Ver información</button>
-              </div>
-            </template>
+            
           </Card>
         </div>
       </div>
@@ -105,18 +94,23 @@
       <div v-else class="p-2 shadow-md bg-second-50 shadow-second-600 rounded-md h-auto overflow-x-auto">
         <DataTable 
           :value="cultos" 
+          v-model:selection="selectedService"
+          @rowSelect="showInfoEvent"
+          paginator 
+          :rows="10" 
+          selectionMode="single"
           class="w-full border-collapse" tableStyle="min-width: 40rem; max-height: 80rem;"
         >
-          <Column field="name" header="Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
-          <Column field="typeService" header="Tipo de Culto" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
-          <Column field="date" header="Fecha" class="p-4 text-center border-b border-primary-200 text-second-800">
+          <Column field="sermon_tittle" header="Titulo del Sermon" class="border-b border-primary-200 text-second-800"></Column>
+          <Column field="worship_name" header="Tipo de Culto" class="  border-b border-primary-200 text-second-800"></Column>
+          <Column field="date" header="Fecha" class="border-b border-primary-200 text-second-800">
             <template #body="slotProps">
               <Tag :value="slotProps.data.date">
                 {{ formatDate(slotProps.data.date) || 'No definido' }}
               </Tag>
             </template>
           </Column>
-          <Column field="description" header="Descripción" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
+          <Column field="description" header="Descripción" class="border-b border-primary-200 text-second-800"></Column>
         </DataTable>
       </div>
 
@@ -172,6 +166,10 @@ export default {
     addWorshipService() {
       this.showAddWorshipService = true;
     },
+    showInfoEvent(event) {
+      this.selectedService = event.data;
+      this.showInfoService = true;
+    },
     toggleHistory() {
       this.showHistoryService = !this.showHistoryService;
       this.historyButtonText = this.showHistoryService ? 'Mostrar Cultos del Mes' : 'Ver Historial de Cultos';
@@ -205,8 +203,8 @@ export default {
       }
     },
   },
-  mounted() {
-    this.worshipServices();
+  async mounted() {
+    await this.worshipServices();
   },
 };
 </script>

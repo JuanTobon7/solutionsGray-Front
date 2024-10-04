@@ -158,17 +158,40 @@ export default {
     async getPeopleNew() {
       try {
         const response = await getPeople();
-        this.people = response;
+        // Filtra las personas con `type_person_id` igual a 4 o 5
+        console.log(response);
+        const people = response.filter((person) => person.type_person_id == 5 || person.type_person_id == 4);
+        console.log(people);
+        this.people = people;
       } catch (error) {
-        this.setMessage('Error al cargar los datos', 'Error');
+        if(error.response.status === 401 && error.response.message === 'Token has expired') {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Tu sesión ha expirado, por favor inicia sesión nuevamente',
+            life: 4000,
+            closable: true,
+          });
+          this.$emit('close');
+        } else {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.response.data.message,
+            life: 4000,
+            closable: true,
+          });
+        }
+        console.error(error); // Añade esto para ver el error detallado
       }
     },
+
     selectOption(option) {
       this.optionSelected = option;
       if (option === 'registered') {
         this.getPeopleNew();
       }
-    },
+    },    
     resetSelection() {
       this.optionSelected = null;
       this.selectedPerson = null;

@@ -40,20 +40,26 @@
           <p><strong>Ofrenda Especial para:</strong> <span class="font-semibold">Misión</span></p>
         </div>
 
-        <div class="flex items-center justify-center">
-          <button @click="$emit('close')" class="bg-second-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
-            Volver
-            <i class="material-symbols-outlined text-primary-50">arrow_back</i>
+         <!-- Botón para editar culto y servicios -->
+         <div class="flex items-center justify-center mb-4 gap-4">
+           <button @click="$emit('close')" class="bg-second-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
+             Volver
+             <i class="material-symbols-outlined text-primary-50">arrow_back</i>
+           </button>
+          <button @click="editServiceAndWorship" class="bg-second-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
+            Editar Culto y Servicios
+            <i class="material-symbols-outlined">edit</i>
           </button>
+
         </div>
       </div>
     </div>
 
     <!-- Carrusel de Privilegios asignados -->
-    <div class="flex flex-col w-full mt-8 h-auto overflow-x-auto mb-4">
+    <div class="flex flex-col w-full h-auto mb-4">
       <div class="flex items-center gap-2 mb-1">        
         <i class="material-symbols-outlined text-second-800">event</i>
-        <h3 class="text-xl font-semibold text-second-800">Privilegios Asignados</h3>
+        <h3 class="text-2xl text-second-800 font-semibold">Privilegios Asignados</h3>
       </div>
       <Carousel 
         v-if="servicesAssigned.length" 
@@ -85,11 +91,14 @@
       >
         <template #item="slotProps">
           <!-- Tarjeta de la persona asignada -->
-           <div class="py-8 px-1 w-[30vh] md:w-full">            
+           <div 
+           class="py-8 px-1 w-[30vh] md:w-full"
+           :class="{'md:w-1/4': servicesAssigned.length === 1}"
+           >
             <div class="bg-second-50 shadow-lg shadow-primary-300 rounded-lg overflow-hidden">
               <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-20"></div>
-              <div class="px-4 py-6 -mt-14 relative z-10">
-                <div class="bg-white p-6 rounded-lg shadow-lg relative z-10">
+              <div class="px-4 py-6 -mt-14">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
                   <div class="flex flex-col md:flex-row items-center space-x-4">
                     <!-- Avatar o iniciales de la persona -->
                     <div class="w-16 h-16 rounded-full overflow-hidden">
@@ -129,31 +138,58 @@
         </template>
       </Carousel>
     </div>
-    <div class="mb-6 bg-second-50 rounded-md p-4">
-      <div class="flex items-center gap-2 mb-6">
-        <i class="material-symbols-outlined text-second-800">attach_money</i>
-        <h2 class="text-xl text-second-800 font-semibold">
-          Detalles de Ofrendas
-        </h2>
-      </div>
-      <div class="grid grid-cols-2 gap-4 text-second-900 mb-8">
-        <p><strong>Total Ofrenda General:</strong> $ 200.00</p>
-        <p><strong>Total Ofrenda Especial:</strong> $ 50.00</p>
-        <p><strong>Destinadas para Misión:</strong> $ 100.00</p>
-        <p><strong>Para Mejoras del Templo:</strong> $ 75.00</p>
-        <p><strong>Ofrenda para Comunidad:</strong> $ 25.00</p>
-        <p><strong>Recaudación Online:</strong> $ 30.00</p>
-        <p><strong>Recaudación Presencial:</strong> $ 170.00</p>
-        <p><strong>Ofrenda Anónima:</strong> $ 20.00</p>
-      </div>
-      <div class="flex items-center justify-center">
-        <button class="bg-second-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
-          Descargar Reporte
-          <i class="material-symbols-outlined text-second-50">download</i>
-        </button>
+    
+    <!-- Gráfico Pie para los datos de las Ofrendas -->
+      <div class="mb-6 bg-second-50 shadow-lg rounded-lg py-6">
+        <div class="flex items-center gap-2 mb-6">
+          <i class="material-symbols-outlined text-second-800">attach_money</i>
+          <h2 class="text-2xl text-second-800 font-semibold">Detalle de Ofrendas</h2>
+        </div>
+
+        <!-- Contenido del mini dashboard -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 px-6">
+          <!-- Gráfica Pie -->
+          <div class="flex items-center justify-center">
+            <Chart type="pie" :data="chartData" />
+          </div>
+
+          <!-- Indicadores KPIs -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
+            <div class="bg-gray-50 p-4 rounded-md shadow-md text-center">
+              <p class="text-sm font-semibold text-gray-800">Total General</p>
+              <p class="text-2xl text-second-500">$200.00</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-md shadow-md text-center">
+              <p class="text-sm font-semibold text-gray-800">Especial</p>
+              <p class="text-2xl text-second-500">$50.00</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-md shadow-md text-center">
+              <p class="text-sm font-semibold text-gray-800">Misión</p>
+              <p class="text-2xl text-second-500">$100.00</p>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-md shadow-md text-center">
+              <p class="text-sm font-semibold text-gray-800">Mejoras Templo</p>
+              <p class="text-2xl text-second-500">$75.00</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón para gestionar ofrendas -->
+        <div class="flex flex-col sm:flex-row items-center justify-center mt-8 gap-4">
+          <!-- Botón de descarga -->
+          <button class="bg-second-500 text-white px-5 py-2 rounded-md transition-all duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
+            Descargar Reporte
+            <i class="material-symbols-outlined">download</i>
+          </button>
+
+          <!-- Botón de gestionar ofrendas -->
+          <button @click="showMonetaryIncome = !showMonetaryIncome" class="bg-second-500 text-white px-5 py-2 rounded-md transition-all duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
+            Gestionar Ofrendas
+            <i class="material-symbols-outlined">payments</i>
+          </button>
+        </div>
       </div>
       
-    </div>
       <!-- Título de la sección de Asistentes al Culto -->
     <div class="flex items-center gap-2 mb-6">
       <i class="material-symbols-outlined text-second-800">people</i>
@@ -229,6 +265,8 @@
       </DataView>
     </div>
   </section>
+  <RecordMonetaryIncome v-if="showMonetaryIncome" @close="showMonetaryIncome = !showMonetaryIncome" />
+  <EditWorshipService :worshipService="this.worshipService" v-if="showEditService" @close="showEditService = !showEditService" />
 </template>
 
 <script>
@@ -237,6 +275,9 @@ import Carousel from 'primevue/carousel';
 import Avatar from 'primevue/avatar';
 import DataView from 'primevue/dataview';
 import InputSwitch from 'primevue/inputswitch';
+import Chart from 'primevue/chart';
+import RecordMonetaryIncome from '../subComponents/RecordMonetaryIncome.vue';
+import EditWorshipService from './EditWorshipService.vue';
 
 export default {
   props: ['worshipService'],
@@ -244,12 +285,39 @@ export default {
     Carousel,
     Avatar,
     DataView,
-    InputSwitch
+    InputSwitch,
+    Chart,
+    RecordMonetaryIncome,
+    EditWorshipService
   },
   data() {
     return {
       servicesAssigned: [],
       numVisible: 3, // Número de elementos visibles en pantallas grandes
+      showMonetaryIncome: false,
+      showEditService: false,
+      chartData: {
+        labels: ['General', 'Especial', 'Misión', 'Mejoras del Templo'],
+        datasets: [
+          {
+            data: [200, 50, 100, 75], // Datos de las ofrendas
+            backgroundColor: ['#6b9c7a', '#8b7d6b', '#524741', '#a3c4ac'], // Colores más suaves y en armonía con la paleta
+            hoverBackgroundColor: ['#4b7e5c', '#756759', '#483e3b', '#6b9c7a'] // Colores para el hover, más oscuros pero no intensos
+          }
+        ],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                color: '#4A4A4A' // Color del texto de la leyenda
+              }
+            }
+          }
+        }
+      },  
       attends: [
       {
         person: {
@@ -542,6 +610,9 @@ export default {
     }
   },
   methods: {
+    editServiceAndWorship() {
+      this.showEditService = true;
+    },
     formatDate(dateString) {
       const date = new Date(dateString);
       const options = { month: 'long', day: 'numeric', weekday: 'long', hour: 'numeric', minute: 'numeric' };

@@ -1,22 +1,34 @@
 <template>
   <section class="min-h-screen container">
-    <!-- Verse Header -->
-    <div class="mb-6 text-center">
+    <!-- Heading and Verse -->
+    <div class="mb-6 container text-center">
       <p class="text-primary-900 text-2xl sm:text-3xl font-serif">
         <strong>
-          Apacentad la grey de Dios que está entre vosotros, cuidando de ella, no por fuerza, sino voluntariamente; no por ganancia deshonesta, sino con ánimo pronto; 1 Pedro 5:2
+          Y el Señor añadía cada día al número de ellos los que iban siendo salvos. Hechos 2:47
         </strong>
       </p>
     </div>
-
-    <!-- Table Section -->
-    <div class="p-4 sm:p-6 shadow-md bg-second-50 shadow-second-600 rounded-md">
+    <div v-if="sheepInfoById">
+      <SheepInfoCard v-if="sheepInfoById" :sheep="sheepInfoById" @close="sheepInfoById = null" />
+    </div>
+    <!-- Ovejas Section -->
+    <div v-else class="p-4 sm:p-6 shadow-md bg-second-50 shadow-second-600 rounded-md h-auto">
       <h1 class="text-3xl sm:text-5xl mb-4 text-second-800">
-        <strong>Tus ovejas</strong>
+        <strong>Ovejas</strong>
       </h1>
-      <h2 class="text-xl sm:text-2xl mb-2 text-second-800">
-        <strong>Estadísticas e Información de tus Ovejas</strong>
+      <h2 class="text-second-800 text-xl sm:text-2xl mb-2">
+        <strong>Estadísticas e Información de Iglesia</strong>
       </h2>
+
+      <!-- Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-4">
+        <button class="bg-primary-500 text-white p-2 rounded-md" @click="getSheeps">
+          Actualizar
+        </button>
+        <button class="bg-primary-500 text-white p-2 rounded-md" @click="addSheeps">
+          Agregar
+        </button>
+      </div>
 
       <!-- Loading State -->
       <div v-if="loading" class="p-6 space-y-4">
@@ -28,33 +40,47 @@
         </div>
       </div>
 
-      <!-- Data Table -->
+      <!-- DataTable -->
       <div v-else class="overflow-x-auto p-4 sm:p-6">
-        <DataTable :value="sheepsInfo" class="w-full border-collapse" tableStyle="min-width: 60rem">
-          <Column field="first_name" header="Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
-          <Column field="last_name" header="Apellido" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
+        <DataTable 
+          :value="sheepsInfo" 
+          paginator
+          rows="10"
+          selectionMode="single"
+          v-model:selection="sheepInfoById"
+          @rowSelect="handleSheepInfo"
+          class="w-full border-collapse" 
+          tableStyle="min-width: 60rem"
+          >
+          <!-- Table Columns -->
+          <Column field="first_name" header="Primer Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
+          <Column field="last_name" header="Primer Apellido" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
           <Column field="email" header="Email" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
-          <Column field="description" header="Descripción" class="p-2 text-center text-second-800 border-b border-primary-200"></Column>
-
-          <!-- Arrival Date -->
+          <Column field="description" header="Descripción" class="p-2 text-center border-b border-primary-200 text-second-800"></Column>
+          
+          <!-- Custom Date Columns with Formatting -->
           <Column field="arrival_date" header="Fecha de inicio" class="p-4 text-center border-b border-primary-200 text-second-800">
             <template #body="slotProps">
-              <Tag :value="slotProps.data.arrival_date">
+              <Tag v-if="slotProps.data.arrival_date" :value="slotProps.data.arrival_date">
                 {{ formatDate(slotProps.data.arrival_date) }}
               </Tag>
+              <Tag v-else :value="slotProps.data.arrival_date">
+                N/A
+              </Tag>
             </template>
           </Column>
-
-          <!-- Last Visit Date -->
           <Column field="last_visit" header="Última Visita" class="p-4 text-center border-b border-primary-200 text-second-800">
             <template #body="slotProps">
-              <Tag :value="slotProps.data.last_visit">
+              <Tag v-if="slotProps.data.last_visit" :value="slotProps.data.last_visit">
                 {{ formatDate(slotProps.data.last_visit) }}
+              </Tag>
+              <Tag v-else :value="slotProps.data.arrival_date">
+                N/A
               </Tag>
             </template>
           </Column>
 
-          <!-- Status -->
+          <!-- Status Column -->
           <Column field="status" header="Estado" class="p-4 text-center border-b border-primary-200 text-second-800">
             <template #body="slotProps">
               <Tag :value="slotProps.data.status" class="p-2 text-center border-b rounded-md bg-green-200 text-green-900 uppercase">
@@ -63,36 +89,19 @@
             </template>
           </Column>
 
-          <!-- Info Icon -->
-          <Column field="Información" header="Información" class="p-4 text-center border-b border-primary-200">
-            <template #body="slotProps">
-              <i @click="handleSheepInfo(slotProps.data.id)" class="material-symbols-outlined cursor-pointer">info</i>
-            </template>
-          </Column>
-
-          <!-- Actions -->
-          <Column field="Acciones" header="Acciones" class="p-4 text-center border-b border-primary-200">
-            <template #body="slotProps">
-              <div class="flex items-center justify-around text-xl">
-                <i @click="editInfoSheep(slotProps.data.id)" class="material-symbols-outlined cursor-pointer text-yellow-500">edit</i>
-                <i class="material-symbols-outlined cursor-pointer text-red-600">delete</i>
-              </div>
-            </template>
-          </Column>
         </DataTable>
       </div>
     </div>
 
-    <!-- Info and Edit Cards -->
-    <SheepInfoCard v-if="showSheepInfoCard" :sheep="sheepInfoById" @close="closeSheepInfoCard" />
-    <EditInfoCard v-if="showEditInfoCard" :sheep="sheepInfoById" @close="closeEditInfoCard" />
+    <!-- Modals for Adding and Viewing Sheep -->
+    <AddSheepCard v-if="newSheepVisible" @close="newSheepVisible = false" />
+    
   </section>
 </template>
 
 <script>
-import { getMySheeps, getSheepById } from '../apiServices/index';
+import { getMySheeps , getSheepById } from '../apiServices/index';
 import SheepInfoCard from '@/components/Sheeps/SheepInfoCard.vue';
-import EditInfoCard from '@/components/Sheeps/EditInfoCard.vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Tag from 'primevue/tag';
@@ -100,7 +109,6 @@ import Tag from 'primevue/tag';
 export default {
   components: {
     DataTable,
-    EditInfoCard,
     SheepInfoCard,
     Column,
     Tag,
@@ -116,7 +124,7 @@ export default {
   },
   methods: {
     async getSheeps() {
-      this.sheepsInfo = await getMySheeps();
+      this.sheepsInfo = await getMySheeps ();
       this.loading = false;
     },
     async handleSheepInfo(id) {

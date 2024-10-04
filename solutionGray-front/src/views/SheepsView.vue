@@ -8,9 +8,11 @@
         </strong>
       </p>
     </div>
-
+    <div v-if="sheepInfoById">
+      <SheepInfoCard v-if="sheepInfoById" :sheep="sheepInfoById" @close="sheepInfoById = null" />
+    </div>
     <!-- Ovejas Section -->
-    <div class="p-4 sm:p-6 shadow-md bg-second-50 shadow-second-600 rounded-md h-auto">
+    <div v-else class="p-4 sm:p-6 shadow-md bg-second-50 shadow-second-600 rounded-md h-auto">
       <h1 class="text-3xl sm:text-5xl mb-4 text-second-800">
         <strong>Ovejas</strong>
       </h1>
@@ -40,7 +42,16 @@
 
       <!-- DataTable -->
       <div v-else class="overflow-x-auto p-4 sm:p-6">
-        <DataTable :value="sheepsInfo" class="w-full border-collapse" tableStyle="min-width: 60rem">
+        <DataTable 
+          :value="sheepsInfo" 
+          paginator
+          rows="10"
+          selectionMode="single"
+          v-model:selection="sheepInfoById"
+          @rowSelect="handleSheepInfo"
+          class="w-full border-collapse" 
+          tableStyle="min-width: 60rem"
+          >
           <!-- Table Columns -->
           <Column field="first_name" header="Primer Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
           <Column field="last_name" header="Primer Apellido" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
@@ -72,19 +83,13 @@
             </template>
           </Column>
 
-          <!-- Info Column with Icon -->
-          <Column field="Información" header="Información" class="p-4 text-center border-b border-primary-200">
-            <template #body="slotProps">
-              <i @click="handleSheepInfo(slotProps.data.id)" class="material-symbols-outlined cursor-pointer">info</i>
-            </template>
-          </Column>
         </DataTable>
       </div>
     </div>
 
     <!-- Modals for Adding and Viewing Sheep -->
     <AddSheepCard v-if="newSheepVisible" @close="newSheepVisible = false" />
-    <SheepInfoCard v-if="sheepInfoById" :sheep="sheepInfoById" @close="sheepInfoById = null" />
+    
   </section>
 </template>
 
@@ -124,9 +129,9 @@ export default {
     addSheeps() {
       this.newSheepVisible = !this.newSheepVisible;
     },
-    async handleSheepInfo(id) {
+    async handleSheepInfo(event) {
       try {
-        const sheepsInfo = await getSheepById(id);
+        const sheepsInfo = await getSheepById(event.data.id);
         this.sheepInfoById = sheepsInfo;
       } catch (error) {
         console.error(error);

@@ -1,46 +1,76 @@
 <template>
-  <aside class="bg-primary-700 w-[80%] md:w-[40%] lg:w-[15%] fixed h-full py-2 flex flex-col gap-2 z-10">
-      <div class="flex justify-end pr-4 pt-4 lg:hidden">
-        <button @click="$emit('close')" class="material-symbols-outlined cursor-pointer text-primary-50">close</button>
-      </div>
-    <div class="flex flex-col items-center p-4">
-      <img src="../assets/solutionGrayLOGO-removebg.png" class="sm:w-15 sm:h-15 md:w-[30vh]">
-      <h2 class="text-2xl font-semibold text-primary-50">{{rol}}</h2>
+  <aside class="bg-primary-700 w-[80%] md:w-[40%] lg:w-[13%] fixed h-full py-2 flex flex-col gap-2 z-10">
+    <!-- Botón para cerrar el menú en pantallas pequeñas -->
+    <div class="flex justify-end pr-4 pt-4 lg:hidden">
+      <button @click="$emit('close')" class="material-symbols-outlined cursor-pointer text-primary-50">close</button>
     </div>
-    <div>
+
+    <!-- Sección del logo y rol del usuario -->
+    <section class="flex flex-col items-center p-4">
+      <img src="../assets/solutionGrayLOGO-removebg.png" class="sm:w-15 sm:h-15 md:w-[30vh]" alt="Logo">
+      <h2 class="text-2xl font-semibold text-primary-50">{{ rol }}</h2>
+    </section>
+
+    <!-- Menú de navegación -->
+    <nav>
       <ul class="text-primary-50 text-xl">
-        <li  @click="toogleChurchMenu" class="px-4 py-2 hover:bg-primary-600 flex flex-col gap-4">
+        <!-- Sección de la iglesia -->
+        <li @click="toggleChurchMenu" class="px-4 py-2 hover:bg-primary-600 flex flex-col gap-4">
           <div class="flex items-center gap-4"> 
             <i class="material-symbols-outlined text-primary-50">church</i>
-            <span to="/sheeps" class="block">Church</span>
+            <span>Church</span>
           </div>
-          
         </li>
-        <div v-if="showMenuChurch" class="pl-8 w-3/4 flex flex-col">
-          <ul class="list-disc list-inside mb-2 w-auto">
-            <li @click="redirectTo(item.path)" v-for="item in menuItemsChurch" :key="item.label" class="text-primary-50 px-2 py-2 hover:bg-primary-600 transition-all duration-300 rounded-md">
+        <div v-if="showMenuChurch" class="pl-6 w-full flex flex-col">
+          <ul class="list-disc list-inside mb-2 w-auto px-2">
+            <li 
+              @click="redirectTo(item.path)" 
+              v-for="item in menuItemsChurch" 
+              :key="item.label" 
+              class="text-primary-50 px-2 py-2 hover:bg-primary-600 transition-all duration-300 rounded-md w-full">
               {{ item.label }}
             </li>
           </ul>
         </div>
-        <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
-          <i class="material-symbols-outlined">people</i>
-          <router-link to="/servants" class="block">Servidores</router-link>
-        </li>
-        <li  @click="toggleSheepMenu" class="px-4 py-2 hover:bg-primary-600 flex flex-col gap-4">
+        <!-- Sección de Grupos -->
+        <li @click="toogleGroupsMenu" class="px-4 py-2 hover:bg-primary-600 flex flex-col gap-4">
           <div class="flex items-center gap-4"> 
-            <i class="material-symbols-outlined text-primary-50">digital_wellbeing</i>
-            <span to="/sheeps" class="block">Ovejas</span>
+            <i class="material-symbols-outlined text-primary-50">communities</i>
+            <span>Grupos</span>
           </div>
-          
         </li>
-        <div v-if="showMenuSheep" class="pl-8 w-3/4 flex flex-col">
-          <ul class="list-disc list-inside mb-2 w-auto">
-            <li @click="redirectTo(item.path)" v-for="item in menuItemsSheep" :key="item.label" class="text-primary-50 px-2 py-2 hover:bg-primary-600 transition-all duration-300 rounded-md">
+        <div v-if="showGroupsMenu" class="pl-6 w-full flex flex-col">
+          <ul class="list-disc list-inside mb-2 w-auto px-2">
+            <li 
+              @click="redirectTo(item.path)" 
+              v-for="item in menuItemsChurch" 
+              :key="item.label" 
+              class="text-primary-50 px-2 py-2 hover:bg-primary-600 transition-all duration-300 rounded-md w-full">
               {{ item.label }}
             </li>
           </ul>
         </div>
+
+        <!-- Sección combinada de "People" -->
+        <li @click="togglePeopleMenu" class="px-4 py-2 hover:bg-primary-600 flex flex-col gap-4">
+          <div class="flex items-center gap-4"> 
+            <i class="material-symbols-outlined text-primary-50">groups</i>
+            <span>People</span>
+          </div>
+        </li>
+        <div v-if="showMenuPeople" class="pl-6 w-full flex flex-col">
+          <ul class="list-disc list-inside mb-2 w-auto px-2">
+            <li 
+              @click="redirectTo(item.path)" 
+              v-for="item in menuItemsPeople" 
+              :key="item.label" 
+              class="text-primary-50 px-2 py-2 hover:bg-primary-600 transition-all duration-300 rounded-md w-full">
+              {{ item.label }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Enlaces de menú adicionales -->
         <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
           <i class="material-symbols-outlined">book</i>
           <router-link to="/" class="block">Cursos</router-link>
@@ -50,59 +80,61 @@
           <router-link to="/settings" class="block">Ingresos</router-link>
         </li>
       </ul>
-    </div>
+    </nav>
   </aside>
 </template>
 
 <script>
-
 export default {
   name: 'MenuUser',
   data(){
     return {
       rol: null,
-      showMenuSheep: false,
       showMenuChurch: false,
+      showMenuPeople: false,
+      showGroupsMenu: false,
       menuItemsChurch: [
-        {label: 'Mi iglesia',path:'/my-church'},
-        {label: 'Cultos',path:'/worship-services'}
+        { label: 'Mi iglesia', path: '/my-church' },
+        { label: 'Cultos', path: '/worship-services' }
       ],
-      menuItemsSheep: [
-      { label: 'Ver ovejas en la iglesia', path: '/sheeps' },
-      { label: 'Ver mis ovejas', path: '/my-sheeps' },
-      ],      
-    }
+      menuItemsPeople: [
+        { label: 'Servidores', path: '/servants' },
+        { label: 'Ovejas', path: '/sheeps' },
+        { label: 'Mis ovejas', path: '/my-sheeps' }
+      ]
+    };
   },
   methods: {
     getRol() {
       const session = this.$store.getters.userSession;
-
       if (!session) {
         return false;
       }
-
       const user = JSON.parse(session);
       this.rol = user.rol;
       return true;
     },
-    toggleSheepMenu() {
-            this.showMenuSheep = !this.showMenuSheep;
+    toggleChurchMenu() {
+      this.showMenuChurch = !this.showMenuChurch;
     },
-    toogleChurchMenu() {
-            this.showMenuChurch = !this.showMenuChurch;
+    togglePeopleMenu() {
+      this.showMenuPeople = !this.showMenuPeople;
     },
-    redirectTo(path){
-      this.$router.push(path)
+    toogleGroupsMenu() {
+      this.showGroupsMenu = !this.showGroupsMenu;
+    },
+    redirectTo(path) {
+      this.$router.push(path);
     }
-  }, 
-  mounted(){
-    this.getRol()
+  },
+  mounted() {
+    this.getRol();
   }
 };
 </script>
 
 <style scoped>
-li{
+li {
   @apply cursor-pointer;
 }
 i {

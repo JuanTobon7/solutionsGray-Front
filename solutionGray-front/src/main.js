@@ -15,6 +15,7 @@ import Ripple from 'primevue/ripple';
 import 'primevue/resources/themes/lara-light-green/theme.css'
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
+import "/node_modules/flag-icons/css/flag-icons.min.css";
 
 const app = createApp(App)
 

@@ -34,9 +34,14 @@ export const getSheepById = async(id)=>{
   return response.data;
 }
 
-export const getMySheeps = async()=>{
+export const getMySheeps  = async()=>{
   const response = await api.get('/my-sheeps');
   return response.data
+}
+
+export const getSheepsByServant = async(id)=>{
+  const response = await api.get(`/sheeps-by-servant/${id}`);
+  return response.data;
 }
 
 export const editInfoSheepById = async(id,data)=>{
@@ -155,5 +160,10 @@ export const savePeople = async(data)=>{
 
 export const createUsers = async(data)=>{
   const response = await api.post('/create-users',data);
+  return response.data;
+}
+
+export const getCurrencies = async()=>{
+  const response = await api.get('/get-currencies');
   return response.data;
 }
