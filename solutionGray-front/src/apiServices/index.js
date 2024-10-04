@@ -34,9 +34,14 @@ export const getSheepById = async(id)=>{
   return response.data;
 }
 
-export const getMySheeps = async()=>{
+export const getMySheeps  = async()=>{
   const response = await api.get('/my-sheeps');
   return response.data
+}
+
+export const getSheepsByServant = async(id)=>{
+  const response = await api.get(`/sheeps-by-servant/${id}`);
+  return response.data;
 }
 
 export const editInfoSheepById = async(id,data)=>{
@@ -135,5 +140,30 @@ export const deleteAssingServices = async(serviceId)=>{
 
 export const getTypesPeople = async()=>{
   const response = await api.get('/get-types-people');
+  return response.data;  
+}
+
+export const getCountries = async()=>{
+  const response = await api.get('/get-countries');
+  return response.data;
+}
+
+export const getStatesByCountry = async(idCountry)=>{
+  const response = await api.get(`/get-states/${idCountry}`);
+  return response.data;
+}
+
+export const savePeople = async(data)=>{
+  const response = await api.post('/save-people',data);
+  return response.data;
+}
+
+export const createUsers = async(data)=>{
+  const response = await api.post('/create-users',data);
+  return response.data;
+}
+
+export const getCurrencies = async()=>{
+  const response = await api.get('/get-currencies');
   return response.data;
 }
