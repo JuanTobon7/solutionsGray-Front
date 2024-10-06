@@ -172,8 +172,8 @@ export default {
       if (differenceInDays < 4) {
         this.errorMessage = 'La fecha del culto debe ser al menos 4 días después de la fecha actual.';
         return;
-      }
-
+      } 
+ 
       const combinedDateTime = new Date(
         this.date.getFullYear(),
         this.date.getMonth(),
