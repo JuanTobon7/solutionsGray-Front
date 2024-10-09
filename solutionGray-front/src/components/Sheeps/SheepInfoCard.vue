@@ -83,7 +83,11 @@
     </div>
     </div>
     <div class="w-full mt-8">
-      <h2 class="text-2xl text-second-800 font-semibold mb-4">Progreso de la Oveja (Bitácora)</h2>
+      <div class="flex items-center gap-2 mb-4">
+        <span class="material-symbols-outlined text-second-800">edit_calendar</span>
+        <h2 class="text-2xl text-second-800 font-semibold mr-2">Registro de Visitas</h2>
+        <button @click="showRegistervisits = true" class="material-symbols-outlined rounded-md p-1 bg-second-500 text-white font-bold">add</button>
+      </div>
       
       <div class="grid grid-cols-3 gap-4">
         <!-- Itera sobre las visitas para mostrar cada tarjeta -->
@@ -94,12 +98,14 @@
         </div>
       </div>
     </div>
+    <RegisterVisits v-if="showRegistervisits" @close="showRegistervisits = false" />
   </section>
+  
 </template>
 
-  
-  <script>
+<script>
   import Avatar from 'primevue/avatar';
+  import RegisterVisits from '../subComponents/RegisterVisits.vue';
   export default {
     props: {
       sheep: {
@@ -108,10 +114,12 @@
       }
     },
     components: {
-      Avatar
+      Avatar,
+      RegisterVisits
     },
     data() {
       return {
+        showRegistervisits: false,
         pastor: {
           first_name: 'Pastor',
           last_name: 'Default',

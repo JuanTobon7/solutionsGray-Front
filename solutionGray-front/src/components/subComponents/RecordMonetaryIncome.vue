@@ -8,193 +8,174 @@
           <span @click="$emit('close')" class="material-symbols-outlined text-2xl cursor-pointer text-gray-600 hover:text-gray-800 transition duration-200">close</span>
         </div>
 
-        <!-- Formulario de ingreso de datos -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <!-- Selección de Moneda -->
-          <div class="flex flex-col">
-            <label for="currency" class="text-gray-600 mb-2 font-semibold">Tipo de Moneda</label>
-            <Dropdown 
+        <!-- Selección de Moneda -->
+        <div class="flex flex-col mb-4">
+          <label for="currency" class="text-gray-600 mb-2 font-semibold">Tipo de Moneda</label>
+          <Dropdown 
             v-model="selectedCurrency" 
             :options="currencies" 
             filter 
-            optionLabel="name" 
-            placeholder="Selecciona el Tipo de Moneda" 
-            class="w-full md:w-14rem">
-              <template #value="slotProps">
-                  <div v-if="slotProps.value" class="flex align-items-center gap-2">
-                    <span style="width: 18px" :class="`fi fi-${slotProps.value.id.toLowerCase()}`"></span>
-                      <div>{{ slotProps.value.currency + ' - ' +  slotProps.value.name }}</div>
-                  </div>
-                  <span v-else>
-                      {{ slotProps.placeholder }}
-                  </span>
-              </template>
-              <template #option="slotProps">
-                  <div class="flex align-items-center gap-2">
-                    <span style="width: 18px" :class="`fi fi-${slotProps.option.id.toLowerCase()}`"></span>
-                      <div>{{  slotProps.option.currency + ' - ' + slotProps.option.name }}</div>
-                  </div>
-              </template>
-            </Dropdown>
-          </div>
-
-          <!-- Selección del Donante -->
-          <div class="flex flex-col">
-            <label for="person" class="text-gray-600 mb-2 font-semibold">Seleccionar Donante</label>
-            <Dropdown
-              v-model="selectedPerson"
-              :options="people"
-              optionLabel="name"
-              placeholder="Selecciona un Donante"
-              class="w-full"
-            >
-              <template #value="slotProps">
-                <div v-if="slotProps.value" class="flex items-center gap-2">
-                  <div class="flex items-center gap-2">
-                  <div class="w-8 h-8 rounded-full flex items-center">
-                      <Avatar
-                        v-if="slotProps.value.avatar"
-                        :image="slotProps.value.avatar"
-                        shape="circle"
-                      />
-                      <Avatar
-                        v-else
-                        :label="getInitials(slotProps.value)"
-                        class="bg-primary-100 flex items-center justify-center text-primary-800"
-                        shape="circle"
-                      />
-                    </div>
-                  <div>{{ slotProps.value.first_name + ' ' +slotProps.value.last_name }} - CC: {{ slotProps.value.cc }} - Phone: {{ slotProps.value.phone }}</div>
-                </div>
-                </div>
-                <span v-else>{{ slotProps.placeholder }}</span>
-              </template>
-
-              <template #option="slotProps">
-                <div class="flex items-center gap-2">
-                  <div class="w-8 h-8 rounded-full flex items-center">
-                      <Avatar
-                        v-if="slotProps.option.avatar"
-                        :image="slotProps.option.avatar"
-                        shape="circle"
-                      />
-                      <Avatar
-                        v-else
-                        :label="getInitials(slotProps.option)"
-                        class="bg-primary-100 flex items-center justify-center text-primary-800"
-                        shape="circle"
-                      />
-                    </div>
-                  <div>{{ slotProps.option.first_name + ' ' +slotProps.option.last_name }} - CC: {{ slotProps.option.cc }} - Phone: {{ slotProps.option.phone }}</div>
-                </div>
-              </template>
-            </Dropdown>
-          </div>
-
-          <!-- Ofrenda General -->
-          <div class="flex flex-col">
-            <label for="general" class="text-gray-600 mb-2 font-semibold">Ofrenda General</label>
-            <input
-              type="number"
-              v-model="donor.generalOffer"
-              id="general"
-              min="0"
-              class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-second-500"
-              placeholder="0.00"
-            />
-          </div>
-
-          <!-- Ofrenda Especial -->
-          <div class="flex flex-col">
-            <label for="special" class="text-gray-600 mb-2 font-semibold">Ofrenda Especial</label>
-            <input
-              type="number"
-              v-model="donor.specialOffer"
-              id="special"
-              min="0"
-              class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-second-500"
-              placeholder="0.00"
-            />
-          </div>
-
-          <!-- Ofrenda para Misión -->
-          <div class="flex flex-col">
-            <label for="mission" class="text-gray-600 mb-2 font-semibold">Ofrenda para Misión</label>
-            <input
-              type="number"
-              v-model="donor.missionOffer"
-              id="mission"
-              min="0"
-              class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-second-500"
-              placeholder="0.00"
-            />
-          </div>
-
-          <!-- Mejoras del Templo -->
-          <div class="flex flex-col">
-            <label for="improvements" class="text-gray-600 mb-2 font-semibold">Mejoras del Templo</label>
-            <input
-              type="number"
-              v-model="donor.improvementsOffer"
-              id="improvements"
-              min="0"
-              class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-second-500"
-              placeholder="0.00"
-            />
-          </div>
+            filterMatchMode="contains" 
+            filterBy="currency_type,currency_symbol,country_id" 
+            optionLabel="currency_type" 
+            placeholder="Buscar por tipo, símbolo o país" 
+            class="w-full md:w-14rem"
+          >
+            <template #value="slotProps">
+              <div v-if="slotProps.value" class="flex items-center gap-2">
+                <span style="width: 18px" :class="`fi fi-${slotProps.value.country_id.toLowerCase()}`"></span>
+                <div>{{ slotProps.value.currency_symbol + ' ' + slotProps.value.currency_type + ' ' + slotProps.value.country_name}}</div>
+              </div>
+              <span v-else>
+                {{ slotProps.placeholder }}
+              </span>
+            </template>
+            <template #option="slotProps">
+              <div class="flex items-center gap-2">
+                <span style="width: 18px" :class="`fi fi-${slotProps.option.country_id.toLowerCase()}`"></span>
+                <div>{{ slotProps.option.currency_symbol + ' - ' + slotProps.option.currency_type + ' (' + slotProps.option.country_id + ')' + ' ' + slotProps.option.country_name}}</div>
+              </div>
+            </template>
+          </Dropdown>
         </div>
 
+        <!-- Selección del Donante -->
+        <div class="flex flex-col mb-4">
+          <label for="person" class="text-gray-600 mb-2 font-semibold">Seleccionar Donante</label>
+          <Dropdown
+            v-model="selectedPerson"
+            :options="people"
+            optionLabel="name"
+            placeholder="Selecciona un Donante"
+            class="w-full"
+          >
+            <template #value="slotProps">
+              <div v-if="slotProps.value" class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full flex items-center">
+                  <Avatar
+                    v-if="slotProps.value.avatar"
+                    :image="slotProps.value.avatar"
+                    shape="circle"
+                  />
+                  <Avatar
+                    v-else
+                    :label="getInitials(slotProps.value)"
+                    class="bg-primary-100 flex items-center justify-center text-primary-800"
+                    shape="circle"
+                  />
+                </div>
+                <div>{{ slotProps.value.first_name + ' ' + slotProps.value.last_name }} - CC: {{ slotProps.value.cc }} - Phone: {{ slotProps.value.phone }}</div>
+              </div>
+              <span v-else>{{ slotProps.placeholder }}</span>
+            </template>
+
+            <template #option="slotProps">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full flex items-center">
+                  <Avatar
+                    v-if="slotProps.option.avatar"
+                    :image="slotProps.option.avatar"
+                    shape="circle"
+                  />
+                  <Avatar
+                    v-else
+                    :label="getInitials(slotProps.option)"
+                    class="bg-primary-100 flex items-center justify-center text-primary-800"
+                    shape="circle"
+                  />
+                </div>
+                <div>{{ slotProps.option.first_name + ' ' + slotProps.option.last_name }} - CC: {{ slotProps.option.cc }} - Phone: {{ slotProps.option.phone }}</div>
+              </div>
+            </template>
+          </Dropdown>
+        </div>
+
+        <!-- Listado de Ofrendas -->
+        <div class="flex flex-col mb-4">
+          <label class="mb-2 font-semibold flex items-center gap-2">
+            <span class="text-gray-600 ">Registro de Ofrendas</span>
+            <button @click="addOffering" class="text-white cursor-pointer bg-green-500 p-1 rounded-md material-symbols-outlined">
+              add
+            </button>
+          </label>
+          <div v-for="(offering, index) in offeringsList" :key="index" class="flex items-center gap-2 mb-2">
+            <Dropdown 
+              v-model="offering.type" 
+              :options="types_offerings" 
+              optionValue="id" 
+              optionLabel="name" 
+              placeholder="Tipo de Ofrenda" 
+              class="w-full md:w-1/2"
+            />
+            <input
+              type="number"
+              v-model="offering.amount"
+              placeholder="Monto"
+              min="0"
+              class="w-full md:w-1/2 px-2 py-1 border border-gray-300 rounded-md"
+            />
+            <button @click="removeOffering(index)" class="text-red-500 hover:text-red-700 material-symbols-outlined">
+              delete
+            </button>
+          </div>      
+        </div>
+        <div>
+          <label class="mb-2 font-semibold flex items-center gap-2">
+            <span>Total</span> 
+            <i class="material-symbols-outlined">trending_up</i>
+          </label>    
+          <div class="flex items-center gap-2">
+            <span class="text-gray-600">Total de Ofrendas:</span>
+            <span class="text-gray-800 font-semibold">{{ offeringsList.reduce((acc, curr) => acc + curr.amount, 0) }}</span>            
+        </div>
         <!-- Botones de acción -->
         <div class="mt-6 flex justify-between items-center">
-          <button
-            class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400 transition duration-200"
-            @click="$emit('close')"
-          >
+          <button class="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400 transition duration-200" @click="$emit('close')">
             Cancelar
           </button>
           <button
+            v-if="selectedCurrency && selectedPerson && offeringsList.length > 0"
             class="bg-second-600 text-white px-4 py-2 rounded-md hover:bg-second-700 transition duration-200 flex items-center gap-2"
             @click="saveDonorData"
           >
             <i class="material-symbols-outlined">save</i>
-            Guardar Ingresos en {{ selectedCurrency?.label }}
+            Guardar Ofrenda
           </button>
         </div>
       </div>
     </div>
+  </div>
+
   </section>
 </template>
 
 <script>
 import Dropdown from 'primevue/dropdown';
 import Avatar from 'primevue/avatar';
-import { getCurrencies, getPeople } from '@/apiServices/index';
+import { getCurrencies, getPeople, getTypesContributions,saveContribution } from '@/apiServices/index';
 
 export default {
   components: {
     Dropdown,
     Avatar
   },
+  props: ['worshipService'],
   data() {
     return {
-      selectedCurrency: null, // Moneda seleccionada
-      selectedPerson: null, // Donante seleccionado
-      donor: {
-        name: '', // Nombre del donante
-        generalOffer: 0, // Ofrenda general
-        specialOffer: 0, // Ofrenda especial
-        missionOffer: 0, // Ofrenda para misión
-        improvementsOffer: 0 // Mejoras del templo
-      },
-      currencies: [], // Lista de monedas desde la API
-      people: [] // Lista de personas desde la API
+      selectedCurrency: null,
+      selectedPerson: null,
+      offeringsList: [
+        { type: null, amount: 0 }
+      ],
+      currencies: [],
+      people: [],
+      types_offerings: []
     };
   },
   methods: {
     async getTypesMoney() {
       try {
         const response = await getCurrencies();
-        // Suponiendo que la respuesta ya tiene el formato adecuado
         this.currencies = response;
       } catch (e) {
         console.log(e);
@@ -203,28 +184,53 @@ export default {
     async getPeopleFun() {
       try {
         const response = await getPeople();
-        // Suponiendo que la respuesta tiene `id`, `name`, y `avatar` de las personas
         this.people = response;
       } catch (e) {
         console.log(e);
       }
     },
-    saveDonorData() {
-      console.log('Datos del Donante:', this.donor);
-      console.log('Moneda Seleccionada:', this.selectedCurrency);
-      console.log('Donante Seleccionado:', this.selectedPerson);
+    async getTypesOfferings() {
+      try {
+        const response = await getTypesContributions();
+        this.types_offerings = response;
+      } catch (e) {
+        console.log(e);
+      }
     },
-    getInitials(person){
+    addOffering() {
+      this.offeringsList.push({ type: null, amount: 0 });
+    },
+    removeOffering(index) {
+      this.offeringsList.splice(index, 1);
+    },
+    async saveDonorData() {
+      console.log('Datos de Ingreso:', {
+        currency: this.selectedCurrency,
+        person: this.selectedPerson,
+        offerings: this.offeringsList,
+        size: this.offeringsList.length
+      });
+     if(!this.selectedCurrency || !this.selectedPerson || this.offeringsList.length === 0) return;
+      await saveContribution({
+        currencyId: this.selectedCurrency.id,
+        personId: this.selectedPerson.id,
+        offerings: this.offeringsList,
+        eventId: this.worshipService.id
+      });
+      this.$emit('saved');
+    },
+    getInitials(person) {
       return person.first_name.charAt(0) + person.last_name.charAt(0);
     }
   },
   async mounted() {
     await this.getTypesMoney();
     await this.getPeopleFun();
+    await this.getTypesOfferings();
   }
 };
 </script>
 
 <style scoped>
-/* Estilos opcionales */
+/* Estilos opcionales para ajustes de diseño */
 </style>
