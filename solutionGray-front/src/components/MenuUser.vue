@@ -73,7 +73,7 @@
         <!-- Enlaces de menú adicionales -->
         <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
           <i class="material-symbols-outlined">book</i>
-          <router-link to="/" class="block">Cursos</router-link>
+          <router-link to="/curses" class="block">Cursos</router-link>
         </li>
         <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
           <i class="material-symbols-outlined">paid</i>

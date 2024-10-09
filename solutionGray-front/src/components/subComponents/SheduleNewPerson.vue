@@ -157,7 +157,8 @@ export default {
         }
         const response = await savePeople(this.newPerson);
         this.$toast.add({ severity: 'success', summary: 'Persona creada', detail: 'La persona ha sido exitosamente guardada', life: 3000 });
-        this.$emit('personCreated', response);        
+        this.newPerson = null
+        this.$emit('personCreated', response);                
       } catch (error) {
         console.error(error);
         if (error.response && error.response.status === 400) {

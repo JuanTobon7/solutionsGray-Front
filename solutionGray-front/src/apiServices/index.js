@@ -167,3 +167,33 @@ export const getCurrencies = async()=>{
   const response = await api.get('/get-currencies');
   return response.data;
 }
+
+export const getTypesContributions = async()=>{ 
+  const response = await api.get('/get-types-contributions');
+  return response.data;
+}
+
+export const saveContribution = async(data)=>{
+  const response = await api.post('/save-contribution',data);
+  return response.data;
+}
+
+export const saveAttendance = async(data)=>{
+  const response = await api.post('/register-attendance',data);
+  return response.data;
+}
+
+export const deleteAttendance = async(data)=>{
+  const response = await api.delete(`/delete-attendance/${data.personId}/${data.eventId}`);
+  return response.data;
+}
+
+export const getAttendance = async(eventId)=>{
+  const response = await api.get(`/get-attendance/${eventId}`);
+  return response.data;
+}
+
+export const getOfferings = async(eventId)=>{
+  const response = await api.get(`/get-offerings/${eventId}`);
+  return response.data;
+}

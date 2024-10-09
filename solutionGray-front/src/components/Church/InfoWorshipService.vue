@@ -32,12 +32,11 @@
           <p><strong>Fecha:</strong> {{ formatDate(worshipService.date) }}</p>
           <p><strong>Nombre del Culto:</strong> {{ worshipService.worship_name }}</p>
           <p><strong>Ubicación:</strong> {{ worshipService.location || 'Ubicación no definida' }}</p>
-          <p><strong>Capacidad:</strong> 50</p>
-          <p><strong>Asistentes:</strong> 13</p>
-          <p><strong>Ofrenda Recaudada:</strong> $ 100.00</p>
-          <p><strong>Ofrenda para:</strong> <span class="font-semibold">Misión</span></p>
-          <p><strong>Ofrenda Especial:</strong> $ 50.00</p>
-          <p><strong>Ofrenda Especial para:</strong> <span class="font-semibold">Misión</span></p>
+          <p><strong>Asistentes:</strong> {{numAttends}}</p>
+          <p><strong>Total:</strong> $ {{getTotalOfferings() || '0.00'}}</p>
+          <p v-for="items in offerings" :key="items.type_contribution">
+           <strong> {{items.type_contribution}}:</strong> $ {{items.amount || '0.00'}}
+          </p>        
         </div>
 
          <!-- Botón para editar culto y servicios -->
@@ -150,26 +149,19 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 px-6">
           <!-- Gráfica Pie -->
           <div class="flex items-center justify-center">
-            <Chart type="pie" :data="chartData" />
+            <Chart type="pie" :data="chartData" :options="chartOptions"  class="w-full md:w-[40rem] lg:w-[40rem] h-[20rem]"/>
           </div>
 
           <!-- Indicadores KPIs -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
             <div class="bg-gray-50 p-4 rounded-md shadow-md text-center">
               <p class="text-sm font-semibold text-gray-800">Total General</p>
-              <p class="text-2xl text-second-500">$200.00</p>
+              <p class="text-2xl text-second-500"> $ {{getTotalOfferings() || '0.00'}}</p>
             </div>
-            <div class="bg-gray-50 p-4 rounded-md shadow-md text-center">
-              <p class="text-sm font-semibold text-gray-800">Especial</p>
-              <p class="text-2xl text-second-500">$50.00</p>
-            </div>
-            <div class="bg-gray-50 p-4 rounded-md shadow-md text-center">
-              <p class="text-sm font-semibold text-gray-800">Misión</p>
-              <p class="text-2xl text-second-500">$100.00</p>
-            </div>
-            <div class="bg-gray-50 p-4 rounded-md shadow-md text-center">
-              <p class="text-sm font-semibold text-gray-800">Mejoras Templo</p>
-              <p class="text-2xl text-second-500">$75.00</p>
+            <div v-for="items in offerings" :key="items.type_contribution" class="bg-gray-50 p-4 rounded-md shadow-md text-center">
+              <p class="text-sm font-semibold text-gray-800">{{items.type_contribution}}</p>
+              <p class="text-2xl text-second-500">$ {{items.amount || '0.00'}}</p>
+            
             </div>
           </div>
         </div>
@@ -196,6 +188,7 @@
       <h2 class="text-xl text-second-800 font-semibold">
         Asistentes al Culto
       </h2>
+      <button @click="showShduleNewPerson = true" class="material-symbols-outlined rounded-md p-1 bg-second-500 text-white">person_add</button>
     </div>
 
     <!-- Carrusel de Asistentes al Culto -->
@@ -225,14 +218,14 @@
                       <!-- Avatar o iniciales de la persona -->
                       <div class="w-16 h-16 rounded-full overflow-hidden">
                         <Avatar
-                          v-if="item.person.avatar"
-                          :image="item.person.avatar"
+                          v-if="item.avatar"
+                          :image="item.avatar"
                           size="xlarge"
                           shape="circle"
                         />
                         <Avatar
                           v-else
-                          :label="getInitials(item.person)"
+                          :label="getInitials(item)"
                           class="bg-primary-100 flex items-center justify-center text-primary-800"
                           size="xlarge"
                           shape="circle"
@@ -241,18 +234,18 @@
                       <!-- Información de la persona -->
                       <div>
                         <h2 class="text-xl font-bold text-gray-900">
-                          {{ item.person.first_name + ' ' + item.person.last_name }}
+                          {{ item.first_name + ' ' + item.last_name }}
                         </h2>
-                        <p class="text-sm text-gray-600">{{ item.person.email }}</p>
-                        <p class="text-sm text-gray-600">{{ item.person.phone }}</p>
-                        <p class="text-sm text-gray-600">{{ item.person.type_person }}</p>
-                        <!-- Servicio asignado -->
-                        <p class="text-sm text-primary-900 font-semibold mt-2">
-                          {{ item.service.name }}
-                        </p>
+                        <p class="text-sm text-gray-600">{{ item.email }}</p>
+                        <p class="text-sm text-gray-600">{{ item.phone }}</p>
+                        <p class="text-sm text-gray-600">{{ item.type_person }}</p>
                         <div class="flex flex-col">                            
                           <label for="asistencia">¿Asistió?</label>
-                          <InputSwitch id="asistencia" v-model="item.person.isAttend" />
+                          <InputSwitch 
+                            id="asistencia" 
+                            v-model="item.isAttend"
+                            v-on:change="onAttendChange(item)"
+                            />
                         </div>
                       </div>
                     </div>
@@ -265,12 +258,23 @@
       </DataView>
     </div>
   </section>
-  <RecordMonetaryIncome v-if="showMonetaryIncome" @close="showMonetaryIncome = !showMonetaryIncome" />
-  <EditWorshipService :worshipService="this.worshipService" v-if="showEditService" @close="showEditService = !showEditService" />
+  <RecordMonetaryIncome v-if="showMonetaryIncome" @close="showMonetaryIncome = !showMonetaryIncome" :worshipService="worshipService" />
+  <EditWorshipService :worshipService="this.worshipService" v-if="showEditService" @close="showEditService = !showEditService" @saved="getOfferingsFun"/>
+  <section  v-if="showShduleNewPerson"  class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm  z-50">
+    <div class="container h-[95vh] w-full sm:px-6 flex items-center justify-center">
+      <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg w-full sm:min-w-[70%] flex flex-col max-h-full overflow-y-auto">
+        <div class="flex justify-between mb-3">
+          <h2 class="text-lg sm:text-xl font-semibold text-gray-800">Formulario de Registro de Personas</h2>
+          <button @click="showShduleNewPerson = !showShduleNewPerson" class="material-symbols-outlined text-2xl cursor-pointer text-gray-600 hover:text-gray-800 transition duration-200">close</button>
+        </div>
+       <SheduleNewPerson @close="showShduleNewPerson = !showShduleNewPerson" @personCreated="getPeopleFun"/>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script>
-import { getServices } from '@/apiServices/index';
+import { getServices,getPeople,saveAttendance,deleteAttendance,getAttendance,getOfferings } from '@/apiServices/index';
 import Carousel from 'primevue/carousel';
 import Avatar from 'primevue/avatar';
 import DataView from 'primevue/dataview';
@@ -278,6 +282,7 @@ import InputSwitch from 'primevue/inputswitch';
 import Chart from 'primevue/chart';
 import RecordMonetaryIncome from '../subComponents/RecordMonetaryIncome.vue';
 import EditWorshipService from './EditWorshipService.vue';
+import SheduleNewPerson from '../subComponents/SheduleNewPerson.vue';
 
 export default {
   props: ['worshipService'],
@@ -288,7 +293,8 @@ export default {
     InputSwitch,
     Chart,
     RecordMonetaryIncome,
-    EditWorshipService
+    EditWorshipService,
+    SheduleNewPerson
   },
   data() {
     return {
@@ -296,16 +302,19 @@ export default {
       numVisible: 3, // Número de elementos visibles en pantallas grandes
       showMonetaryIncome: false,
       showEditService: false,
-      chartData: {
-        labels: ['General', 'Especial', 'Misión', 'Mejoras del Templo'],
-        datasets: [
-          {
-            data: [200, 50, 100, 75], // Datos de las ofrendas
-            backgroundColor: ['#6b9c7a', '#8b7d6b', '#524741', '#a3c4ac'], // Colores más suaves y en armonía con la paleta
-            hoverBackgroundColor: ['#4b7e5c', '#756759', '#483e3b', '#6b9c7a'] // Colores para el hover, más oscuros pero no intensos
-          }
-        ],
-        options: {
+      showShduleNewPerson: false,
+    offerings: [],
+    chartData: {
+      labels: [],
+      datasets: [
+        {
+          data: [],
+          backgroundColor: ['#6b9c7a', '#8b7d6b', '#524741', '#a3c4ac'],
+          hoverBackgroundColor: ['#4b7e5c', '#756759', '#483e3b', '#6b9c7a']
+        }
+      ]
+    },
+    chartOptions:  {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
@@ -316,297 +325,8 @@ export default {
               }
             }
           }
-        }
-      },  
-      attends: [
-      {
-        person: {
-          id: 1,
-          first_name: 'Carlos',
-          last_name: 'Ramírez',
-          avatar: '', // No tiene avatar, se mostrarán las iniciales
-          email: 'carlos.ramirez@example.com',
-          phone: '555-1234',
-          type_person: 'Predicador',
-          isAttend: null
         },
-        service: {
-          id: 101,
-          name: 'Sermón'
-        }
-      },
-      {
-        person: {
-          id: 2,
-          first_name: 'Laura',
-          last_name: 'Martínez',
-          avatar: '', // No tiene avatar, se mostrarán las iniciales
-          email: 'laura.martinez@example.com',
-          phone: '555-5678',
-          type_person: 'Corista',
-          isAttend: null
-        },
-        service: {
-          id: 102,
-          name: 'Coro'
-        }
-      },
-      {
-        person: {
-          id: 3,
-          first_name: 'Santiago',
-          last_name: 'López',
-          avatar: 'https://randomuser.me/api/portraits/men/1.jpg', // URL del avatar
-          email: 'santiago.lopez@example.com',
-          phone: '555-9101',
-          type_person: 'Diácono',
-           isAttend: null
-        },
-        service: {
-          id: 103,
-          name: 'Ofrendas'
-        }
-      },
-      {
-        person: {
-          id: 4,
-          first_name: 'Isabel',
-          last_name: 'Gómez',
-          avatar: '', // No tiene avatar, se mostrarán las iniciales
-          email: 'isabel.gomez@example.com',
-          phone: '555-1213',
-          type_person: 'Lectura',
-           isAttend: null
-        },
-        service: {
-          id: 104,
-          name: 'Lectura de la Biblia'
-        }
-      },
-      {
-        person: {
-          id: 5,
-          first_name: 'Pedro',
-          last_name: 'Pérez',
-          avatar: 'https://randomuser.me/api/portraits/men/2.jpg', // URL del avatar
-          email: 'pedro.perez@example.com',
-          phone: '555-1415',
-          type_person: 'Músico',
-           isAttend: null
-        },
-        service: {
-          id: 105,
-          name: 'Piano'
-        }
-      },
-      {
-        person: {
-          id: 6,
-          first_name: 'Ana',
-          last_name: 'Fernández',
-          avatar: 'https://randomuser.me/api/portraits/women/3.jpg', // URL del avatar
-          email: 'ana.fernandez@example.com',
-          phone: '555-1617',
-          type_person: 'Oración',
-           isAttend: null
-        },
-        service: {
-          id: 106,
-          name: 'Oración'
-        }
-      },{
-        person: {
-          id: 1,
-          first_name: 'Carlos',
-          last_name: 'Ramírez',
-          avatar: '', // No tiene avatar, se mostrarán las iniciales
-          email: 'carlos.ramirez@example.com',
-          phone: '555-1234',
-          type_person: 'Predicador',
-          isAttend: null
-        },
-        service: {
-          id: 101,
-          name: 'Sermón'
-        }
-      },
-      {
-        person: {
-          id: 2,
-          first_name: 'Laura',
-          last_name: 'Martínez',
-          avatar: '', // No tiene avatar, se mostrarán las iniciales
-          email: 'laura.martinez@example.com',
-          phone: '555-5678',
-          type_person: 'Corista',
-          isAttend: null
-        },
-        service: {
-          id: 102,
-          name: 'Coro'
-        }
-      },
-      {
-        person: {
-          id: 3,
-          first_name: 'Santiago',
-          last_name: 'López',
-          avatar: 'https://randomuser.me/api/portraits/men/1.jpg', // URL del avatar
-          email: 'santiago.lopez@example.com',
-          phone: '555-9101',
-          type_person: 'Diácono',
-           isAttend: null
-        },
-        service: {
-          id: 103,
-          name: 'Ofrendas'
-        }
-      },
-      {
-        person: {
-          id: 4,
-          first_name: 'Isabel',
-          last_name: 'Gómez',
-          avatar: '', // No tiene avatar, se mostrarán las iniciales
-          email: 'isabel.gomez@example.com',
-          phone: '555-1213',
-          type_person: 'Lectura',
-           isAttend: null
-        },
-        service: {
-          id: 104,
-          name: 'Lectura de la Biblia'
-        }
-      },
-      {
-        person: {
-          id: 5,
-          first_name: 'Pedro',
-          last_name: 'Pérez',
-          avatar: 'https://randomuser.me/api/portraits/men/2.jpg', // URL del avatar
-          email: 'pedro.perez@example.com',
-          phone: '555-1415',
-          type_person: 'Músico',
-           isAttend: null
-        },
-        service: {
-          id: 105,
-          name: 'Piano'
-        }
-      },
-      {
-        person: {
-          id: 6,
-          first_name: 'Ana',
-          last_name: 'Fernández',
-          avatar: 'https://randomuser.me/api/portraits/women/3.jpg', // URL del avatar
-          email: 'ana.fernandez@example.com',
-          phone: '555-1617',
-          type_person: 'Oración',
-           isAttend: null
-        },
-        service: {
-          id: 106,
-          name: 'Oración'
-        }
-      },
-      {
-        person: {
-          id: 1,
-          first_name: 'Carlos',
-          last_name: 'Ramírez',
-          avatar: '', // No tiene avatar, se mostrarán las iniciales
-          email: 'carlos.ramirez@example.com',
-          phone: '555-1234',
-          type_person: 'Predicador',
-           isAttend: null
-        },
-        service: {
-          id: 101,
-          name: 'Sermón'
-        }
-      },
-      {
-        person: {
-          id: 2,
-          first_name: 'Laura',
-          last_name: 'Martínez',
-          avatar: '', // No tiene avatar, se mostrarán las iniciales
-          email: 'laura.martinez@example.com',
-          phone: '555-5678',
-          type_person: 'Corista',
-           isAttend: null
-        },
-        service: {
-          id: 102,
-          name: 'Coro'
-        }
-      },
-      {
-        person: {
-          id: 3,
-          first_name: 'Santiago',
-          last_name: 'López',
-          avatar: 'https://randomuser.me/api/portraits/men/1.jpg', // URL del avatar
-          email: 'santiago.lopez@example.com',
-          phone: '555-9101',
-          type_person: 'Diácono',
-           isAttend: null
-        },
-        service: {
-          id: 103,
-          name: 'Ofrendas'
-        }
-      },
-      {
-        person: {
-          id: 4,
-          first_name: 'Isabel',
-          last_name: 'Gómez',
-          avatar: '', // No tiene avatar, se mostrarán las iniciales
-          email: 'isabel.gomez@example.com',
-          phone: '555-1213',
-          type_person: 'Lectura',
-           isAttend: null
-        },
-        service: {
-          id: 104,
-          name: 'Lectura de la Biblia'
-        }
-      },
-      {
-        person: {
-          id: 5,
-          first_name: 'Pedro',
-          last_name: 'Pérez',
-          avatar: 'https://randomuser.me/api/portraits/men/2.jpg', // URL del avatar
-          email: 'pedro.perez@example.com',
-          phone: '555-1415',
-          type_person: 'Músico',
-          isAttend: null
-        },
-        service: {
-          id: 105,
-          name: 'Piano'
-        }
-      },
-      {
-        person: {
-          id: 6,
-          first_name: 'Ana',
-          last_name: 'Fernández',
-          avatar: 'https://randomuser.me/api/portraits/women/3.jpg', // URL del avatar
-          email: 'ana.fernandez@example.com',
-          phone: '555-1617',
-          type_person: 'Oración',
-          isAttend: null
-        },
-        service: {
-          id: 106,
-          name: 'Oración'
-        }
-      }
-    ],
+      attends: [],
     }
   },
   methods: {
@@ -644,11 +364,109 @@ export default {
     },
     getInitials(person) {
       if (!person) return '';
+      console.log('es aqui',person.person)
       return person.first_name.charAt(0) + person.last_name.charAt(0);
+    },
+    async getPeopleFun() {
+      try {
+        const response = await getPeople();
+        this.attends = response.map(person => ({
+          ...person,
+          isAttend: false
+        }));
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    async getAttendanceFun (){
+      try{
+        const response = await getAttendance(this.worshipService.id);
+        this.attends = this.attends.map(person => {
+          const attend = response.find(attend => attend.person_id === person.id);
+          if (attend) {
+            person.isAttend = true;
+          }
+          return person;
+        });
+      }catch(e){
+        console.log(e);
+      }
+    },
+    async registerAttendance(personId) {
+      try {
+        const response = await saveAttendance({personId,eventId:this.worshipService.id});
+        return response
+      } catch (e) {
+        console.log('e')
+        throw e
+      }
+    },
+    updateChartData() {
+    // Genera las etiquetas y datos dinámicamente
+    this.chartData.labels = this.offerings.map(item => item.type_contribution);
+    this.chartData.datasets[0].data = this.offerings.map(item => item.amount ?? 0);
+
+    // Ajusta los colores según la cantidad de tipos de contribución
+    const backgroundColor = ['#6b9c7a', '#8b7d6b', '#524741', '#a3c4ac'];
+    const hoverBackgroundColor = ['#4b7e5c', '#756759', '#483e3b', '#6b9c7a'];
+    
+    this.chartData.datasets[0].backgroundColor = backgroundColor.slice(0, this.chartData.labels.length);
+    this.chartData.datasets[0].hoverBackgroundColor = hoverBackgroundColor.slice(0, this.chartData.labels.length);
+  },
+    getTotalOfferings(){      
+      return this.offerings.reduce((acc, item) => acc + Number(item.amount ?? 0), 0).toFixed(2);
+    },
+    async deleteAttendanceFun(personId) {
+      try {        
+        const response = await deleteAttendance({personId,eventId:this.worshipService.id});
+        return response
+      } catch (e) {
+        console.log('e')
+
+        throw e
+      }
+    },
+    async onAttendChange(person) {
+      try{        
+        console.log('heyy',person)
+        console.log('heyy',this.attends)
+        if (person.isAttend) {
+          await this.registerAttendance(person.id);          
+        } else {
+          await this.deleteAttendanceFun(person.id)
+        }
+      this.$toast.add({severity:'success', summary: 'Success', detail: 'Asistencia actualizada',life: 3000});
+      }catch(e){
+        if(e.response.status === 400 || e.response.status === 401 || e.response.data.message==='Token Expired'){
+          this.$toast.add({severity:'error', summary: 'Error', detail: 'Ups algo paso intentalo denuevo',life: 3000});
+        }
+        const index = this.attends.findIndex(item => item.id === person.id);
+        this.attends[index].isAttend = !person.isAttend;
+
+        return
+      }
+    },      
+    async getOfferingsFun(){
+      try{
+        const response = await getOfferings(this.worshipService.id);
+        this.offerings = response;
+        this.updateChartData();
+      }catch(e){
+        console.log(e);
+      }
+    }  
+  },
+  computed:{
+    numAttends() {
+      const attends = this.attends.filter((person) => person.isAttend === true);
+      return attends.length;
     }
   },
   async mounted() {
+    await this.getOfferingsFun(this.worshipService.id);
     await this.getServicesAssigned();
+    await this.getPeopleFun();
+    await this.getAttendanceFun();
   },
 }
 </script>

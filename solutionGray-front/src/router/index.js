@@ -7,6 +7,7 @@ import ServantsView from '../views/ServantsView.vue'
 import InvitationBoarding from '@/views/InvitationBoarding.vue'
 import SingIn from '@/views/SingIn.vue'
 import MinisterServices from '@/views/MinisterServices.vue'
+import CursesView from '@/views/CursesView.vue'
 
 const routes = [
   {
@@ -48,7 +49,12 @@ const routes = [
     path: '/sing-in',
     name: 'sing-in',
     component: SingIn,
-  }
+  },
+  {
+    path: '/curses',
+    name: 'curses',
+    component: CursesView,
+  },
 ];
 
 const router = createRouter({
