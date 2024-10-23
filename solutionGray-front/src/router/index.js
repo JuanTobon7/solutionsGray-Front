@@ -55,6 +55,11 @@ const routes = [
     name: 'curses',
     component: CursesView,
   },
+  {
+    path: '/contributions',
+    name: 'contributions',
+
+  }
 ];
 
 const router = createRouter({

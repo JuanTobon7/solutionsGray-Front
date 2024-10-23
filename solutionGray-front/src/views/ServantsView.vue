@@ -66,20 +66,7 @@
                 </Tag>
               </template>
             </Column> 
-            <Column field="last_course" header="Último Curso" class="p-2 sm:p-4 text-center border-b border-primary-200 text-second-800">
-              <template #body="slotProps">
-                <Tag :value="slotProps.data.last_course">
-                  {{ slotProps.data.last_course || 'No definido' }}
-                </Tag>
-              </template>
-            </Column>
-            <Column field="status_course" header="Estado del Curso" class="p-2 sm:p-4 text-center border-b border-primary-200 text-second-800">
-              <template #body="slotProps">
-                <Tag :value="slotProps.data.status_course">
-                  <strong> {{ slotProps.data.status_course || 'No definido' }} </strong>
-                </Tag>
-              </template>
-            </Column>           
+              
           </DataTable>
         </div>
         

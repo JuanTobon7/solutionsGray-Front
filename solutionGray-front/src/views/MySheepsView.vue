@@ -127,9 +127,10 @@ export default {
       this.sheepsInfo = await getMySheeps ();
       this.loading = false;
     },
-    async handleSheepInfo(id) {
+    async handleSheepInfo(sheep) {
       try {
-        const sheepsInfo = await getSheepById(id);
+        console.log('sheep: ',sheep.data)
+        const sheepsInfo = await getSheepById(sheep.data.id);
         this.sheepInfoById = sheepsInfo;
         this.showSheepInfoCard = true;
         this.showEditInfoCard = false;
