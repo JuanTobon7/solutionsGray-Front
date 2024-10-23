@@ -1,6 +1,6 @@
 <template>
     <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
-        <div class="bg-white p-8 rounded-lg shadow-lg min-w-[70%] flex flex-col">
+        <div class="bg-white p-8 rounded-lg shadow-lg min-w-[70%] max-h-[95%] overflow-y-auto flex flex-col">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-semibold text-gray-800">Formulario de Registro</h2>
                 <span @click="closeForm" class="material-symbols-outlined text-2xl cursor-pointer text-gray-600 hover:text-gray-800 transition duration-200">close</span>

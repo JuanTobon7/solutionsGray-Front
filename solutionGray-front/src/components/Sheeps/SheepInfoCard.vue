@@ -46,26 +46,28 @@
       </div>
       
       <!-- Información de la Oveja y Resumen del Culto -->
-      <div class="w-full lg:w-2/3 grid grid-cols-1 lg:grid-cols-2 gap-4">
-        
+       <div class="w-full lg:w-2/3 bg-white shadow-lg shadow-primary-300 rounded-lg p-6 text-primary-800">        
+        <h2 class="text-lg font-bold mb-2">Información de la Oveja</h2>
+        <div class=" grid grid-cols-1 lg:grid-cols-2 gap-4  ">
+           
         <!-- Información de la Oveja -->
-        <div class="flex flex-col w-full h-full bg-white shadow-lg shadow-primary-300 rounded-lg p-6 text-primary-800">
-          <h2 class="text-lg font-bold mb-2">Información de la Oveja</h2>
+        <div>
           <p class="text-sm"><strong>Nombre:</strong> {{sheep.first_name + ' ' + sheep.last_name}}</p>
           <p class="text-sm"><strong>Correo electrónico:</strong> {{sheep.email}}</p>
           <p class="text-sm"><strong>Teléfono:</strong> {{sheep.phone}}</p>
         </div>
         
         <!-- Resumen del Culto con información del pastor -->
-        <div class="bg-white w-full h-full shadow-lg shadow-second-300 rounded-lg p-6 text-second-800">
-          <h3 class="text-lg font-bold mb-2">Informacion de su Guia</h3>
+        <div>
           <p class="text-sm"><strong>Cantidad de ovejas a cargo:</strong> N/A</p>
           <p class="text-sm"><strong>Servicio Usual:</strong> N/A</p>
           <p class="text-sm"><strong>Pastor:</strong> {{ pastor.first_name }} {{ pastor.last_name }}</p>
           <p class="text-sm"><strong>Correo del Pastor:</strong> {{ pastor.email }}</p>
+          <p class="text-sm"><strong>Cantidad de Visitas: </strong>{{totalVisits}}</p>
         </div>
         
       </div>
+    </div>
       
     </div>
     <div>
@@ -89,16 +91,20 @@
         <button @click="showRegistervisits = true" class="material-symbols-outlined rounded-md p-1 bg-second-500 text-white font-bold">add</button>
       </div>
       
-      <div class="grid grid-cols-3 gap-4">
-        <!-- Itera sobre las visitas para mostrar cada tarjeta -->
-        <div v-for="visit in visits" :key="visit.date" class="bg-white shadow-lg rounded-lg p-6">
-          <h3 class="text-lg font-bold text-second-800 mb-2">Visita del {{ visit.date }}</h3>
-          <p class="text-sm text-gray-600 mb-2">{{ visit.comment }}</p>
-          <p class="text-sm font-bold text-second-600">Estado: {{ visit.status }}</p>
-        </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <!-- Itera sobre las visitas para mostrar cada tarjeta -->
+      <div v-for="visit in visits" :key="visit.date" class="bg-white shadow-lg shadow-gray-300 rounded-lg p-4 relative overflow-hidden w-full h-full">
+        <div class="absolute top-0 left-0 w-full h-2 bg-second-500"></div>
+        <h3 class="text-lg font-bold text-second-800 mb-2 flex items-center gap-1">
+          <span class="material-symbols-outlined text-second-800">event</span>
+          {{ formatDate(visit.visit_date) }}
+        </h3>
+        <p class="text-sm text-gray-600 mb-2"><strong>Descripción:</strong> {{ visit.description }}</p>
       </div>
     </div>
-    <RegisterVisits v-if="showRegistervisits" @close="showRegistervisits = false" />
+    
+    </div>
+    <RegisterVisits v-if="showRegistervisits && sheep" @close="showRegistervisits = false" :sheepInfo="sheep" @update="getVisitsFun" />
   </section>
   
 </template>
@@ -106,6 +112,8 @@
 <script>
   import Avatar from 'primevue/avatar';
   import RegisterVisits from '../subComponents/RegisterVisits.vue';
+  import { getVisits } from '@/apiServices';
+
   export default {
     props: {
       sheep: {
@@ -134,25 +142,35 @@
           {name: 'Discipulado 6', homologation: 'Aprobado'},
           {name: 'Discipulado 7', homologation: 'Aprobado'},  
         ],
-        visits: [
-          { date: '02 de octubre, 2024', comment: 'La oveja ha mostrado una actitud más positiva en los cultos.', status: 'Mejorando' },
-          { date: '25 de septiembre, 2024', comment: 'Ha asistido con regularidad y participa activamente en los estudios.', status: 'Estable' },
-          { date: '10 de septiembre, 2024', comment: 'Se necesita más seguimiento, ha estado ausente.', status: 'En riesgo' }
-        ]
+        visits: []
       }
     },
     methods: {
       formatDate(dateString) {
-        if(!dateString) return 'N/A';
         const date = new Date(dateString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses en JavaScript son 0-indexados
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
+        const options = { month: 'long', day: 'numeric', weekday: 'long', hour: 'numeric', minute: 'numeric' };
+        let dateFormated = date.toLocaleDateString('es-ES', options);
+        dateFormated = dateFormated.charAt(0).toUpperCase() + dateFormated.slice(1);
+        return dateFormated.replace(/,/g, ' ');
       },
       getInitials(sheep) {
         return sheep.first_name.charAt(0) + sheep.last_name.charAt(0);
+      },
+      async getVisitsFun(){
+        try{          
+          this.visits = await getVisits(this.sheep.id);
+        }catch(error){
+          console.error(error);
+        }
       }
+    },
+    computed: {
+      totalVistis(){
+        return this.visits.length;
+      }
+    },
+    mounted() {
+      this.getVisitsFun();
     }
   };
   </script>

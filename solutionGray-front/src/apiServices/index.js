@@ -197,3 +197,13 @@ export const getOfferings = async(eventId)=>{
   const response = await api.get(`/get-offerings/${eventId}`);
   return response.data;
 }
+
+export const registerVisits = async (data)=>{
+  const response = await api.post('/register-visits',data);
+  return response.data;
+}
+
+export const getVisits = async(sheepId)=>{
+  const response = await api.get(`/get-visits/${sheepId}`);
+  return response.data;
+}

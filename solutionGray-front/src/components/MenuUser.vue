@@ -71,10 +71,23 @@
         </div>
 
         <!-- Enlaces de menú adicionales -->
-        <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
-          <i class="material-symbols-outlined">book</i>
-          <router-link to="/curses" class="block">Cursos</router-link>
+        <li @click="toogleCursesMenu" class="px-4 py-2 hover:bg-primary-600 flex flex-col gap-4">
+          <div class="flex items-center gap-4"> 
+            <i class="material-symbols-outlined text-primary-50">book</i>
+            <span>Cursos</span>
+          </div>
         </li>
+        <div v-if="showMenuCurses" class="pl-6 w-full flex flex-col">
+          <ul class="list-disc list-inside mb-2 w-auto px-2">
+            <li 
+              @click="redirectTo(item.path)" 
+              v-for="item in menuItemsCurses" 
+              :key="item.label" 
+              class="text-primary-50 px-2 py-2 hover:bg-primary-600 transition-all duration-300 rounded-md w-full">
+              {{ item.label }}
+            </li>
+          </ul>
+        </div>
         <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
           <i class="material-symbols-outlined">paid</i>
           <router-link to="/settings" class="block">Ingresos</router-link>
@@ -93,6 +106,7 @@ export default {
       showMenuChurch: false,
       showMenuPeople: false,
       showGroupsMenu: false,
+      showMenuCurses: false,
       menuItemsChurch: [
         { label: 'Mi iglesia', path: '/my-church' },
         { label: 'Cultos', path: '/worship-services' }
@@ -101,6 +115,11 @@ export default {
         { label: 'Servidores', path: '/servants' },
         { label: 'Ovejas', path: '/sheeps' },
         { label: 'Mis ovejas', path: '/my-sheeps' }
+      ],
+      menuItemsCurses: [
+        { label: 'Cursos', path: '/curses' },
+        { label: 'Mis Cursos', path: '/my-courses' },
+        {label: 'Curso a Cargo', path: '/course-in-charge'}
       ]
     };
   },
@@ -122,6 +141,9 @@ export default {
     },
     toogleGroupsMenu() {
       this.showGroupsMenu = !this.showGroupsMenu;
+    },
+    toogleCursesMenu() {
+      this.showMenuCurses = !this.showMenuCurses;
     },
     redirectTo(path) {
       this.$router.push(path);

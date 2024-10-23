@@ -88,7 +88,9 @@ import { mapGetters } from 'vuex';
 import Avatar from 'primevue/avatar';
 import Carousel from 'primevue/carousel';
 import Card from 'primevue/card';
-import { createWorshipService, assingService, updateWorshipService, updateAssingServices } from '@/apiServices/index';
+import { createWorshipService, assingService, updateWorshipService } from '@/apiServices/index';
+import { format } from 'date-fns-tz';
+
 
 export default {
   props: ['edit'],
@@ -159,8 +161,7 @@ export default {
 
         const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const date = new Date(this.culto.date);
-
-        const fullDate = date.toISOString();
+        const fullDate = format(new Date(date), "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
         const assignedServices = this.assignedServices.map(service => ({ personId: service.person.id, rolService: service.service.id }));
 
         const culto = {
