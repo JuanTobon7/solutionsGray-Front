@@ -207,3 +207,23 @@ export const getVisits = async(sheepId)=>{
   const response = await api.get(`/get-visits/${sheepId}`);
   return response.data;
 }
+
+export const saveCourses = async(data)=>{
+  const response = await api.post('/create-course',data);
+  return response.data;
+}
+
+export const getCourses = async()=>{
+  const response = await api.get('/get-courses');
+  return response.data;
+}
+
+export const saveChaptersCourse = async(data)=>{
+  const response = await api.post('/create-chapters-course',data);
+  return response.data;
+}
+
+export const getChaptersCourse = async(courseId)=>{
+  const response = await api.get(`/get-chapters-courses/${courseId}`);
+  return response.data;
+}

@@ -203,21 +203,22 @@ export default {
     removeOffering(index) {
       this.offeringsList.splice(index, 1);
     },
-    async saveDonorData() {
-      console.log('Datos de Ingreso:', {
-        currency: this.selectedCurrency,
-        person: this.selectedPerson,
-        offerings: this.offeringsList,
-        size: this.offeringsList.length
-      });
-     if(!this.selectedCurrency || !this.selectedPerson || this.offeringsList.length === 0) return;
-      await saveContribution({
+    async saveDonorData() {      
+     try{
+      if(!this.selectedCurrency || !this.selectedPerson || this.offeringsList.length === 0) return;
+      const result  = await saveContribution({
         currencyId: this.selectedCurrency.id,
         personId: this.selectedPerson.id,
         offerings: this.offeringsList,
         eventId: this.worshipService.id
       });
+      this.$toast.add({ severity: 'success', summary: 'Éxito', detail: result.message, life: 3000 });
       this.$emit('saved');
+     }catch(e){
+      if(e.response.message !== 'Token Expired' && e.response.status !== 401){
+        this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al registrar los ingresos', life: 3000 });
+      }
+     }
     },
     getInitials(person) {
       return person.first_name.charAt(0) + person.last_name.charAt(0);

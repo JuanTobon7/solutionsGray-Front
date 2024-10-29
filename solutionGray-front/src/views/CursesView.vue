@@ -11,8 +11,6 @@
       </div>
     </div>
     
-    <!-- Indicadores KPIs -->    
-
     <!-- Lista de Cursos usando DataView -->
     <DataView 
       :value="courses" 
@@ -26,7 +24,7 @@
       <template #header>
         <div class="w-full flex items-center gap-4">
           <Dropdown class="w-3/4" v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Ordenar por" @change="onSortChange" />
-          <button @click="toogleAddCourse" class="material-symbols-outlined p-1 rounded-md bg-second-500 text-white font-semibold">add</button>
+          <button @click="toggleAddCourse" class="material-symbols-outlined p-1 rounded-md bg-second-500 text-white font-semibold">add</button>
         </div>
       </template>
       <template #grid="slotProps">
@@ -35,15 +33,40 @@
             v-for="(item, index) in slotProps.items"
             :key="index"
             class="bg-white shadow-lg shadow-gray-300 rounded-lg p-4"
-            >
+          >
             <div>
+              <div class="w-full flex justify-end">
+                <button 
+                  class="relative flex items-center justify-center w-10 h-10 rounded-full border border-yellow-500 bg-gray-50 hover:bg-gray-100 transition-colors"
+                  title="Editar"
+                  @click="editCourse(item)"
+                >
+                  <span>
+                    <i class="material-symbols-outlined text-yellow-500 hover:text-yellow-600">edit</i>
+                  </span>
+                </button>
+              </div>
               <h3 class="text-lg font-semibold">{{ item.name }}</h3>
               <p class="text-gray-600">{{ item.description }}</p>
               <div class="mt-4">
-                <ProgressBar :value="item.progress" class="mb-2" />
-                <p class="text-sm text-gray-600">Módulos: {{ item.modules.length }}</p>
-                <p class="text-sm text-gray-600">Estudiantes Inscritos: {{ item.students }}</p>
-                <button @click="viewCourseDetails(item)" class="mt-4 w-full bg-second-500 text-white py-1 rounded-md">Ver Detalles</button>
+                <p class="text-sm text-gray-600 mb-4">Módulos: {{ item.cuantity_modules }}</p>
+                
+                <!-- Botón Ver Detalles -->
+                <button @click="viewCourseDetails(item)" class="mb-2 w-full bg-second-500 text-white py-1 rounded-md hover:bg-second-600 transition">Ver Detalles</button>
+                
+                <!-- Botón Inscribirse -->
+                <button 
+                  @click="toggleSheduleCourse(item)" 
+                  class="mb-2 w-full bg-second-500 text-white py-1 rounded-md hover:bg-second-600 transition">
+                  Inscribirse
+                </button>
+
+                <!-- Botón Asignar Profesor -->
+                <button 
+                  @click="toggleAssignProfessor(item)" 
+                  class="w-full bg-second-500 text-white py-1 rounded-md hover:bg-second-600 transition">
+                  Asignar Profesor
+                </button>
               </div>
             </div>
           </div>
@@ -52,82 +75,43 @@
     </DataView>
 
     <!-- Detalles del Curso Seleccionado (Modal) -->
-    <CourseDetails v-if="selectedCourse" :course="selectedCourse" @close="selectedCourse = null" />
-    <AddCourses v-if="showAddCourse" @close="toogleAddCourse" />
+    <CourseDetails v-if="showCourseDetails" :course="selectedCourse" @close="toogleCourseDetails" />
+    <AddCourses v-if="showAddCourse" @updateCourses="getCourses" @close="toggleAddCourse" />
+    <SheduleCourse v-if="showSheduleCourse" :course="selectedCourse" @close="toggleSheduleCourse" />
+    <AssignProfessorToCourse v-if="showAssignProfessor" :course="selectedCourse" @close="toggleAssignProfessor" />
+    <EditCourses v-if="showEditCourse" :course="selectedCourse" @close="toogleEditCourse" />
   </section>
 </template>
 
 <script>
 import DataView from 'primevue/dataview';
 import Dropdown from 'primevue/dropdown';
-import ProgressBar from 'primevue/progressbar';
 import CourseDetails from '@/components/Curses/CourseDetails.vue';
 import AddCourses from '@/components/Curses/AddCourses.vue';
+import SheduleCourse from '@/components/Curses/SheduleCourse.vue';
+import AssignProfessorToCourse from '@/components/Curses/AssignProfessorToCourse.vue';
+import EditCourses from '@/components/Curses/EditCourses.vue';
+import { getCourses } from '@/apiServices';
 
 export default {
   components: {
     DataView,
     Dropdown,
-    ProgressBar,
     CourseDetails,
     AddCourses,
+    SheduleCourse,
+    AssignProfessorToCourse,
+    EditCourses,
   },
   data() {
     return {
       // Datos ficticios para simular cursos
       showAddCourse: false,
-      courses: [
-        {
-          id: 1,
-          name: 'Discipulado Nivel 1',
-          description: 'Introducción al discipulado para nuevos creyentes.',
-          progress: 75,
-          students: 20,
-          modules: [
-            { name: 'Módulo 1', status: 'Completado' },
-            { name: 'Módulo 2', status: 'Completado' },
-            { name: 'Módulo 3', status: 'En Progreso' },
-          ],
-        },
-        {
-          id: 2,
-          name: 'Teología Básica',
-          description: 'Conceptos fundamentales de la teología cristiana.',
-          progress: 50,
-          students: 35,
-          modules: [
-            { name: 'Módulo 1', status: 'Completado' },
-            { name: 'Módulo 2', status: 'En Progreso' },
-            { name: 'Módulo 3', status: 'No Iniciado' },
-          ],
-        },
-        {
-          id: 3,
-          name: 'Evangelismo Práctico',
-          description: 'Estrategias y prácticas para compartir la fe.',
-          progress: 25,
-          students: 12,
-          modules: [
-            { name: 'Módulo 1', status: 'En Progreso' },
-            { name: 'Módulo 2', status: 'No Iniciado' },
-          ],
-        },
-      ],
-      courseOptions: [
-        { label: 'Discipulado Nivel 1', value: 'Discipulado Nivel 1' },
-        { label: 'Teología Básica', value: 'Teología Básica' },
-        { label: 'Evangelismo Práctico', value: 'Evangelismo Práctico' },
-      ],
-      churchOptions: [
-        { label: 'Iglesia Central', value: 'Iglesia Central' },
-        { label: 'Iglesia Norte', value: 'Iglesia Norte' },
-        { label: 'Iglesia Sur', value: 'Iglesia Sur' },
-      ],
-      statusOptions: [
-        { label: 'Completado', value: 'Completado' },
-        { label: 'En Progreso', value: 'En Progreso' },
-        { label: 'No Iniciado', value: 'No Iniciado' },
-      ],
+      showSheduleCourse: false,
+      showAssignProfessor: false,
+      showCourseDetails: false,
+      showEditCourse: false,
+      courses: [],      
       sortOptions: [
         { label: 'Nombre Ascendente', value: 'name' },
         { label: 'Nombre Descendente', value: '!name' },
@@ -140,24 +124,27 @@ export default {
       selectedCourse: null,
     };
   },
-  computed: {
-    totalStudents() {
-      return this.courses.reduce((acc, course) => acc + course.students, 0);
-    },
-    completedModules() {
-      return this.courses.reduce(
-        (acc, course) => acc + course.modules.filter((mod) => mod.status === 'Completado').length,
-        0
-      );
-    },
-    averageProgress() {
-      const totalProgress = this.courses.reduce((acc, course) => acc + course.progress, 0);
-      return (totalProgress / this.courses.length).toFixed(2);
-    },
-  },
-  methods: {
-    toogleAddCourse() {
+  methods: {    
+    toggleAddCourse() {
       this.showAddCourse = !this.showAddCourse;
+    },
+    editCourse(course) {
+      this.selectedCourse = course;
+      this.showEditCourse = true;
+    },   
+    toogleEditCourse() {
+      this.showEditCourse = !this.showEditCourse;
+    },
+    toggleSheduleCourse(course) {
+      this.selectedCourse = course;
+      this.showSheduleCourse = !this.showSheduleCourse;
+    },
+    toggleAssignProfessor(course) {
+      this.selectedCourse = course;
+      this.showAssignProfessor = !this.showAssignProfessor;
+    },
+    toogleCourseDetails() {
+      this.showCourseDetails = !this.showCourseDetails;
     },
     onSortChange(event) {
       const value = event.value;
@@ -166,7 +153,18 @@ export default {
     },
     viewCourseDetails(course) {
       this.selectedCourse = course;
+      this.showCourseDetails = true;
     },
+    async getCourses() {
+      try {
+        this.courses = await getCourses();
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  },
+  mounted() {
+    this.getCourses();
   },
 };
 </script>
