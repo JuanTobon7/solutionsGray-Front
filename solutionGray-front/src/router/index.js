@@ -8,6 +8,8 @@ import InvitationBoarding from '@/views/InvitationBoarding.vue'
 import SingIn from '@/views/SingIn.vue'
 import MinisterServices from '@/views/MinisterServices.vue'
 import CursesView from '@/views/CursesView.vue'
+import MyCourses from '@/views/MyCourses.vue'
+import CoursesInCharge from '@/views/CoursesInCharge.vue'
 
 const routes = [
   {
@@ -56,10 +58,20 @@ const routes = [
     component: CursesView,
   },
   {
+    path: '/my-courses',
+    name: 'my-courses',
+    component: MyCourses,
+  },
+  {
     path: '/contributions',
     name: 'contributions',
 
-  }
+  },
+  {
+    path: '/courses-in-charge',
+    name: 'courses-in-charge',
+    component: CoursesInCharge,
+  },
 ];
 
 const router = createRouter({

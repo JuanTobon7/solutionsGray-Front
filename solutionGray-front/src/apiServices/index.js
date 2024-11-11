@@ -227,3 +227,33 @@ export const getChaptersCourse = async(courseId)=>{
   const response = await api.get(`/get-chapters-courses/${courseId}`);
   return response.data;
 }
+
+export const assignCourses = async(data)=>{
+  const response = await api.post('/assing-courses',data);
+  return response.data;
+}
+
+export const getShedulesCourses = async(courseId)=>{
+  const response = await api.get(`/get-schedules-courses/${courseId}`);
+  return response.data;
+}
+
+export const sheduleCourses = async(data)=>{
+  const response = await api.post('/shedule-courses',data);
+  return response.data;
+}
+
+export const saveSheduleCourses = async(data)=>{
+  const response = await api.post('/save-shedules-courses',data);
+  return response.data;
+}
+
+export const getMyCourses = async()=>{
+  const response = await api.get('/get-my-courses');
+  return response.data;
+}
+
+export const getCoursesInCharge = async()=>{
+  const response = await api.get('/get-courses-in-charge');
+  return response.data;
+}

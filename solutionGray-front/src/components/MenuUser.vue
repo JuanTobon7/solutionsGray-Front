@@ -119,7 +119,7 @@ export default {
       menuItemsCurses: [
         { label: 'Cursos', path: '/curses' },
         { label: 'Cursos Inscritos', path: '/my-courses' },
-        {label: 'Curso a Cargo', path: '/course-in-charge'}
+        {label: 'Curso a Cargo', path: '/courses-in-charge'}
       ]
     };
   },
