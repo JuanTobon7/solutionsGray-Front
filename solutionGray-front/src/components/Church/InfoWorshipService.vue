@@ -2,7 +2,7 @@
   <section class="container w-full">
     <div class="flex flex-wrap w-full items-center justify-between gap-6 mb-10">
       <!-- Card de Culto (1/4 del ancho en pantallas medianas y grandes) -->
-      <Card class="flex-grow shadow-md shadow-gray-400 rounded-lg cursor-pointer">
+      <Card class="flex-grow shadow-md shadow-gray-400 rounded-lg">
         <div class="relative w-full h-48 bg-cover bg-center bg-image rounded-t-lg">          
         </div>
 

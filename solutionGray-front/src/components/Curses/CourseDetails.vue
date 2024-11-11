@@ -1,9 +1,9 @@
 <template>
     <section class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center">
-      <div class="container max-w-3xl bg-white rounded-lg shadow-lg p-6">
+      <div class="container max-w-3xl bg-white rounded-lg shadow-lg p-6 max-h-[80vh]">
         <!-- Header -->
         <div class="flex justify-between items-center border-b pb-4 mb-4">
-          <h2 class="text-2xl font-bold text-second-800">{{ courseData.title }}</h2>
+          <h2 class="text-2xl font-bold text-second-800">{{ courseData.name }}</h2>
           <button @click="$emit('close')" class="text-gray-600 hover:text-gray-800 transition">
             <i class="material-symbols-outlined">close</i>
           </button>
@@ -12,14 +12,15 @@
         <!-- Course Description -->
         <div class="mb-4">
           <p class="text-gray-700">{{ courseData.description }}</p>
+          <p class="text-gray-700">{{ courseData.publisher }}</p>
         </div>
   
         <!-- Chapter List -->
         <div>
-          <h3 class="text-xl font-semibold text-second-700 mb-2">Capítulos del Curso ({{ courseData.chapters.length }})</h3>
+          <h3 class="text-xl font-semibold text-second-700 mb-2">Capítulos del Curso ({{ course.cuantity_modules}})</h3>
           <ul class="space-y-2">
-            <li v-for="(chapter, index) in courseData.chapters" :key="index" class="border rounded-md p-3 bg-second-50">
-              <p class="text-lg font-medium text-second-800">Capítulo {{ index + 1 }}: {{ chapter.title }}</p>
+            <li v-for="(chapter, index) in chapters" :key="index" class="border rounded-md p-3 bg-second-50">
+              <p class="text-lg font-medium text-second-800">Capítulo {{ chapter.numb_chapter }}: {{ chapter.name }}</p>
             </li>
           </ul>
         </div>
@@ -35,22 +36,19 @@
   </template>
   
   <script>
+
+  import {getChaptersCourse} from '@/apiServices/index.js'
+
   export default {
-    props: {
-      courseData: {
-        type: Object,
-        default: () => ({
-          title: "Curso de Discipulado Avanzado",
-          description: "Un curso avanzado para profundizar en el discipulado, abarcando temas teóricos y prácticos.",
-          chapters: [
-            { title: "Introducción al Discipulado" },
-            { title: "El Corazón del Discipulado" },
-            { title: "Herramientas de Enseñanza" },
-            { title: "Técnicas de Liderazgo" },
-            { title: "Cómo Discipular a Otros" }
-          ]
-        })
-      }
+   props:['course'],
+    data() {
+      return {
+        courseData: this.course,
+        chapters: []
+      };
+    },
+    async mounted(){
+      this.chapters = await getChaptersCourse(this.courseData.id)
     }
   };
   </script>

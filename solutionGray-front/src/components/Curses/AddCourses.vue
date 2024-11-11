@@ -19,6 +19,18 @@
             />
           </div>
 
+          <div class="mb-4">
+            <label for="coursePublisher" class="block text-gray-600 font-semibold mb-2">Nombre de Editorial</label>
+            <input
+              type="text"
+              id="coursePublisher"
+              v-model="course.publisher"
+              placeholder="Introduce el nombre de la editorial"
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-second-500"
+              required
+            />
+          </div>
+
           <!-- Descripción del curso -->
           <div class="mb-4">
             <label for="courseDescription" class="block text-gray-600 font-semibold mb-2">Descripción del Curso</label>
@@ -36,7 +48,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">                
               <div v-for="(module, index) in course.modules" :key="index" class="flex items-center gap-2">
                   <!-- Número del capítulo -->
-                  <span class="text-gray-600 font-bold">Cap {{ index + 1 }}:</span>
+                  <span class="text-gray-600 font-bold">Cap {{ module.numbChapter }}:</span>
                   <input
                     type="text"
                     v-model="module.title"
@@ -64,7 +76,7 @@
             <button type="button" @click="$emit('close')" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition">
               Cancelar
             </button>
-            <button @click="submitCourse" type="submit" class="px-4 py-2 bg-second-500 text-white rounded-md hover:bg-second-600 transition">
+            <button type="submit" class="px-4 py-2 bg-second-500 text-white rounded-md hover:bg-second-600 transition">
               Guardar Curso
             </button>
           </div>
@@ -75,21 +87,24 @@
 </template>
 
 <script>
+import { saveCourses, saveChaptersCourse } from '@/apiServices/index';
+
 export default {
   data() {
     return {
       course: {
         name: '',
         description: '',
+        publisher: '',
         modules: [
-          { title: '' }
+          { title: '', numbChapter: 1 }
         ]
       }
     };
   },
   methods: {
     addModule() {
-      this.course.modules.push({ title: '' });
+      this.course.modules.push({ title: '', numbChapter: this.course.modules.length + 1 });
     },
     removeModule(index) {
       this.course.modules.splice(index, 1);
@@ -98,12 +113,28 @@ export default {
     reorderChapters() {
       this.course.modules = this.course.modules.map((module, i) => ({
         ...module,
-        chapter: i + 1
+        numbChapter: i + 1
       }));
     },
-    submitCourse() {
-      console.log('Course data:', this.course);
-      // Aquí puedes enviar los datos al backend o realizar la lógica de guardado
+    async submitCourse() {
+      try {
+        if(this.course.name === '' || this.course.description === '' || this.course.publisher === '') {
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Debes completar todos los campos.', life: 3000 });
+          return;
+        }
+        if(this.course.modules.length === 0) {
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Debes añadir al menos un módulo al curso.', life: 3000 });
+          return;
+        }
+        let response = await saveCourses(this.course);
+        this.$toast.add({ severity: 'success', summary: 'Curso Creado', detail: response.message, life: 3000 });
+        const course = response;
+        response = await saveChaptersCourse({ courseId: course.data.id, chapters: this.course.modules });
+        this.$toast.add({ severity: 'success', summary: 'Capitulos Asociados', detail: response.message, life: 3000 });
+        this.$emit('updateCourses');
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 };
