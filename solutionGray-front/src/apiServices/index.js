@@ -257,3 +257,8 @@ export const getCoursesInCharge = async()=>{
   const response = await api.get('/get-courses-in-charge');
   return response.data;
 }
+
+export const getStudentsCourse = async(courseId)=>{
+  const response = await api.get(`/get-students-course/${courseId}`);
+  return response.data;
+}
