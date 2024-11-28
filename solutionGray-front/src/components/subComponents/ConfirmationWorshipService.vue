@@ -161,7 +161,7 @@ export default {
 
         const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const date = new Date(this.culto.date);
-        const fullDate = format(new Date(date), "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
+        const fullDate = format(date, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
         const assignedServices = this.assignedServices.map(service => ({ personId: service.person.id, rolService: service.service.id }));
 
         const culto = {
