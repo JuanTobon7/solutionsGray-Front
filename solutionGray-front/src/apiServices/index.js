@@ -262,3 +262,13 @@ export const getStudentsCourse = async(courseId)=>{
   const response = await api.get(`/get-students-course/${courseId}`);
   return response.data;
 }
+
+export const getAttendanceCourse = async(courseId)=>{
+  const response = await api.get(`/get-attendance-course/${courseId}`);
+  return response.data;
+}
+
+export const registerAttendanceCourse = async(data)=>{
+  const response = await api.post('/register-attendance-course',data);
+  return response.data;
+}
