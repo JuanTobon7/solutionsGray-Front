@@ -17,7 +17,7 @@
             :sortOrder="sortOrder">
                 <template #header>
                     <div class="w-full flex items-center gap-4">
-                        <Dropdown class="w-3/4" v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Ordenar por" @change="onSortChange" />
+                        <Dropdown class="w-3/4" v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Ordenar por"  />
                         <button @click="toggleAddCourse" class="material-symbols-outlined p-1 rounded-md bg-second-500 text-white font-semibold">add</button>
                     </div>
                 </template>
@@ -31,10 +31,10 @@
                         >
                             <div>              
                                 <h3 class="text-lg font-semibold">{{ item.name }}</h3>
-                                <p class="text-gray-600 mb-2">{{ item.description }}</p>
-                                <ProgressBar :value="progress(item)" class="mb-4" />
+                                <p class="text-gray-600 mb-2">{{ item.description }}</p>                                
                                 <p class="text-sm text-gray-600 mb-2">Módulos: {{ item.cuantity_chapters }}</p>
                                 <p class="text-sm text-gray-600 mb-2">Estudiantes: {{ item.cuantity_students }}</p>
+                                <p class="text-sm text-gray-600">{{ item.status_course}}</p>
                             </div>
                         </div>
                     </div>  
@@ -53,13 +53,11 @@
     import {getCoursesInCharge} from '@/apiServices/index'
     import Dropdown from 'primevue/dropdown';
     import DataView from 'primevue/dataview';
-    import ProgressBar from 'primevue/progressbar';
     import InfoCourseInCharge from '@/components/Curses/InfoCourseInCharge.vue';
     export default {
         components: {
             Dropdown,
             DataView,
-            ProgressBar,
             InfoCourseInCharge
         },
         data() {
@@ -86,10 +84,7 @@
                 return this.courses.length
             }
         },
-        methods: {
-            progress(course){
-                return (course.progress/course.cuantity_chapters)*100
-            },
+        methods: {           
             async getCoursesInChargeFun(){
                 try{                    
                     const response = await getCoursesInCharge()
@@ -103,8 +98,8 @@
                 this.showInfoCourse = true
             }
         },
-        async mounted(){
-            await this.getCoursesInChargeFun()
+        mounted(){
+            this.getCoursesInChargeFun()
         }
     }
 </script>

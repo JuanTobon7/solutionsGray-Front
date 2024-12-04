@@ -272,3 +272,13 @@ export const registerAttendanceCourse = async(data)=>{
   const response = await api.post('/register-attendance-course',data);
   return response.data;
 }
+
+export const deleteAttendanceCourse = async(attendId)=>{
+  const response = await api.delete(`/delete-attendance-course/${attendId}`);
+  return response.data;
+}
+
+export const  enrrollNoUsersInCourse = async(data)=>{
+  const response = await api.post('/register-nouser-course',data);
+  return response.data;
+}
