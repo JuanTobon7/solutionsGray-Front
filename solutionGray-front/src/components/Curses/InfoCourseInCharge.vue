@@ -1,6 +1,6 @@
 <template>
     <AddNoUsersToCourse v-if="showAdd" @closeAdd="showAdd=false" :course="this.course" :students="this.students"/>
-    <EvaluteStudents v-if="showEvaluteStudents" @closeEvaluate="showEvaluteStudents=false" :course="this.course" :students="this.students"/>
+    <EvaluteStudents v-if="showEvaluteStudents" @closeEvaluate="closeEvaluate" :course="this.course" :students="this.students"/>
     <section class="container w-full">
         <div class="flex flex-wrap w-full items-start justify-between gap-4 mb-10">
             <!-- Tarjeta de Información Principal -->
@@ -401,6 +401,10 @@ export default {
         async getChapters() {
             const chapters = await getChaptersCourse(this.course.course_id);
             this.chapters = chapters;
+        },
+        async closeEvaluate(){
+            this.showEvaluteStudents=false
+            await this.getStudents();
         },
         async reload(){
            await this.getStudents();

@@ -44,9 +44,17 @@
                         <Column field="last_name" header="Apellido" class="p-2 border-b border-primary-200 text-second-800" />
                         <Column field="email" header="Email" class="p-2 border-b border-primary-200 text-second-800" />
                         <Column field="phone" header="Teléfono" class="p-2 border-b border-primary-200 text-second-800" />
+                        <Column field="attendance" header="Asistencia" class="p-2 border-b border-primary-200 text-second-800">
+                            <template #body="{ data }">
+                                <Tag :severity=severityAttendance(data.attendance)>
+                                    {{ data.attendance }}%
+                                </Tag>
+                            </template>
+                        </Column>
                         <Column header="Acciones" class="p-2 border-b border-primary-200 text-second-800">
                             <template #body="{ data }">
                                 <Dropdown 
+                                    @change="onStatusChange(data, $event)"
                                     v-model="data.status" 
                                     :options="options" 
                                     optionLabel="label"
@@ -80,6 +88,7 @@ import Column from 'primevue/column';
 import Avatar from 'primevue/avatar';
 import Dropdown from 'primevue/dropdown';
 import Tag from 'primevue/tag';
+import { evaluateStudent, stadisticAttendanceCourse } from '@/apiServices';
 
 export default {
     props: {
@@ -101,7 +110,7 @@ export default {
     },
     data() {
         return {
-            studentsData: JSON.parse(JSON.stringify(this.students)), // Copia profunda para evitar problemas reactivos
+            studentsData: this.students, // Inicializamos vacío para ser llenado dinámicamente
             options: [
                 { label: 'Aprobado', value: 'Aprobado' },
                 { label: 'Reprobado', value: 'Reprobado' },
@@ -120,6 +129,57 @@ export default {
             if (status === 'Reprobado') return 'danger';
             return 'info'; // Para otros estados
         },
+        async onStatusChange(student, newStatus) {
+            try {
+                const payload = { id: student.id, status: newStatus.value };
+                await evaluateStudent(payload);
+                this.$toast.add({
+                    severity: 'success',
+                    summary: 'Éxito',
+                    detail: 'Estudiante evaluado correctamente',
+                    life: 3000,
+                });
+            } catch (e) {
+                this.$toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No se pudo evaluar al estudiante. Intente nuevamente.',
+                    life: 3000,
+                });
+            }
+        },
+        async getStadisticAttendanceCourse() {
+            try {
+                const response = await stadisticAttendanceCourse(this.course.teacher_course_id);
+                // Usar una nueva referencia para asegurar la reactividad
+                const updatedStudents = this.students.map((student) => {
+                    const studentAttendance = response.find((attendance) => attendance.student_id === student.id);
+                    return {
+                        ...student,
+                        attendance: studentAttendance
+                            ? Math.round((studentAttendance.cuantity_attendance / studentAttendance.cuantity_classes) * 100)
+                            : 0,
+                    };
+                });
+                this.studentsData = [...updatedStudents]; // Forzamos una referencia nueva
+            } catch (e) {
+                this.$toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No se pudo obtener la asistencia de los estudiantes. Intente nuevamente.',
+                    life: 3000,
+                });
+            }
+        },
+        severityAttendance(attendance) {
+            if (attendance >= 80) return 'success';
+            if (attendance >= 50) return 'warning';            
+            return 'danger';
+        },
+    },
+    mounted() {
+        this.studentsData = [...this.students]; // Inicializamos con una copia reactiva de los datos
+        this.getStadisticAttendanceCourse();
     },
 };
 </script>
