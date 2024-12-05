@@ -9,7 +9,7 @@
                     </button>
                 </div>
                 <div>
-                    <h2 class="text-xl">Personas a Inscribir</h2>
+                    <h3 class="text-xl">Personas a Inscribir</h3>
                     <span class="text-sm text-gray-600">haz click sobre el estudiante a inscribir</span>
                     <DataTable
                         :value="people"
@@ -24,12 +24,12 @@
                         tableStyle="min-width: 50rem"
                         :disabled="isLoading"
                     >
-                        <Column field="first_name" header="Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
-                        <Column field="last_name" header="Apellido" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
-                        <Column field="email" header="Email" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
-                        <Column field="phone" header="Teléfono" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
-                        <Column field="type_person" header="Tipo de Persona" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
-                        <Column header="Inscrito" class="p-4 text-center border-b border-primary-200 text-second-800">
+                        <Column field="first_name" header="Nombre" class="p-4  border-b border-primary-200 text-second-800"></Column>
+                        <Column field="last_name" header="Apellido" class="p-4  border-b border-primary-200 text-second-800"></Column>
+                        <Column field="email" header="Email" class="p-4  border-b border-primary-200 text-second-800"></Column>
+                        <Column field="phone" header="Teléfono" class="p-4  border-b border-primary-200 text-second-800"></Column>
+                        <Column field="type_person" header="Tipo de Persona" class="p-4  border-b border-primary-200 text-second-800"></Column>
+                        <Column header="Inscrito" class="p-4  border-b border-primary-200 text-second-800">
                             <template #body="slotProps">
                                 <Tag  :severity="getSeverity(slotProps.data)">
                                     {{ slotProps.data.isStudent ? 'Inscrito' : 'No Inscrito' }}

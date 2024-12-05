@@ -1,5 +1,6 @@
 <template>
     <AddNoUsersToCourse v-if="showAdd" @closeAdd="showAdd=false" :course="this.course" :students="this.students"/>
+    <EvaluteStudents v-if="showEvaluteStudents" @closeEvaluate="showEvaluteStudents=false" :course="this.course" :students="this.students"/>
     <section class="container w-full">
         <div class="flex flex-wrap w-full items-start justify-between gap-4 mb-10">
             <!-- Tarjeta de Información Principal -->
@@ -16,7 +17,7 @@
             <!-- Información Básica -->
             <div class="bg-second-50 shadow-lg shadow-gray-300 rounded-lg px-4 py-6 md:w-1/2 lg:w-3/4">
                 <h3 class="text-xl font-semibold mb-3">Información Básica</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                     <div>
                         <p class="text-sm text-gray-800 mb-2">Nombre: {{ course.name }}</p>
                         <p class="text-sm text-gray-800 mb-2">Editorial: {{ course.publisher }}</p>
@@ -25,13 +26,18 @@
                         <p class="text-sm text-gray-800 mb-2">Descripción: {{ course.description }}</p>
                         <p class="text-sm text-gray-800 mb-2">Cantidad de Estudiantes: {{ course.cuantity_students }}</p>
                     </div>
-                    <div>                        
+                   
+                </div>
+                <div class=" flex items-center justify-around">
                         <button @click="$emit('close')" class="bg-second-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
                             Volver
                             <i class="material-symbols-outlined text-primary-50">arrow_back</i>
                         </button>
+                        <button v-if="progress === 100" @click="showEvaluteStudents = true" class="bg-second-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
+                            Evaluar Curso
+                            <i class="material-symbols-outlined text-white">assignment_turned_in</i>
+                        </button>
                     </div>
-                </div>
             </div>
         </div>
 
@@ -43,44 +49,44 @@
             <!-- Lista de Estudiantes por fecha -->
             <DataView :value="students" layout="list"  :paginator="true" :rows="5">
                 <template #header>
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                    <div class="mb-4 flex items-center gap-8">
-                <div class="flex items-center justify-between gap-2">
-                    <div class="flex items-center">
-                        <label for="date" class="text-sm text-gray-600">
-                            Seleccione la fecha para ver los asistentes:
-                        </label>
-                        <Calendar
-                            id="date"
-                            v-model="selectedDate"
-                            :show-icon="true"
-                            :dateFormat="'yy-mm-dd'"
-                            placeholder="Seleccione una fecha"
-                            class="w-full min-w-[200px] max-w-[300px] shadow appearance-none border border-second-100 rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        >
-                            <!-- Slot para personalizar las fechas -->
-                            <template #date="slotProps">
-                                <div 
-                                    class="p-4 rounded-full"
-                                    :class="{
-                                        'bg-green-300': verifyAssistance(slotProps.date),
-                                        
-                                    }"
-                                >
-                                    <p>{{ slotProps.date.day }}</p>
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="mb-4 flex items-center gap-8">
+                                <div class="flex items-center justify-between gap-2">
+                                    <div class="flex items-center">
+                                        <label for="date" class="text-sm text-gray-600">
+                                            Seleccione la fecha para ver los asistentes:
+                                        </label>
+                                        <Calendar
+                                            id="date"
+                                            v-model="selectedDate"
+                                            :show-icon="true"
+                                            :dateFormat="'yy-mm-dd'"
+                                            placeholder="Seleccione una fecha"
+                                            class="w-full min-w-[200px] max-w-[300px] shadow appearance-none border border-second-100 rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        >
+                                            <!-- Slot para personalizar las fechas -->
+                                            <template #date="slotProps">
+                                                <div 
+                                                    class="p-4 rounded-full"
+                                                    :class="{
+                                                        'bg-green-300': verifyAssistance(slotProps.date),
+                                                        
+                                                    }"
+                                                >
+                                                    <p>{{ slotProps.date.day }}</p>
+                                                </div>
+                                            </template>
+                                        </Calendar>
+
+                                    </div>
                                 </div>
-                            </template>
-                        </Calendar>
 
-                    </div>
-                </div>
-
-                <div class="flex items-center">                 
-                    <label for="date" class="text-sm text-gray-600">Seleccione el capitulo visto visto:</label>
-                    <Dropdown for="date" v-model="selectedChapter" :options="chapters" option-label="name" placeholder="Seleccione una capitulo" required
-                    class="w-full min-w-[200px] max-w-[300px] shadow appearance-none border border-second-100 rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-                </div>
-        </div>    
+                                <div class="flex items-center">                 
+                                    <label for="date" class="text-sm text-gray-600">Seleccione el capitulo visto visto:</label>
+                                    <Dropdown for="date" v-model="selectedChapter" :options="chapters" option-label="name" placeholder="Seleccione una capitulo" required
+                                    class="w-full min-w-[200px] max-w-[300px] shadow appearance-none border border-second-100 rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+                                </div>
+                        </div>    
                     <div>                  
                     <button @click="reload" class="bg-second-500 text-white p-2 rounded-full material-symbols-outlined mr-2">
                         refresh
@@ -92,7 +98,7 @@
                     </button>
                     </div>
                 </div>
-          </template>
+                 </template>
                 <template #list="slotProps">
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
                         <div
@@ -160,6 +166,7 @@ import Calendar from 'primevue/calendar';
 import { getStudentsCourse, getAttendanceCourse, registerAttendanceCourse, getChaptersCourse,deleteAttendanceCourse } from '@/apiServices/index';
 import { format, parseISO } from 'date-fns';
 import AddNoUsersToCourse from '../subComponents/AddNoUsersToCourse.vue';
+import EvaluteStudents from '../subComponents/EvaluteStudents.vue';
 
 export default {
     props: {
@@ -175,7 +182,8 @@ export default {
         InputSwitch,
         Dropdown,
         Calendar,
-        AddNoUsersToCourse
+        AddNoUsersToCourse,
+        EvaluteStudents
     },
     data() {
         return {
@@ -187,7 +195,8 @@ export default {
             courseProgress: 0,
             dateOptions: [],  // List of available dates
             rowsPerPage: 5,  // Number of rows per page
-            showAdd: false
+            showAdd: false,
+            showEvaluteStudents: false
         };
     },
     watch: {
@@ -237,7 +246,6 @@ export default {
                 console.log('No hay datos en attendance');
                 return 0; // Retorna 0 o lo que tenga sentido para tu lógica
                 }
-                console.log('attendance:',this.attendance)
                 const maxNumbChapter = Math.max(...this.attendance.map(item => item.numb_chapter));
                 const progress = Math.round((maxNumbChapter / this.course.cuantity_chapters) * 100);
                 return progress; 
@@ -283,8 +291,6 @@ export default {
                     this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Seleccione una fecha', life: 3000 });
                     throw new Error('No date selected');
                 }
-                console.log('array',this.attendance)
-                console.log('selectedCHapter',this.selectedChapter)
                 // Buscar si ya existe un registro de asistencia para el estudiante y la fecha seleccionada
                 const attendIndex = this.attendance.findIndex((att) => {
                     const attendanceDateFormatted = new Date(att.date).toISOString().split('T')[0];
@@ -294,13 +300,10 @@ export default {
                         attendanceDateFormatted === selectedDateFormatted
                     );
                 });
-                console.log("attendIndex", attendIndex);
                 const indexPerson = this.students.findIndex((student) => student.student_course_id === item.student_course_id);
-                console.log("Estudiante:", this.students[indexPerson]);
 
                 // Si el switch está apagado y ya existe un registro de asistencia, lo eliminamos
                 if (!this.students[indexPerson].isAttend && attendIndex !== -1) {
-                    console.log("Estudiante a quitar asistencia:", this.students[indexPerson]);
                     const attend = this.attendance[attendIndex];
                     await deleteAttendanceCourse(attend.id);
 
