@@ -6,7 +6,7 @@
                 <span class="text-primary-900 text-xl">{{ user.name }}</span>
             </div>
         </template>              
-        <template #item="{ item, props }">
+        <template #item="{ item }">
             <a class="flex items-center gap-3 hover:bg-primary-300 p-2 cursor-pointer rounded-md">
                 <span class="text-primary-900" :class="item.icon" />
                 <span class="text-primary-900">{{ item.label }}</span>
