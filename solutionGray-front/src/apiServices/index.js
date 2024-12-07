@@ -272,3 +272,23 @@ export const registerAttendanceCourse = async(data)=>{
   const response = await api.post('/register-attendance-course',data);
   return response.data;
 }
+
+export const deleteAttendanceCourse = async(attendId)=>{
+  const response = await api.delete(`/delete-attendance-course/${attendId}`);
+  return response.data;
+}
+
+export const  enrrollNoUsersInCourse = async(data)=>{
+  const response = await api.post('/register-nouser-course',data);
+  return response.data;
+}
+
+export const stadisticAttendanceCourse = async(courseId)=>{
+  const response = await api.get(`/stadistic-attendance-course/${courseId}`);
+  return response.data;
+}
+
+export const evaluateStudent = async(data)=>{
+  const response = await api.put(`/evaluate-student/${data.id}`,data);
+  return response.data;
+}
