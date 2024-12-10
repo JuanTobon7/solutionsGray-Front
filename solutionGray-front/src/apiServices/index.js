@@ -292,3 +292,14 @@ export const evaluateStudent = async(data)=>{
   const response = await api.put(`/evaluate-student/${data.id}`,data);
   return response.data;
 }
+
+export const checkQualifiedRating = async()=>{
+  const response = await api.get(`/check-qualified`);
+  return response.data;
+}
+
+export const getRatingsByService = async(serviceId)=>{
+  const response = await api.get(`/average-rating-servants/${serviceId}`);
+  console.log('response: ',response)
+  return response.data;
+}
