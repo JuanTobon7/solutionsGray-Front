@@ -303,3 +303,8 @@ export const getRatingsByService = async(serviceId)=>{
   console.log('response: ',response)
   return response.data;
 }
+
+export const ratingService = async (data) => {
+  const response = await api.post('/qualify-service',data)
+  return response.data;
+}
