@@ -2,13 +2,22 @@ import { createStore } from 'vuex';
 import VuexPersistence from 'vuex-persist';
 
 //Configura vuex-persist para usar sessionStorage
-const vuexSession = new VuexPersistence({
+const sessionPersist = new VuexPersistence({
   storage: window.sessionStorage, // Cambia a localStorage si quieres persistencia entre sesiones
   reducer: (state) => {
-    const { tempEmail, ...persistedState } = state;  // Excluir tempEmail
+    const { tempEmail,qualifyService, ...persistedState } = state;  // Excluir tempEmail
     return persistedState;
   }
 })
+
+const localPersist = new VuexPersistence({
+  storage: window.localStorage, // Cambia a localStorage si quieres persistencia entre sesiones
+  reducer: (state) => {
+    const { qualifyService} = state;  // Excluir tempEmail
+    return qualifyService;
+  }
+
+});  // Por defecto usa localStorage
 
 
 const store = createStore({
@@ -21,6 +30,7 @@ const store = createStore({
       worshipService: null,
       assignedServices: [],
       tempEmail: null,  // Estado temporal para el email de los invitados
+      qualifyService: null
     };
   },
   getters: {
@@ -140,7 +150,7 @@ const store = createStore({
       commit('flushTempEmail');  // Acción para limpiar el email temporal
     }
   },
-  plugins: [vuexSession.plugin],  // Este plugin no afecta a `tempEmail`
+  plugins: [sessionPersist.plugin, localPersist.plugin],  // Este plugin no afecta a `tempEmail`
 });
 
 export default store;
