@@ -14,6 +14,10 @@
     <!-- Menú de navegación -->
     <nav>
       <ul class="text-primary-50 text-xl">
+        <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
+          <i class="material-symbols-outlined">home</i>
+          <router-link to="/" class="block">Inicio</router-link>
+        </li>
         <!-- Sección de la iglesia -->
         <li @click="toggleChurchMenu" class="px-4 py-2 hover:bg-primary-600 flex flex-col gap-4">
           <div class="flex items-center gap-4"> 
@@ -88,10 +92,7 @@
             </li>
           </ul>
         </div>
-        <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4">
-          <i class="material-symbols-outlined">paid</i>
-          <router-link to="/settings" class="block">Ingresos</router-link>
-        </li>
+        
       </ul>
     </nav>
   </aside>

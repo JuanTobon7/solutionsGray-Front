@@ -348,6 +348,7 @@ export default {
             id: service.id,
             first_name: service.first_name,
             last_name: service.last_name,
+            serviceId: service.service_id,
             avatar: service.avatar || '', // Si no tiene avatar, no mostrar imagen
             email: service.email,
             phone: service.phone
@@ -454,7 +455,8 @@ export default {
       }catch(e){
         console.log(e);
       }
-    }  
+    }
+    
   },
   computed:{
     numAttends() {

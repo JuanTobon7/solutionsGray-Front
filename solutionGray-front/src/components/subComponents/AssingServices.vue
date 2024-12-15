@@ -8,7 +8,8 @@
         <label for="service" class="block text-gray-700 text-sm font-bold mb-2">Servicio</label>
         <Dropdown 
           v-model="selectedService" 
-          :options="services" 
+          :options="services"
+          @change="getRatingsByServiceFun"
           optionLabel="name" 
           placeholder="Seleccione un servicio"
           class="w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -17,22 +18,45 @@
 
       <div class="mb-4">
         <label for="person" class="block text-gray-700 text-sm font-bold mb-2">Persona</label>
-        <Dropdown 
-          v-model="selectedServant" 
-          :options="computedServants" 
-          optionLabel="name" 
+        <Dropdown
+          v-model="selectedServant"
+          :disabled="selectedService === null"
+          :options="computedServants"
+          optionLabel="name"
           placeholder="Seleccione una persona"
           class="w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         >
-        <template #option="slotProps">
-          <div class="w-full flex items-center justify-between">
-            <p>{{ slotProps.option.first_name + ' ' + slotProps.option.last_name }}</p>            
-            <button class="material-symbols-outlined text-gray-600 hover:scale-110">
-              info
-            </button>
-          </div>
-        </template>
+          <template #option="slotProps">
+            <div
+              v-if="selectedService !== null"
+              class="w-full flex items-center justify-between"
+            >
+            <div class="flex items-center gap-4">
+              <Avatar
+                  v-if="slotProps.option.avatar"
+                  :image="slotProps.option.avatar"
+                  shape="circle"
+                />
+                <Avatar
+                  v-else
+                  :label="getInitials(slotProps.option)"
+                  class="bg-primary-100 flex items-center justify-center text-primary-800"
+                  shape="circle"
+                />
+                <p>{{ slotProps.option.first_name + ' ' + slotProps.option.last_name }}</p>
+                <Rating v-model="slotProps.option.rating" readonly :stars="5" :cancel="false"/>
+                <p>Cantidad de Servicios: {{slotProps.option.cuantity_services || 0}}</p>
+              </div>
+              <button
+                class="material-symbols-outlined text-gray-600 hover:scale-110"
+                @click.stop="showInfo(slotProps.option)"
+              >
+                info
+              </button>
+            </div>
+          </template>
         </Dropdown>
+       
       </div>
 
       <div class="flex justify-end">
@@ -75,6 +99,7 @@
                 />
               </div>
               <p class="text-lg font-semibold text-center">{{ slotProps.data.person.first_name + ' ' + slotProps.data.person.last_name }}</p>
+              <p>Rating: {{slotProps.data.rating}}</p>
               <p class="text-sm text-center text-gray-600">{{ slotProps.data.service.name }}</p>
               <div class="flex space-x-2 mt-4">
                 <button @click="editAssignment(slotProps.index)" class="material-symbols-outlined text-orange-500 cursor-pointer">
@@ -111,8 +136,9 @@ import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
 import Carousel from 'primevue/carousel';
 import Avatar from 'primevue/avatar';
+import Rating from 'primevue/rating';
 import EditAssignedService from './EditedAssignedService.vue'; // Import the new component
-import { getServants, getRolesServices, deleteAssingServices } from '@/apiServices/index';
+import { getServants, getRolesServices, deleteAssingServices,getRatingsByService } from '@/apiServices/index';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -121,6 +147,7 @@ export default {
     Button,
     Carousel,
     Avatar,
+    Rating,
     EditAssignedService, // Register the component
   },
   data() {
@@ -239,7 +266,37 @@ export default {
       } catch (error) {
         console.error("Error fetching servants:", error);
       }
-    }
+    },
+    async getRatingsByServiceFun() {
+      if (!this.selectedService) return;
+
+      try {
+        console.log("Selected service:", this.selectedService.id);
+        
+        // Obtener respuesta
+        const response = await getRatingsByService(this.selectedService.id);
+        console.log("Ratings by service:", response);
+
+        // Verifica si response tiene una estructura esperada
+        const ratingsArray = Array.isArray(response) ? response : Array(response); // Ajusta según estructura
+        console.log("Ratings array:", ratingsArray);
+
+        // Actualizar los sirvientes con ratings
+        this.servants = this.servants.map((servant) => {
+          const rating = ratingsArray.find((rating) => rating.servant_id	 === servant.id);
+          return {
+            ...servant,
+            cuantity_services: rating ? rating.cuantity_services : 0,
+            rating: rating ? Math.round(rating.average_rating) : 0,
+          };
+        });
+        console.log("Servants with ratings:", this.servants);
+      } catch (e) {
+        this.servants = this.servants.map((servant) => ({ ...servant, rating: 0 }));
+        console.error("Error fetching ratings:", e);
+      }
+    },
+
   },
   async mounted() {
     await this.getRolesServices();

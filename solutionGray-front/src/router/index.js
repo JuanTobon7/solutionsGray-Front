@@ -10,8 +10,14 @@ import MinisterServices from '@/views/MinisterServices.vue'
 import CursesView from '@/views/CursesView.vue'
 import MyCourses from '@/views/MyCourses.vue'
 import CoursesInCharge from '@/views/CoursesInCharge.vue'
+import HomeUser from '@/views/HomeUser.vue'
 
 const routes = [
+  {
+    path: '/',
+    name: 'home',
+    component: HomeUser,
+  },
   {
     path: '/my-church',
     name: 'church',
