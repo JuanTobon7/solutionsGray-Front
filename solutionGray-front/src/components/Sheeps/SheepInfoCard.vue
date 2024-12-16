@@ -1,10 +1,7 @@
 <template>
   <section class="w-full container mx-auto p-4">
     <div class="w-full flex justify-between mb-6">
-      <h2 class="text-2xl text-second-800 font-semibold mb-4">Información y trayectoria de la Oveja</h2>
-      <button @click="$emit('close')" class="bg-second-500 text-white px-3 py-1 rounded-md shadow-md hover:scale-105 transition-transform flex items-center gap-2">
-        <i class="material-symbols-outlined text-md">arrow_back</i> Volver
-      </button>
+      <h2 class="text-2xl text-second-800 font-semibold mb-4">Información y trayectoria de la Oveja</h2>      
     </div>
     <!-- Contenedor principal -->
     <div class="flex flex-wrap lg:flex-nowrap w-full items-start justify-between gap-6 mb-10">
@@ -65,7 +62,11 @@
           <p class="text-sm"><strong>Correo del Pastor:</strong> {{ pastor.email }}</p>
           <p class="text-sm"><strong>Cantidad de Visitas: </strong>{{totalVisits}}</p>
         </div>
-        
+        <div class="flex items-center">          
+          <button @click="$emit('close')" class="bg-second-500 text-white px-3 py-1 rounded-md shadow-md hover:scale-105 transition-transform flex items-center gap-2">
+            <i class="material-symbols-outlined text-md">arrow_back</i> Volver
+          </button>
+        </div>
       </div>
     </div>
       

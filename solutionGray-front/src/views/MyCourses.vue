@@ -8,7 +8,7 @@
         placeholder="Filtrar por estado" 
         :options="statusOptions" 
         v-model="selectedStatus" 
-        class="w-40" 
+        class="w-auto border" 
         @change="filterCourses" 
       />
     </div>
@@ -42,7 +42,7 @@
             Ver Detalles
           </button>
           <button 
-            v-if="course.status === 'En curso'" 
+            v-if="course.status === 'En progreso'" 
             @click="unenroll(course)" 
             class="text-red-500 hover:underline"
           >
@@ -56,10 +56,11 @@
     <p v-else class="text-gray-500 text-center">No tienes cursos inscritos en esta categoría.</p>
   </section>
 </template>
+
 <script>
 import Dropdown from 'primevue/dropdown';
 import Tag from 'primevue/tag';
-import { getMyCourses } from '@/apiServices'; // Asegúrate de importar correctamente
+import { getMyCourses } from '@/apiServices';
 
 export default {
   components: {
@@ -69,14 +70,9 @@ export default {
   data() {
     return {
       selectedStatus: null,
-      statusOptions: [
-        { label: 'Todos', value: null },
-        { label: 'En progreso', value: 'En progreso' },
-        { label: 'Aprobado', value: 'Aprobado' },
-        { label: 'Reprobado', value: 'Reprobado' },
-      ],
-      courses: [],
-      filteredCourses: [],
+      statusOptions: ['Todos','En progreso','Aprobado','Reprobado'],
+      courses: [],           // Cursos completos
+      filteredCourses: [],   // Cursos filtrados
     };
   },
   methods: {
@@ -90,42 +86,47 @@ export default {
       }
     },
     filterDuplicateCourses(courses) {
+      // Eliminar cursos duplicados, manteniendo el estado más relevante
       const uniqueCourses = {};
 
       courses.forEach(course => {
         const { course_id, status } = course;
 
-        // Si el curso ya existe y su estado es "Completado", no reemplazar
-        if (uniqueCourses[course_id]) {
-          if (uniqueCourses[course_id].status !== 'Completado' && status === 'Completado') {
-            uniqueCourses[course_id] = course;
-          }
-        } else {
+        // Priorizar estado "Aprobado" y "En progreso"
+        if (!uniqueCourses[course_id] || this.isHigherPriority(status, uniqueCourses[course_id].status)) {
           uniqueCourses[course_id] = course;
         }
       });
 
       return Object.values(uniqueCourses);
     },
+    isHigherPriority(newStatus, currentStatus) {
+      const priority = {
+        'Aprobado': 3,
+        'En progreso': 2,
+        'Reprobado': 1,
+      };
+
+      return (priority[newStatus] || 0) > (priority[currentStatus] || 0);
+    },
     filterCourses() {
-      if (this.selectedStatus) {
-        this.filteredCourses = this.courses.filter(course => course.status === this.selectedStatus);
-      } else {
-        this.filteredCourses = this.courses;
-      }
+      // Filtrar cursos basados en el estado seleccionado
+      this.filteredCourses = this.selectedStatus
+        ? this.courses.filter(course => course.status === this.selectedStatus || this.selectedStatus === 'Todos')
+        : this.courses;
     },
     viewDetails(course) {
       // Acción para ver detalles del curso
       console.log('Ver detalles del curso:', course);
     },
     unenroll(course) {
-      // Acción para cancelar inscripción
+      // Acción para cancelar inscripción del curso
       console.log('Cancelar inscripción en el curso:', course);
       course.status = 'Cancelado';
       this.filterCourses();
     },
     statusSeverity(status) {
-      // Devuelve el nivel de severidad para el Tag
+      // Definir estilos según el estado
       switch (status) {
         case 'En progreso':
           return 'info';
@@ -133,8 +134,10 @@ export default {
           return 'success';
         case 'Reprobado':
           return 'danger';
-        default:
+        case 'Cancelado':
           return 'warning';
+        default:
+          return 'secondary';
       }
     },
   },
