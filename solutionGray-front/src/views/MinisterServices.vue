@@ -19,12 +19,12 @@
       <!-- Barra de búsqueda y botones -->
       <div class="flex flex-col sm:flex-row items-center gap-2 mb-4 w-full">
         <label for="search" class="text-second-800 text-lg sm:text-xl">Buscar</label>
-        <input
-          type="text"
-          id="search"
-          placeholder="Buscar"
-          class="p-2 border border-gray-300 rounded-md w-full outline-none bg-second-50"
-        />
+        <input 
+            v-model="searchQuery" 
+            type="text" 
+            placeholder="Buscar por nombre sermon o tipo de culto" 
+            class="w-full p-2 border border-gray-200 focus:border-green-300 rounded-md"
+          />      
         <button
           @click="toggleHistory"
           class="mt-2 sm:mt-0 bg-primary-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base">
