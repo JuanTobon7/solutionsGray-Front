@@ -34,7 +34,13 @@
                                 <p class="text-gray-600 mb-2">{{ item.description }}</p>                                
                                 <p class="text-sm text-gray-600 mb-2">Módulos: {{ item.cuantity_chapters }}</p>
                                 <p class="text-sm text-gray-600 mb-2">Estudiantes: {{ item.cuantity_students }}</p>
-                                <p class="text-sm text-gray-600">{{ item.status_course}}</p>
+                                <div class="mb-2 flex items-center gap-2">
+                                    <Tag 
+                                        :value="item.status_course" 
+                                        :severity="statusSeverity(item.status_course)" 
+                                        rounded 
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>  
@@ -53,11 +59,13 @@
     import {getCoursesInCharge} from '@/apiServices/index'
     import Dropdown from 'primevue/dropdown';
     import DataView from 'primevue/dataview';
+    import Tag from 'primevue/tag';
     import InfoCourseInCharge from '@/components/Curses/InfoCourseInCharge.vue';
     export default {
         components: {
             Dropdown,
             DataView,
+            Tag,
             InfoCourseInCharge
         },
         data() {
@@ -96,7 +104,20 @@
             showCourse(course){
                 this.selectedCourse = course
                 this.showInfoCourse = true
+            },
+            statusSeverity(status) {
+            // Devuelve el nivel de severidad para el Tag
+            switch (status) {
+                case 'En progreso':
+                return 'secondary';
+                case 'Aprobado':
+                return 'success';
+                case 'Reprobado':
+                return 'danger';
+                default:
+                return 'warning';
             }
+            },
         },
         mounted(){
             this.getCoursesInChargeFun()

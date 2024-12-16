@@ -56,27 +56,30 @@
     <div class="w-full mb-4">      
       <h2 class="text-2xl text-second-800 font-semibold mb-4" >Estadisticas por sus Servicios</h2>
       <div class="grid grid-cols-2 md:grid-cols-5 gap-4">       
-        <div v-for="item in services" :key="item.name" class="flex-grow">
+        <div v-for="item in services" :key="item.rol_servant" class="flex-grow">
           <div class="bg-white shadow-lg shadow-gray-300 rounded-lg p-4 mb-4">          
-            <h3 class="text-lg font-semibold text-gray-900">{{ item.name }}</h3>
-            <Rating v-model="item.calification" :readonly="true" :stars="5" :cancel="false" :style="{ 'font-size': '1.0rem' }" />
-            <p class="text-gray-600">Calificación: {{ item.calification }}</p>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ item.rol_servant }}</h3>
+            <Rating v-model="item.average_rating" :readonly="true" :stars="5" :cancel="false" />
           </div>
         </div>
       </div>    
     </div>
 
     <!-- Cursos Hechos-->
-    <div class="w-full mb-4">      
+    <div v-if="curses.length !== 0" class="w-full mb-4">      
       <h2 class="text-2xl text-second-800 font-semibold mb-4" >Cursos Aprobados</h2>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">        
         <div v-for="item in curses" :key="item.name">
           <div class="bg-white shadow-lg shadow-gray-300 rounded-lg p-4 mb-4">          
             <h3 class="text-lg font-semibold text-gray-900">{{ item.name }}</h3>
-            <p class="text-gray-600">{{ item.homologation }}</p>
+            <p class="text-gray-600">{{ item.status }}</p>
           </div>
         </div>
       </div>    
+    </div>
+    <div v-else class="w-full mb-4">      
+      <h2 class="text-2xl text-second-800 font-semibold mb-4" >Cursos Aprobados</h2>
+      <p class="text-gray-600">No hay cursos a mostrar por el momento</p>
     </div>
     <!-- Ovejas a cargo -->
    <div>
@@ -154,7 +157,7 @@
   <script>
   import  Avatar  from 'primevue/avatar';
   import DataView from 'primevue/dataview';
-  import { getSheepsByServant } from '@/apiServices';
+  import { getSheepsByServant,getRatingByServant,getCoursesByPeople } from '@/apiServices';
   import Rating from 'primevue/rating';
   
   export default {
@@ -173,22 +176,8 @@
     data() {
       return {
         sheeps: [],        
-        services: [
-          {name: 'Ujier', calification: 5},
-          {name: 'Alabanza', calification: 4},
-          {name: 'Director', calification: 3},
-          {name: 'Predicador', calification: 2},
-          {name: 'Otro', calification: 1},
-        ],
-        curses: [
-          {name: 'Discipulado 1', homologation: 'Homologado'},
-          {name: 'Discipulado 2', homologation: 'Homologado'},
-          {name: 'Discipulado 3', homologation: 'Homologado'},
-          {name: 'Discipulado 4', homologation: 'Aprobado'},
-          {name: 'Discipulado 5', homologation: 'Aprobado'},
-          {name: 'Discipulado 6', homologation: 'Aprobado'},
-          {name: 'Discipulado 7', homologation: 'Aprobado'},  
-        ]
+        services: [],
+        curses: []
       };
     },
     methods: {
@@ -208,12 +197,32 @@
         const sheeps = await getSheepsByServant(id);
         this.sheeps = sheeps;
       },
+      async getRating() {
+        if(!this.servants){
+          return
+        }
+        const id = this.servants.id;
+        const services = await getRatingByServant(id);
+        this.services = services;
+      },
+      async getCourses() {
+        if(!this.servants){
+          return
+        }
+        const id = this.servants.id;
+        const curses = await getCoursesByPeople(id);
+        this.curses = curses.filter((item) => item.status !== 'Reprobado');
+      },
     },
     async mounted() {
       try{        
         await this.getSheeps();
+        await this.getRating();
+        await this.getCourses();
       }catch(e){
         await this.getSheeps();
+        await this.getRating();
+        await this.getCourses();
       }
     },
   };
