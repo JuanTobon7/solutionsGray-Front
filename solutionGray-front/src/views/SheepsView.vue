@@ -18,8 +18,7 @@
     </div>
 
     <!-- Sección principal -->
-      
-
+    <div v-else>
       <!-- Skeleton Loader -->
       <div v-if="loading" class="p-6 space-y-4">
         <div class="animate-pulse">
@@ -31,30 +30,42 @@
       </div>
 
       <!-- DataTable -->
-      <div v-else-if="sheepInfoById == null" class="overflow-x-auto">
+      <div v-else class="overflow-x-auto">
         <DataTable 
           :value="sheepsInfo" 
           paginator
           rows="10"
           selectionMode="single"
           v-model:selection="sheepInfoById"
-
           @rowSelect="handleSheepInfo"
           class="w-full"
         >
-        <template #header>
-          <div class="flex items-center justify-between gap-2">
-            <h1 class="text-3xl text-second-900 font-bold">Ovejas</h1>
-            <div class="flex items-center gap-2">      
-              <button @click="getSheeps" class="bg-second-500 text-white p-2 rounded-full material-symbols-outlined">
-                refresh
-              </button>
-              <button @click="openAddSheep" class="bg-second-500 text-white p-2 rounded-full material-symbols-outlined">
-                person_add
-              </button>
+          <template #header>
+            <div class="flex items-center justify-between gap-2">
+              <h1 class="text-3xl text-second-900 font-bold">Ovejas</h1>
+              <div class="flex items-center gap-2">
+                <!-- Botón Actualizar -->
+                
+                <!-- Botón Mis Ovejas -->
+                <button 
+                    @click="toggleFavorites" 
+                    class="bg-second-500 text-white p-2 rounded-full flex items-center gap-1"
+                  >
+                    <span class="material-symbols-outlined">
+                      {{ showFavorites ? 'group' : 'favorite' }}
+                    </span>
+                    <span>{{ showFavorites ? 'Todas' : 'Mis Ovejas' }}</span>
+                  </button>
+                <button @click="getSheeps" class="bg-second-500 text-white p-2 rounded-full material-symbols-outlined">
+                  refresh
+                </button>
+                <!-- Botón Agregar Oveja -->
+                <button @click="openAddSheep" class="bg-second-500 text-white p-2 rounded-full material-symbols-outlined">
+                  person_add
+                </button>
+              </div>
             </div>
-          </div>
-        </template>
+          </template>
           <!-- Columnas -->
           <Column field="first_name" header="Primer Nombre" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
           <Column field="last_name" header="Apellido" class="p-4 text-center border-b border-primary-200 text-second-800"></Column>
@@ -88,6 +99,7 @@
           </Column>
         </DataTable>
       </div>
+    </div>
 
     <!-- Modal para agregar nueva oveja -->
     <AddSheepCard 
@@ -98,7 +110,7 @@
 </template>
 
 <script>
-import { getSheeps, getSheepById } from '../apiServices/index';
+import { getSheeps, getMySheeps, getSheepById } from '../apiServices/index';
 import SheepInfoCard from '../components/Sheeps/SheepInfoCard.vue';
 import AddSheepCard from '../components/Sheeps/AddSheepCard.vue';
 import DataTable from 'primevue/datatable';
@@ -115,10 +127,11 @@ export default {
   },
   data() {
     return {
-      sheepsInfo: [],
-      newSheepVisible: false,
-      sheepInfoById: null,
-      loading: true,
+      sheepsInfo: [],          // Lista de ovejas
+      newSheepVisible: false,  // Modal para agregar ovejas
+      sheepInfoById: null,     // Detalle de oveja seleccionada
+      loading: true,           // Estado de carga
+      showFavorites: false,    // Alternador entre favoritos y todas las ovejas
     };
   },
   methods: {
@@ -130,12 +143,25 @@ export default {
         this.loading = false;
       }
     },
-    addSheeps() {
-      this.newSheepVisible = !this.newSheepVisible;
+    async getMySheeps() {
+      this.loading = true;
+      try {
+        this.sheepsInfo = await getMySheeps();
+      } finally {
+        this.loading = false;
+      }
+    },
+    toggleFavorites() {
+      // Alterna entre mostrar favoritos (mis ovejas) y todas las ovejas
+      this.showFavorites = !this.showFavorites;
+      if (this.showFavorites) {
+        this.getMySheeps(); // Cargar favoritos
+      } else {
+        this.getSheeps();   // Cargar todas las ovejas
+      }
     },
     async handleSheepInfo(event) {
       try {
-        console.log(event.data);
         const sheepsInfo = await getSheepById(event.data.id);
         this.sheepInfoById = sheepsInfo;
       } catch (error) {
@@ -155,7 +181,7 @@ export default {
     },
   },
   mounted() {
-    this.getSheeps();
+    this.getSheeps(); // Cargar todas las ovejas inicialmente
   },
 };
 </script>

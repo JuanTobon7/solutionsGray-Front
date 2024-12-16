@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import ChurchView from '../views/ChurchView.vue'
 import LoginView from '../views/LoginView.vue'
 import SheepsView from '../views/SheepsView.vue'
-import MySheepsView from '../views/MySheepsView.vue'
 import ServantsView from '../views/ServantsView.vue'
 import InvitationBoarding from '@/views/InvitationBoarding.vue'
 import SingIn from '@/views/SingIn.vue'
@@ -37,12 +36,7 @@ const routes = [
     path: '/sheeps',
     name: 'sheeps',
     component: SheepsView,
-  },
-  {
-    path: '/my-sheeps',
-    name: 'mysheeps',
-    component: MySheepsView,
-  },
+  },  
   {
     path: '/servants',
     name: 'servants',

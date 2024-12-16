@@ -114,8 +114,7 @@ export default {
       ],
       menuItemsPeople: [
         { label: 'Servidores', path: '/servants' },
-        { label: 'Ovejas', path: '/sheeps' },
-        { label: 'Mis ovejas', path: '/my-sheeps' }
+        { label: 'Ovejas', path: '/sheeps' }
       ],
       menuItemsCurses: [
         { label: 'Cursos', path: '/curses' },
