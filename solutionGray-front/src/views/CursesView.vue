@@ -58,7 +58,7 @@
                 <button 
                   @click="toggleSheduleCourse(item)" 
                   class="mb-2 w-full bg-second-500 text-white py-1 rounded-md hover:bg-second-600 transition">
-                  Inscribirse
+                  Ver Horarios
                 </button>
 
                 <!-- Botón Asignar Profesor -->

@@ -72,16 +72,21 @@
     </div>
     <div>
       <!-- Cursos Hechos-->
-    <div class="w-full mb-4">      
+    <!-- Cursos Hechos-->
+    <div v-if="curses.length !== 0" class="w-full mb-4">      
       <h2 class="text-2xl text-second-800 font-semibold mb-4" >Cursos Aprobados</h2>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">        
         <div v-for="item in curses" :key="item.name">
           <div class="bg-white shadow-lg shadow-gray-300 rounded-lg p-4 mb-4">          
             <h3 class="text-lg font-semibold text-gray-900">{{ item.name }}</h3>
-            <p class="text-gray-600">{{ item.homologation }}</p>
+            <p class="text-gray-600">{{ item.status }}</p>
           </div>
         </div>
       </div>    
+    </div>
+    <div v-else class="w-full mb-4">      
+      <h2 class="text-2xl text-second-800 font-semibold mb-4" >Cursos Aprobados</h2>
+      <p class="text-gray-600">No hay cursos a mostrar por el momento</p>
     </div>
     </div>
     <div class="w-full mt-8">
@@ -112,7 +117,7 @@
 <script>
   import Avatar from 'primevue/avatar';
   import RegisterVisits from '../subComponents/RegisterVisits.vue';
-  import { getVisits } from '@/apiServices';
+  import { getVisits,getCoursesByPeople } from '@/apiServices';
 
   export default {
     props: {
@@ -133,15 +138,7 @@
           last_name: 'Default',
           email: 'pepito@gmail.com'
         },
-        curses: [
-          {name: 'Discipulado 1', homologation: 'Homologado'},
-          {name: 'Discipulado 2', homologation: 'Homologado'},
-          {name: 'Discipulado 3', homologation: 'Homologado'},
-          {name: 'Discipulado 4', homologation: 'Aprobado'},
-          {name: 'Discipulado 5', homologation: 'Aprobado'},
-          {name: 'Discipulado 6', homologation: 'Aprobado'},
-          {name: 'Discipulado 7', homologation: 'Aprobado'},  
-        ],
+        curses: [],
         visits: []
       }
     },
@@ -162,15 +159,24 @@
         }catch(error){
           console.error(error);
         }
-      }
+      },
+      async getCourses() {
+        if(!this.sheep){
+          return
+        }
+        const id = this.sheep.id;
+        const curses = await getCoursesByPeople(id);
+        this.curses = curses.filter((item) => item.status !== 'Reprobado');
+      },
     },
     computed: {
       totalVistis(){
         return this.visits.length;
       }
     },
-    mounted() {
-      this.getVisitsFun();
+    async mounted() {
+      await this.getVisitsFun();
+      await this.getCourses();
     }
   };
   </script>

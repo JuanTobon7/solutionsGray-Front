@@ -41,7 +41,7 @@
       </div>
 
       <!-- DataTable -->
-      <div v-else class="overflow-x-auto p-4 sm:p-6">
+      <div v-else class="overflow-x-auto ">
         <DataTable 
           :value="sheepsInfo" 
           paginator
@@ -49,7 +49,7 @@
           selectionMode="single"
           v-model:selection="sheepInfoById"
           @rowSelect="handleSheepInfo"
-          class="w-full border-collapse" 
+          class="w-full" 
           tableStyle="min-width: 60rem"
           >
           <!-- Table Columns -->

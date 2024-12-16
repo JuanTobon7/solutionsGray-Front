@@ -253,6 +253,11 @@ export const getMyCourses = async()=>{
   return response.data;
 }
 
+export const getCoursesByPeople = async(personId)=>{
+  const response = await api.get(`/get-people-courses/${personId}`);
+  return response.data;
+}
+
 export const getCoursesInCharge = async()=>{
   const response = await api.get('/get-courses-in-charge');
   return response.data;
@@ -306,5 +311,10 @@ export const getRatingsByService = async(serviceId)=>{
 
 export const ratingService = async (data) => {
   const response = await api.post('/qualify-service',data)
+  return response.data;
+}
+
+export const getRatingByServant = async(servantId)=>{
+  const response = await api.get(`/get-rating-by-servant/${servantId}`);
   return response.data;
 }
