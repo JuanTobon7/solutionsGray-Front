@@ -2,6 +2,8 @@
   <section class="h-screen container">
     <!-- Encabezado principal y versículo -->
     <div class="mb-6 container text-center">
+      <h1 class="text-3xl sm:text-5xl mb-4 text-second-800 text-center"><strong>Ovejas</strong></h1>
+      <h2 class="text-xl sm:text-2xl text-second-800 text-center mb-6"><strong>Estadísticas e Información de las ovejas</strong></h2>
       <p class="text-primary-900 text-2xl sm:text-3xl font-serif">
         <strong>
           Y el Señor añadía cada día al número de ellos los que iban siendo salvos. Hechos 2:47
@@ -35,13 +37,14 @@
           :value="sheepsInfo" 
           paginator
           rows="10"
+          stripedRows
           selectionMode="single"
           v-model:selection="sheepInfoById"
           @rowSelect="handleSheepInfo"
           class="w-full"
         >
           <template #header>
-            <div class="flex items-center justify-between gap-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
               <h1 class="text-3xl text-second-900 font-bold">Ovejas</h1>
               <div class="flex items-center gap-2">
                 <!-- Botón Actualizar -->
