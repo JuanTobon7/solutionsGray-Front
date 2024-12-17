@@ -53,7 +53,7 @@ const routes = [
     component: SingIn,
   },
   {
-    path: '/curses',
+    path: '/courses',
     name: 'curses',
     component: CursesView,
   },
