@@ -10,6 +10,7 @@ import CursesView from '@/views/CursesView.vue'
 import MyCourses from '@/views/MyCourses.vue'
 import CoursesInCharge from '@/views/CoursesInCharge.vue'
 import HomeUser from '@/views/HomeUser.vue'
+import IncomeStatement from '@/views/IncomeStatement.vue'
 
 const routes = [
   {
@@ -72,6 +73,11 @@ const routes = [
     name: 'courses-in-charge',
     component: CoursesInCharge,
   },
+  {
+    path: '/income-statement',
+    name: 'income-statement',
+    component: IncomeStatement,
+  }
 ];
 
 const router = createRouter({

@@ -26,9 +26,9 @@
         :rows="12"
       >
         <template #header>
-          <div class="flex justify-between items-center">
+          <div class="flex-grow justify-between items-center">
             <h2 class="text-2xl sm:text-3xl font-semibold text-second-800">Cultos Programados</h2>
-            <div class="flex items-center gap-2">   
+            <div class="flex-1 items-center gap-2">   
               <Calendar 
               :input-class="['border border-gray-300 rounded-md px-2 py-1 w-auto']"
               class=" w-auto" 

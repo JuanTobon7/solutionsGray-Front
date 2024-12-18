@@ -151,7 +151,7 @@ export default {
         {label: 'Cursos a Cargo',path: '/courses-in-charge'},
       ],
       menuItemsIngresos: [
-        { label: 'Reportes', path: '/reports' },
+        { label: 'Reportes', path: '/income-statement' },
         { label: 'Transacciones', path: '/transactions' },
       ],
     };
