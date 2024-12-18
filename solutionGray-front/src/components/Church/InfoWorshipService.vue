@@ -60,82 +60,68 @@
         <i class="material-symbols-outlined text-second-800">event</i>
         <h3 class="text-2xl text-second-800 font-semibold">Privilegios Asignados</h3>
       </div>
-      <Carousel 
-        v-if="servicesAssigned.length" 
-        :value="servicesAssigned" 
-        :numVisible="numVisible"
-        :showNavigators="servicesAssigned.length > numVisible"
-        :responsiveOptions="[
-           {
-        breakpoint: '1400px',
-        numVisible: 2,
-        numScroll: 1
-    },
-    {
-        breakpoint: '1199px',
-        numVisible: 3,
-        numScroll: 1
-    },
-    {
-        breakpoint: '767px',
-        numVisible: 2,
-        numScroll: 1
-    },
-    {
-        breakpoint: '575px',
-        numVisible: 1,
-        numScroll: 1
-    }          
-        ]"
+      <DataView
+      v-if="servicesAssigned.length"
+      :value="servicesAssigned"
+      :paginator="true"
+        :rows="8"
+        :emptyMessage="'No hay asistentes disponibles'"
+        :pt="{
+          paginatorPageButton: 'custom-paginator-button'
+        }" 
+    >
+    <template #list="slotProps">
+    <!-- Contenedor de las tarjetas -->
+    <div class="grid grid-cols-1 md:grid-rows-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full sm:grid-rows-2">
+      <!-- Iteración sobre los elementos -->
+      <div
+        v-for="(item, index) in slotProps.items"
+        :key="index"
+        class="bg-second-50 shadow-lg shadow-primary-300 rounded-lg overflow-hidden"
       >
-        <template #item="slotProps">
-          <!-- Tarjeta de la persona asignada -->
-           <div 
-           class="py-8 px-1 w-[30vh] md:w-full"
-           :class="{'md:w-1/4': servicesAssigned.length === 1}"
-           >
-            <div class="bg-second-50 shadow-lg shadow-primary-300 rounded-lg overflow-hidden">
-              <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-20"></div>
-              <div class="px-4 py-6 -mt-14">
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                  <div class="flex flex-col md:flex-row items-center space-x-4">
-                    <!-- Avatar o iniciales de la persona -->
-                    <div class="w-16 h-16 rounded-full overflow-hidden">
-                      <Avatar
-                        v-if="slotProps.data.person.avatar"
-                        :image="slotProps.data.person.avatar"
-                        size="xlarge"
-                        shape="circle"
-                      />
-                      <Avatar
-                        v-else
-                        :label="getInitials(slotProps.data.person)"
-                        class="bg-primary-100 flex items-center justify-center text-primary-800"
-                        size="xlarge"
-                        shape="circle"
-                      />
-                    </div>
-                    <!-- Información de la persona -->
-                    <div>
-                      <h2 class="text-xl font-bold text-gray-900">
-                        {{ slotProps.data.person.first_name + ' ' + slotProps.data.person.last_name }}
-                      </h2>
-                      <p class="text-sm text-gray-600">{{ slotProps.data.person.email }}</p>
-                      <p class="text-sm text-gray-600">{{ slotProps.data.person.phone }}</p>
-                      <p class="text-sm text-gray-600">{{ slotProps.data.person.type_person }}</p>
-                      <!-- Servicio asignado -->
-                      <p class="text-sm text-primary-900 font-semibold mt-2">
-                        {{ slotProps.data.service.name }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+        <!-- Tarjeta del ítem -->
+        <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-20"></div>
+        <div class="px-4 py-6 -mt-14">
+          <div class="bg-white p-6 rounded-lg shadow-lg">
+            <div class="flex flex-col md:flex-row items-center space-x-4">
+              <!-- Avatar o iniciales de la persona -->
+              <div class="w-16 h-16 rounded-full overflow-hidden">
+                <Avatar
+                  v-if="item.person.avatar"
+                  :image="item.person.avatar"
+                  size="xlarge"
+                  shape="circle"
+                />
+                <Avatar
+                  v-else
+                  :label="getInitials(item.person)"
+                  class="bg-primary-100 flex items-center justify-center text-primary-800"
+                  size="xlarge"
+                  shape="circle"
+                />
+              </div>
+              <!-- Información de la persona -->
+              <div>
+                <h2 class="text-xl font-bold text-gray-900">
+                  {{ item.person.first_name }} {{ item.person.last_name }}
+                </h2>
+                <p class="text-sm text-gray-600">{{ item.person.email }}</p>
+                <p class="text-sm text-gray-600">{{ item.person.phone }}</p>
+                <p class="text-sm text-gray-600">{{ item.person.type_person }}</p>
+                <!-- Servicio asignado -->
+                <p class="text-sm text-primary-900 font-semibold mt-2">
+                  {{ item.service.name }}
+                </p>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <!-- Fin de cada tarjeta -->
+    </div>
+  </template>
+    </DataView>
 
-        </template>
-      </Carousel>
     </div>
     
     <!-- Gráfico Pie para los datos de las Ofrendas -->
@@ -275,7 +261,6 @@
 
 <script>
 import { getServices,getPeople,saveAttendance,deleteAttendance,getAttendance,getOfferings } from '@/apiServices/index';
-import Carousel from 'primevue/carousel';
 import Avatar from 'primevue/avatar';
 import DataView from 'primevue/dataview';
 import InputSwitch from 'primevue/inputswitch';
@@ -287,7 +272,6 @@ import SheduleNewPerson from '../subComponents/SheduleNewPerson.vue';
 export default {
   props: ['worshipService'],
   components: {
-    Carousel,
     Avatar,
     DataView,
     InputSwitch,

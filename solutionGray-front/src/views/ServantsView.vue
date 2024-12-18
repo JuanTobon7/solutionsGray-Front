@@ -96,7 +96,8 @@ export default {
       newServantsVisible: false,
       servantInfoById: null,
       loading:true,
-      selectedServant: null
+      selectedServant: null,
+      date: null
     };
   },
   methods: {
