@@ -7,11 +7,11 @@
       />
     </div>
     <div v-else>
-      <div class="mb-6 text-center">
+      <div class="mb-4 text-center">
         <h1 class="text-3xl sm:text-4xl md:text-5xl mb-4 text-second-800">
           <strong>Asistencia e Informe de Cultos</strong>
         </h1>
-        <p class="text-primary-900 text-xl sm:text-2xl font-serif mb-1">
+        <p class="text-primary-900 text-xl sm:text-2xl font-serif">
           <strong>Yo me alegré con los que me decían: A la casa de Jehová iremos. Salmos 122:1</strong>
         </p>
       </div>
@@ -26,9 +26,9 @@
         :rows="12"
       >
         <template #header>
-          <div class="flex-grow justify-between items-center">
+          <div class="flex flex-wrap justify-between items-center">
             <h2 class="text-2xl sm:text-3xl font-semibold text-second-800">Cultos Programados</h2>
-            <div class="flex-1 items-center gap-2">   
+            <div class="flex flex-wrap items-center gap-2">   
               <Calendar 
               :input-class="['border border-gray-300 rounded-md px-2 py-1 w-auto']"
               class=" w-auto" 
@@ -39,12 +39,12 @@
    
               <button
                 @click="toggleHistory"
-                class="mt-2 sm:mt-0 bg-primary-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base">
+                class="bg-primary-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base">
                 {{ historyButtonText }}
               </button>
               <button
                 @click="addWorshipService"
-                class="mt-2 sm:mt-0 bg-primary-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base">
+                class="bg-primary-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base">
                 Agregar Culto
             </button>
           </div>
