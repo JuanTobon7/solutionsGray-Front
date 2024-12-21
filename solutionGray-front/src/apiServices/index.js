@@ -318,3 +318,18 @@ export const getRatingByServant = async(servantId)=>{
   const response = await api.get(`/get-rating-by-servant/${servantId}`);
   return response.data;
 }
+
+export const getStadistcsPeopleChurch = async(data)=>{
+  const response = await api.get(`/get-stadistics-people-church/:${data.minDateFormat}/:${data.maxDateFormat}`,data);
+  return response.data;
+}
+
+export const getStadisticsAssistance = async(data)=>{
+  const response = await api.get(`/get-stadistic-assitance-church/:${data.minDateFormat}/:${data.maxDateFormat}`);
+  return response.data;
+}
+
+export const getStadisticsPeopleCourses = async(data)=>{
+  const response = await api.get(`/get-stadistics-people-course/:${data.minDateFormat}/:${data.maxDateFormat}`,);
+  return response.data;
+}
