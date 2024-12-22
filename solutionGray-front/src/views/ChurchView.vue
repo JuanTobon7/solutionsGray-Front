@@ -1,20 +1,15 @@
 <template>
   <section class="min-h-screen container w-full mx-auto p-4">
-    <!-- Versículo Bíblico -->
-    <div class="mb-6">
-      <p class="text-primary-900 text-xl sm:text-3xl font-serif">
-        <strong>Y el Señor añadía cada día al número de ellos los que iban siendo salvos. Hechos 2:47</strong>
-      </p>
-    </div>
-
     <!-- Información General de la Iglesia -->
         <!-- Church Info Header -->
       <div ref="report" class="p-2">
-        <div class="flex flex-col sm:flex-row items-center gap-3 text-3xl sm:text-5xl mb-4">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 text-3xl sm:text-5xl mb-4">
           <h1 class="text-second-800"><strong>Iglesia {{ churchName }}</strong></h1>
           <i class="material-symbols-outlined text-second-500 text-3xl sm:text-5xl">church</i>
         </div>
-
+        <p class="text-primary-900 text-xl sm:text-3xl font-serif mb-2">
+          <strong>Y el Señor añadía cada día al número de ellos los que iban siendo salvos. Hechos 2:47</strong>
+        </p>
         <!-- Church Metrics Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           <!-- Card 1: Siervos -->
@@ -124,7 +119,7 @@ export default {
   },
   data() {
     return {
-      churchName: "Nuevos Tiempos", // Nombre de la iglesia
+      churchName: '', // Nombre de la iglesia
       quantityservants: 0, // Cantidad de siervos
       quantitygroups: 0, // Cantidad de grupos
       quantitysheeps: 0, // Cantidad de ovejas
@@ -147,6 +142,8 @@ export default {
       this.getStadisticsAssistance({minDateFormat, maxDateFormat});
       this.getStadistcsChurch({minDateFormat, maxDateFormat});
       this.getStadisticsPeopleCourses({minDateFormat, maxDateFormat});
+      const session = this.$store.getters.userSession;
+      if (session) this.churchName = JSON.parse(session).churchName;
   },
   watch: {
     date() {
