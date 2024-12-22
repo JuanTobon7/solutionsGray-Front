@@ -20,7 +20,6 @@
 
       <!-- Cultos Programados -->      
       <DataView
-        v-if="cultos.length > 0 && !showHistoryService"
         :value="cultos"
         :paginator="true"
         :rows="12"
@@ -34,14 +33,9 @@
               class=" w-auto" 
               showIcon
               selectionMode="range" :manualInput="false"
-              v-model="date" 
+              v-model="dates" 
               placeholder="dd/mm/yyyy-dd/mm/yyyy"/>  
-   
-              <button
-                @click="toggleHistory"
-                class="bg-primary-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base">
-                {{ historyButtonText }}
-              </button>
+                 
               <button
                 @click="addWorshipService"
                 class="bg-primary-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base">
@@ -107,62 +101,6 @@
        
       </div>
 
-      <!-- Mensaje de no hay cultos programados -->
-      <div v-if="cultos.length == 0" class="flex flex-col items-center justify-center h-64 sm:h-96">
-        <span class="text-6xl sm:text-8xl material-symbols-outlined mb-4 text-primary-900">sentiment_dissatisfied</span>
-        <p class="text-xl sm:text-2xl text-second-800">No hay cultos programados en este momento.</p>
-        <p class="text-lg sm:text-xl text-gray-600 mt-2 text-center">Por favor, vuelve más tarde o agrega un nuevo culto.</p>
-      </div>
-
-      <!-- Historial de Cultos -->
-        <DataTable 
-        v-else-if="showHistoryService"
-          :value="cultos" 
-          v-model:selection="selectedService"
-          @rowSelect="showInfoEvent"
-          stripedRows
-          paginator 
-          :rows="10" 
-          selectionMode="single"
-          class="w-full border-collapse" tableStyle="min-width: 40rem; max-height: 80rem;"
-        >
-        <template #header>
-          <div class="flex justify-between items-center">
-            <h2 class="text-2xl sm:text-3xl font-semibold text-second-800">Cultos Programados</h2>
-            <div class="flex items-center gap-2">     
-              <Calendar 
-              :input-class="['border border-gray-300 rounded-md px-2 py-1 w-auto']"
-              class=" w-auto" 
-              showIcon 
-              v-model="date" 
-              placeholder="dd/mm/yyyy-dd/mm/yyyy"/>                
-
-              <button
-                @click="toggleHistory"
-                class="mt-2 sm:mt-0 bg-primary-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base">
-                {{ historyButtonText }}
-              </button>
-              <button
-                @click="addWorshipService"
-                class="mt-2 sm:mt-0 bg-primary-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base">
-                Agregar Culto
-            </button>
-          </div>
-          </div>
-
-        </template>
-          <Column field="sermon_tittle" header="Titulo del Sermon" class="border-b border-primary-200 text-second-800"></Column>
-          <Column field="worship_name" header="Tipo de Culto" class="  border-b border-primary-200 text-second-800"></Column>
-          <Column field="date" header="Fecha" class="border-b border-primary-200 text-second-800">
-            <template #body="slotProps">
-              <Tag :value="slotProps.data.date">
-                {{ formatDate(slotProps.data.date) || 'No definido' }}
-              </Tag>
-            </template>
-          </Column>
-          <Column field="description" header="Descripción" class="border-b border-primary-200 text-second-800"></Column>
-        </DataTable>
-
       <!-- Componente para agregar culto -->
       <AddWorshipService
         v-if="showAddWorshipService"
@@ -184,36 +122,35 @@ import { getWorshipServices } from '@/apiServices';
 import AddWorshipService from '../components/Church/AddWorshipService.vue';
 import InfoWorshipService from '../components/Church/InfoWorshipService.vue';
 import EditInfoCard from '@/components/Church/EditWorshipService.vue';
-import DataTable from 'primevue/datatable';
 import DataView from 'primevue/dataview';
-import Column from 'primevue/column';
-import Tag from 'primevue/tag';
 import Calendar from 'primevue/calendar';
+import { format } from 'date-fns';
 
 export default {
   components: {
     AddWorshipService,
     EditInfoCard,
     InfoWorshipService,
-    DataTable,
     DataView,
-    Column,
-    Tag,
     Calendar,
   },
   data() {
     return {
       showAddWorshipService: false,
-      showHistoryService: false,
       showInfoService: false,
       showEditService: false,
-      historyButtonText: 'Ver Historial de Cultos',
       searchQuery: '',
       selectedService: null,
       message: null,
       cultos: [],
-      date: null,
+      dates: [],
     };
+  },  
+  watch: {
+    dates(){
+      console.log(this.dates);
+      this.worshipServices();
+    }
   },
   methods: {
     addWorshipService() {
@@ -222,11 +159,7 @@ export default {
     showInfoEvent(event) {
       this.selectedService = event.data;
       this.showInfoService = true;
-    },
-    toggleHistory() {
-      this.showHistoryService = !this.showHistoryService;
-      this.historyButtonText = this.showHistoryService ? 'Cultos del Mes' : 'Historial de Cultos';
-    },
+    },    
     closeAddWorhipService() {
       this.showAddWorshipService = false;
     },
@@ -250,13 +183,30 @@ export default {
     },
     async worshipServices() {
       try {
-        this.cultos = await getWorshipServices();
-      } catch (error) {
-        console.error(error);
+        console.log(this.dates);
+        if(!this.dates[1]) return;
+        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const minDate = format(this.dates[0], "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
+        const maxDate = format(this.dates[this.dates.length - 1], "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });        
+        this.cultos = await getWorshipServices({minDate, maxDate});
+        this.$toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cultos cargados correctamente.', life: 3000 });
+      } catch (e) {
+        if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el culto.', life: 3000 });
+        }else if(e.response.status === 400 && e.response.data.message === 'No hay cultos programados'){
+          this.cultos = [];
+          this.$toast.add({ severity: 'info', summary: 'Info', detail: 'No hay cultos programados en el rango de fechas seleccionado.', life: 3000 });
+        }
       }
     },
   },
-  async mounted() {
+  async mounted() {    
+    const today = new Date();
+    const date30DaysAgo = new Date();
+    date30DaysAgo.setDate(today.getDate() - 30);
+    const date30DaysAfter = new Date();
+    date30DaysAfter.setDate(today.getDate() + 30);
+    this.dates = [date30DaysAgo, date30DaysAfter];
     await this.worshipServices();
   },
 };
