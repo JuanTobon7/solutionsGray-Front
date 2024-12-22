@@ -89,8 +89,8 @@ export const getTypesWorship = async()=>{
   return response.data;
 }
 
-export const getWorshipServices = async()=>{
-  const response = await api.get('/worship-services');
+export const getWorshipServices = async(data)=>{
+  const response = await api.get(`/worship-services/:${data.minDate}/:${data.maxDate}`);  
   return response.data;
 }
 
@@ -331,5 +331,10 @@ export const getStadisticsAssistance = async(data)=>{
 
 export const getStadisticsPeopleCourses = async(data)=>{
   const response = await api.get(`/get-stadistics-people-course/:${data.minDateFormat}/:${data.maxDateFormat}`,);
+  return response.data;
+}
+
+export const getMyLastServices = async(date)=>{
+  const response = await api.get(`/my-services/:${date}`);
   return response.data;
 }
