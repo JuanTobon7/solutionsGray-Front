@@ -22,11 +22,11 @@
       <DataView
         :value="cultos"
         :paginator="true"
-        :rows="12"
+        :rows="5"
       >
         <template #header>
           <div class="flex flex-wrap justify-between items-center">
-            <h2 class="text-2xl sm:text-3xl font-semibold text-second-800">Cultos Programados</h2>
+            <h2 class="text-2xl text-second-800 font-semibold">Cultos Programados</h2>
             <div class="flex flex-wrap items-center gap-2">   
               <Calendar 
               :input-class="['border border-gray-300 rounded-md px-2 py-1 w-auto']"
@@ -53,7 +53,7 @@
         :key="index" class="w-full full">
            
               <div
-                class="transition-transform duration-200 hover:-translate-y-2 shadow-md shadow-gray-400 rounded-lg sm:rounded-2xl cursor-pointer w-full overflow-hidden"
+                class="transition-transform duration-200 hover:-translate-y-2 shadow-md shadow-gray-400 rounded-lg sm:rounded-2xl cursor-pointer w-full h-full overflow-hidden"
                 @click="showInfo(items)"
               >
                 <!-- Imagen de fondo -->
@@ -148,7 +148,6 @@ export default {
   },  
   watch: {
     dates(){
-      console.log(this.dates);
       this.worshipServices();
     }
   },
@@ -189,7 +188,6 @@ export default {
         const minDate = format(this.dates[0], "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
         const maxDate = format(this.dates[this.dates.length - 1], "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });        
         this.cultos = await getWorshipServices({minDate, maxDate});
-        this.$toast.add({ severity: 'success', summary: 'Éxito', detail: 'Cultos cargados correctamente.', life: 3000 });
       } catch (e) {
         if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el culto.', life: 3000 });

@@ -12,7 +12,8 @@ export const login = async (data) => {
     const user = {
       name: response.data.name,
       email: response.data.email,
-      rol: response.data.rol
+      rol: response.data.rol,
+      churchName: response.data.churchName
     }
     store.dispatch('login', user);  
   }
@@ -298,8 +299,8 @@ export const evaluateStudent = async(data)=>{
   return response.data;
 }
 
-export const checkQualifiedRating = async()=>{
-  const response = await api.get(`/check-qualified`);
+export const checkQualifiedRating = async(currentDate)=>{
+  const response = await api.get(`/check-qualified/${currentDate}`);
   return response.data;
 }
 
