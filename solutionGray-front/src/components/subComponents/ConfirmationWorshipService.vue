@@ -203,7 +203,7 @@ export default {
         this.$toast.add({ severity: 'success', summary: 'Éxito', detail: response.message, life: 3000 });
       }catch(e){
         console.log(e);
-        if (e.response.data.status !== 401 && e.response.data.message === 'Token has expired') {
+        if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el culto.', life: 3000 });
         }
       }
