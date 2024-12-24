@@ -15,16 +15,7 @@
       </div>
 
       <!-- Botones para alternar entre DataTable y Card View -->
-       <div v-else>
-        <div class="flex flex-col sm:flex-row gap-2 mb-4">   
-          <div v-if="!tableView" class="flex flex-col sm:flex-row gap-2">
-          <button class="bg-primary-500 text-white p-2 rounded-md" @click="getServants">Actualizar</button>
-          <button @click="addServants" class="bg-primary-500 text-white p-2 rounded-md">Invitar</button>
-        </div>       
-          <button @click="toggleView" class="bg-primary-500 text-white p-2 rounded-md">{{ tableView ? 'Vista en Tarjetas' : 'Vista en Tabla' }}</button>
-        </div>
-        
-        
+       <div v-else>        
         <!-- Carga de datos (skeleton loader) -->
         
         <!-- Vista en DataTable -->
@@ -32,6 +23,7 @@
           <DataTable 
             :value="servantsInfo" 
             v-model:selection="selectedServant"
+            stripedRows
             selectionMode="single"
             class="w-full border-collapse" 
             tableStyle="min-width: 40rem;"
@@ -69,69 +61,6 @@
               
           </DataTable>
         </div>
-        
-        <div v-else class="w-full">
-        <!-- Vista en Tarjetas -->        
-        <div class="flex flex-col w-full overflow-x-auto mb-4">
-        <DataView
-          :value="servantsInfo"
-          :paginator="true"
-          :rows="8"
-          :emptyMessage="'No hay asistentes disponibles'"
-          :pt="{
-            paginatorPageButton: 'custom-paginator-button'
-          }"
-        >
-          <template #list="slotProps">
-            <!-- Contenedor con un grid para ajustar el ancho -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full py-2">
-              <div
-                v-for="(item, index) in slotProps.items"
-                :key="index"
-                class="bg-white shadow-lg rounded-lg cursor-pointer transition-transform duration-200 hover:-translate-y-2 "
-                @click="selectedServant = item"
-              >
-                <div class="bg-primary-50 shadow-lg shadow-primary-300 rounded-lg overflow-hidden">
-                  <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-20"></div>
-                  <div class="px-4 py-6 -mt-14 relative">
-                    <div class="bg-white p-6 rounded-lg shadow-lg">
-                      <div class="flex items-center space-x-4">
-                        <!-- Avatar o iniciales de la persona -->
-                        <div class="w-16 h-16 rounded-full overflow-hidden">
-                          <Avatar
-                            v-if="item.avatar"
-                            :image="item.avatar"
-                            size="xlarge"
-                            shape="circle"
-                          />
-                          <Avatar
-                            v-else
-                            :label="getInitials(item)"
-                            class="bg-primary-100 flex items-center justify-center text-primary-800"
-                            size="xlarge"
-                            shape="circle"
-                          />
-                        </div>
-                        <!-- Información de la persona -->
-                        <div>
-                          <h2 class="text-xl font-bold text-gray-900">
-                            {{ item.first_name + ' ' + item.last_name }}
-                          </h2>
-                          <p class="text-sm text-gray-600">{{ item.email }}</p>
-                          <p class="text-sm text-gray-600">{{ item.phone }}</p>
-                          <p class="text-sm text-gray-600">{{ item.type_person }}</p>
-                          <!-- Servicio asignado -->                          
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </template>
-        </DataView>        
-        </div>
-      </div>    
     </div>    
   </div>    
 
@@ -151,8 +80,6 @@ import InfoServantCard from '@/components/Servants/InfoServantCard.vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Tag from 'primevue/tag';
-import DataView from 'primevue/dataview';
-import Avatar from 'primevue/avatar';
 
 export default {
   components: {
@@ -161,8 +88,6 @@ export default {
     Tag,
     AddServantCard,
     InfoServantCard,
-    DataView,
-    Avatar
   },
   data() {
     return {
@@ -171,7 +96,8 @@ export default {
       newServantsVisible: false,
       servantInfoById: null,
       loading:true,
-      selectedServant: null
+      selectedServant: null,
+      date: null
     };
   },
   methods: {

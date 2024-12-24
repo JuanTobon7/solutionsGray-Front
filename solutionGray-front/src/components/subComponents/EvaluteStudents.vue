@@ -76,6 +76,11 @@
                             </template>
                         </Column>
                     </DataTable>
+                <div class="flex justify-end">
+                    <button class="text-white bg-green-500 hover:bg-green-600 cursor-pointer rounded-md px-2 py-1">
+                        Terminar Curso
+                    </button>
+                </div> 
                 </div>
             </div>
         </div>
