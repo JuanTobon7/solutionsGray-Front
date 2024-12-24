@@ -169,7 +169,7 @@
         <!-- Botón para gestionar ofrendas -->
         <div class="flex flex-col sm:flex-row items-center justify-center mt-8 gap-4">
           <!-- Botón de descarga -->
-          <button class="bg-second-500 text-white px-5 py-2 rounded-md transition-all duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
+          <button @click="GetReporte" class="bg-second-500 text-white px-5 py-2 rounded-md transition-all duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
             Descargar Reporte
             <i class="material-symbols-outlined">download</i>
           </button>
@@ -283,8 +283,13 @@ import Chart from 'primevue/chart';
 import RecordMonetaryIncome from '../subComponents/RecordMonetaryIncome.vue';
 import EditWorshipService from './EditWorshipService.vue';
 import SheduleNewPerson from '../subComponents/SheduleNewPerson.vue';
+import jsPDF from 'jspdf';
+import formato from './format.txt';
+
+console.log(formato); // Deberías ver el contenido del archivo como una cadena de texto.
 
 export default {
+  name: 'PDFGenerator',
   props: ['worshipService'],
   components: {
     Carousel,
@@ -414,6 +419,7 @@ export default {
     this.chartData.datasets[0].backgroundColor = backgroundColor.slice(0, this.chartData.labels.length);
     this.chartData.datasets[0].hoverBackgroundColor = hoverBackgroundColor.slice(0, this.chartData.labels.length);
   },
+   
     getTotalOfferings(){      
       return this.offerings.reduce((acc, item) => acc + Number(item.amount ?? 0), 0).toFixed(2);
     },
@@ -455,8 +461,41 @@ export default {
       }catch(e){
         console.log(e);
       }
+    },
+    GetReporte() {
+
+
+      const doc = new jsPDF();
+
+
+      doc.addImage(formato, 'PNG', 10, 10, 190, 277);
+      doc.text("Hello world!", 10, 10);
+      // Definir el tamaño de la fuente
+      const fontSize = 16;
+      doc.setFontSize(fontSize);
+
+      doc.save("document.pdf");
     }
+    /*
     
+      // Obtener el ancho y la altura de la página
+      const pageWidth = doc.internal.pageSize.width;
+      const pageHeight = doc.internal.pageSize.height;
+      
+      // Obtener el ancho del texto
+      const textWidth = doc.getTextWidth(text);
+      
+      // Calcular la posición para centrar el texto
+      const x = (pageWidth - textWidth) / 2; // Centrado horizontal
+      const y = pageHeight / 2; // Centrado vertical
+      
+      // Agregar el texto al documento en las coordenadas calculadas
+      doc.text(text, x, y);
+      
+      // Guardar el PDF con un nombre
+      doc.save("document.pdf");
+    }
+      */
   },
   computed:{
     numAttends() {
