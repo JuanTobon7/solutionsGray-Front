@@ -11,6 +11,7 @@ import MyCourses from '@/views/MyCourses.vue'
 import CoursesInCharge from '@/views/CoursesInCharge.vue'
 import HomeUser from '@/views/HomeUser.vue'
 import IncomeStatement from '@/views/IncomeStatement.vue'
+import GroupsChurch from '@/views/GroupsChurch.vue'
 
 const routes = [
   {
@@ -77,6 +78,11 @@ const routes = [
     path: '/income-statement',
     name: 'income-statement',
     component: IncomeStatement,
+  },
+  {
+    path: '/groups-church',
+    name: 'groups-church',
+    component: GroupsChurch,
   }
 ];
 

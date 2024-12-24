@@ -339,3 +339,13 @@ export const getMyLastServices = async(date)=>{
   const response = await api.get(`/my-services/:${date}`);
   return response.data;
 }
+
+export const createGroups = async(data)=>{
+  const response = await api.post('/create-groups',data);
+  return response.data;
+}
+
+export const getGroups = async()=>{
+  const response = await api.get('/get-groups');
+  return response.data
+}

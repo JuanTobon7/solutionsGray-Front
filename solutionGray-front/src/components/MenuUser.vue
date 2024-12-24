@@ -138,8 +138,8 @@ export default {
         { label: 'Cultos', path: '/worship-services' },
       ],
       menuItemsGroups: [
-        { label: 'Grupo 1', path: '/group-1' },
-        { label: 'Grupo 2', path: '/group-2' },
+        { label: 'Grupos', path: '/groups-church' },
+        { label: 'Mi Grupo', path: '/group-2' },
       ],
       menuItemsPeople: [
         { label: 'Servidores', path: '/servants' },
