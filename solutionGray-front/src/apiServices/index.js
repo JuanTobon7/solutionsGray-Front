@@ -12,7 +12,8 @@ export const login = async (data) => {
     const user = {
       name: response.data.name,
       email: response.data.email,
-      rol: response.data.rol
+      rol: response.data.rol,
+      churchName: response.data.churchName
     }
     store.dispatch('login', user);  
   }
@@ -89,8 +90,8 @@ export const getTypesWorship = async()=>{
   return response.data;
 }
 
-export const getWorshipServices = async()=>{
-  const response = await api.get('/worship-services');
+export const getWorshipServices = async(data)=>{
+  const response = await api.get(`/worship-services/:${data.minDate}/:${data.maxDate}`);  
   return response.data;
 }
 
@@ -253,6 +254,11 @@ export const getMyCourses = async()=>{
   return response.data;
 }
 
+export const getCoursesByPeople = async(personId)=>{
+  const response = await api.get(`/get-people-courses/${personId}`);
+  return response.data;
+}
+
 export const getCoursesInCharge = async()=>{
   const response = await api.get('/get-courses-in-charge');
   return response.data;
@@ -293,8 +299,8 @@ export const evaluateStudent = async(data)=>{
   return response.data;
 }
 
-export const checkQualifiedRating = async()=>{
-  const response = await api.get(`/check-qualified`);
+export const checkQualifiedRating = async(currentDate)=>{
+  const response = await api.get(`/check-qualified/${currentDate}`);
   return response.data;
 }
 
@@ -307,4 +313,39 @@ export const getRatingsByService = async(serviceId)=>{
 export const ratingService = async (data) => {
   const response = await api.post('/qualify-service',data)
   return response.data;
+}
+
+export const getRatingByServant = async(servantId)=>{
+  const response = await api.get(`/get-rating-by-servant/${servantId}`);
+  return response.data;
+}
+
+export const getStadistcsPeopleChurch = async(data)=>{
+  const response = await api.get(`/get-stadistics-people-church/:${data.minDateFormat}/:${data.maxDateFormat}`,data);
+  return response.data;
+}
+
+export const getStadisticsAssistance = async(data)=>{
+  const response = await api.get(`/get-stadistic-assitance-church/:${data.minDateFormat}/:${data.maxDateFormat}`);
+  return response.data;
+}
+
+export const getStadisticsPeopleCourses = async(data)=>{
+  const response = await api.get(`/get-stadistics-people-course/:${data.minDateFormat}/:${data.maxDateFormat}`,);
+  return response.data;
+}
+
+export const getMyLastServices = async(date)=>{
+  const response = await api.get(`/my-services/:${date}`);
+  return response.data;
+}
+
+export const createGroups = async(data)=>{
+  const response = await api.post('/create-groups',data);
+  return response.data;
+}
+
+export const getGroups = async()=>{
+  const response = await api.get('/get-groups');
+  return response.data
 }

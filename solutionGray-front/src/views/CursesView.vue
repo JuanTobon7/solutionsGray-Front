@@ -2,31 +2,32 @@
   <section class="container mx-auto p-4">
     <!-- Encabezado -->
     <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-semibold">Informe de Cursos</h2>
-      <div class="flex gap-4">
-        <!-- Filtros -->
-        <Dropdown placeholder="Seleccionar Curso" :options="courseOptions" class="w-40" />
-        <Dropdown placeholder="Seleccionar Iglesia" :options="churchOptions" class="w-40" />
-        <Dropdown placeholder="Estado" :options="statusOptions" class="w-40" />
-      </div>
+      <h2 class="text-2xl font-semibold">Informe de Cursos</h2>     
     </div>
-    
+
     <!-- Lista de Cursos usando DataView -->
     <DataView 
-      :value="courses" 
+      :value="filteredCourses" 
       layout="grid" 
       :class="['w-full']"
       :paginator="true" 
       :rows="6"
-      :sortField="sortField" 
-      :sortOrder="sortOrder"
     >
       <template #header>
-        <div class="w-full flex items-center gap-4">
-          <Dropdown class="w-3/4" v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Ordenar por" @change="onSortChange" />
-          <button @click="toggleAddCourse" class="material-symbols-outlined p-1 rounded-md bg-second-500 text-white font-semibold">add</button>
+        <div class="w-full flex items-center gap-4 px-2">
+          <!-- Input de búsqueda -->
+          <input 
+            v-model="searchQuery" 
+            type="text" 
+            placeholder="Buscar por nombre o descripción" 
+            class="w-full p-2 border border-gray-200 focus:border-green-300 rounded-md"
+          />         
+          <button @click="toggleAddCourse" class="material-symbols-outlined p-1 rounded-md bg-second-500 text-white font-semibold">
+            add
+          </button>
         </div>
       </template>
+
       <template #grid="slotProps">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
           <div
@@ -58,7 +59,7 @@
                 <button 
                   @click="toggleSheduleCourse(item)" 
                   class="mb-2 w-full bg-second-500 text-white py-1 rounded-md hover:bg-second-600 transition">
-                  Inscribirse
+                  Ver Horarios
                 </button>
 
                 <!-- Botón Asignar Profesor -->
@@ -74,7 +75,7 @@
       </template>
     </DataView>
 
-    <!-- Detalles del Curso Seleccionado (Modal) -->
+    <!-- Modales y Componentes -->
     <CourseDetails v-if="showCourseDetails" :course="selectedCourse" @close="toogleCourseDetails" />
     <AddCourses v-if="showAddCourse" @updateCourses="getCourses" @close="toggleAddCourse" />
     <SheduleCourse v-if="showSheduleCourse" :course="selectedCourse" @close="toggleSheduleCourse" />
@@ -85,7 +86,6 @@
 
 <script>
 import DataView from 'primevue/dataview';
-import Dropdown from 'primevue/dropdown';
 import CourseDetails from '@/components/Curses/CourseDetails.vue';
 import AddCourses from '@/components/Curses/AddCourses.vue';
 import SheduleCourse from '@/components/Curses/SheduleCourse.vue';
@@ -96,7 +96,6 @@ import { getCourses } from '@/apiServices';
 export default {
   components: {
     DataView,
-    Dropdown,
     CourseDetails,
     AddCourses,
     SheduleCourse,
@@ -105,13 +104,15 @@ export default {
   },
   data() {
     return {
-      // Datos ficticios para simular cursos
+      // Estados de la interfaz
       showAddCourse: false,
       showSheduleCourse: false,
       showAssignProfessor: false,
       showCourseDetails: false,
       showEditCourse: false,
-      courses: [],      
+      // Datos
+      courses: [],
+      searchQuery: '',
       sortOptions: [
         { label: 'Nombre Ascendente', value: 'name' },
         { label: 'Nombre Descendente', value: '!name' },
@@ -124,6 +125,17 @@ export default {
       selectedCourse: null,
     };
   },
+  computed: {
+    // Filtrar cursos dinámicamente en base a la búsqueda
+    filteredCourses() {
+      if (!this.searchQuery) return this.courses;
+      const query = this.searchQuery.toLowerCase();
+      return this.courses.filter(course => 
+        course.name.toLowerCase().includes(query) || 
+        course.description.toLowerCase().includes(query)
+      );
+    },
+  },
   methods: {    
     toggleAddCourse() {
       this.showAddCourse = !this.showAddCourse;
@@ -131,9 +143,6 @@ export default {
     editCourse(course) {
       this.selectedCourse = course;
       this.showEditCourse = true;
-    },   
-    toogleEditCourse() {
-      this.showEditCourse = !this.showEditCourse;
     },
     toggleSheduleCourse(course) {
       this.selectedCourse = course;
@@ -145,12 +154,7 @@ export default {
     },
     toogleCourseDetails() {
       this.showCourseDetails = !this.showCourseDetails;
-    },
-    onSortChange(event) {
-      const value = event.value;
-      this.sortOrder = value.startsWith('!') ? -1 : 1;
-      this.sortField = value.replace('!', '');
-    },
+    },    
     viewCourseDetails(course) {
       this.selectedCourse = course;
       this.showCourseDetails = true;
@@ -168,7 +172,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* Estilos adicionales para mejorar la presentación */
-</style>

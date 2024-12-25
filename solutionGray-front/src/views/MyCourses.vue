@@ -4,27 +4,50 @@
 
     <!-- Filtros -->
     <div class="flex justify-between items-center mb-4">
-      <Dropdown placeholder="Filtrar por estado" :options="statusOptions" v-model="selectedStatus" class="w-40" @change="filterCourses" />
+      <Dropdown 
+        placeholder="Filtrar por estado" 
+        :options="statusOptions" 
+        v-model="selectedStatus" 
+        class="w-auto border" 
+        @change="filterCourses" 
+      />
     </div>
 
     <!-- Lista de Cursos -->
     <div v-if="filteredCourses.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div v-for="(course, index) in filteredCourses" :key="index" class="border border-gray-300 rounded-lg p-4 bg-white shadow-md">
+      <div 
+        v-for="(course, index) in filteredCourses" 
+        :key="index" 
+        class="border border-gray-300 rounded-lg p-4 bg-white shadow-md"
+      >
         <h3 class="text-lg font-semibold text-second-700 mb-1">{{ course.name }}</h3>
-        <p class="text-sm text-gray-600">description: {{ course.description }}</p>
-        <p class="text-sm text-gray-600 mb-4">Editorial: {{course.publisher}}</p>
+        <p class="text-sm text-gray-600">Descripción: {{ course.description }}</p>
+        <p class="text-sm text-gray-600 mb-4">Editorial: {{ course.publisher }}</p>
 
-        <!-- Estado del Curso y Barra de Progreso -->
+        <!-- Estado del Curso con Tag -->
         <div class="mb-2 flex items-center gap-2">
-          <span :class="statusClass(course.status)" class="px-2 py-1 rounded-full text-sm font-semibold">{{ course.status }}</span>
+          <Tag 
+            :value="course.status" 
+            :severity="statusSeverity(course.status)" 
+            rounded 
+          />
         </div>
-
-        <ProgressBar :value="progress(course)" class="mb-4" />
 
         <!-- Botones de Acción -->
         <div class="mt-4 flex justify-between">
-          <button @click="viewDetails(course)" class="text-blue-500 hover:underline">Ver Detalles</button>
-          <button v-if="course.status === 'En curso'" @click="unenroll(course)" class="text-red-500 hover:underline">Cancelar Inscripción</button>
+          <button 
+            @click="viewDetails(course)" 
+            class="text-blue-500 hover:underline"
+          >
+            Ver Detalles
+          </button>
+          <button 
+            v-if="course.status === 'En progreso'" 
+            @click="unenroll(course)" 
+            class="text-red-500 hover:underline"
+          >
+            Cancelar Inscripción
+          </button>
         </div>
       </div>
     </div>
@@ -36,25 +59,20 @@
 
 <script>
 import Dropdown from 'primevue/dropdown';
-import ProgressBar from 'primevue/progressbar';
-import { getMyCourses } from '@/apiServices'; // Asegúrate de importar correctamente
+import Tag from 'primevue/tag';
+import { getMyCourses } from '@/apiServices';
 
 export default {
   components: {
     Dropdown,
-    ProgressBar
+    Tag,
   },
   data() {
     return {
       selectedStatus: null,
-      statusOptions: [
-        { label: 'Todos', value: null },
-        { label: 'En curso', value: 'En curso' },
-        { label: 'Completado', value: 'Completado' },
-        { label: 'Cancelado', value: 'Cancelado' }
-      ],
-      courses: [],
-      filteredCourses: []
+      statusOptions: ['Todos','En progreso','Aprobado','Reprobado'],
+      courses: [],           // Cursos completos
+      filteredCourses: [],   // Cursos filtrados
     };
   },
   methods: {
@@ -68,59 +86,63 @@ export default {
       }
     },
     filterDuplicateCourses(courses) {
+      // Eliminar cursos duplicados, manteniendo el estado más relevante
       const uniqueCourses = {};
 
       courses.forEach(course => {
         const { course_id, status } = course;
 
-        // Si el curso ya existe y su estado es "Completado", no reemplazar
-        if (uniqueCourses[course_id]) {
-          if (uniqueCourses[course_id].status !== 'Completado' && status === 'Completado') {
-            uniqueCourses[course_id] = course;
-          }
-        } else {
+        // Priorizar estado "Aprobado" y "En progreso"
+        if (!uniqueCourses[course_id] || this.isHigherPriority(status, uniqueCourses[course_id].status)) {
           uniqueCourses[course_id] = course;
         }
       });
 
       return Object.values(uniqueCourses);
     },
+    isHigherPriority(newStatus, currentStatus) {
+      const priority = {
+        'Aprobado': 3,
+        'En progreso': 2,
+        'Reprobado': 1,
+      };
+
+      return (priority[newStatus] || 0) > (priority[currentStatus] || 0);
+    },
     filterCourses() {
-      if (this.selectedStatus) {
-        this.filteredCourses = this.courses.filter(course => course.status === this.selectedStatus);
-      } else {
-        this.filteredCourses = this.courses;
-      }
+      // Filtrar cursos basados en el estado seleccionado
+      this.filteredCourses = this.selectedStatus
+        ? this.courses.filter(course => course.status === this.selectedStatus || this.selectedStatus === 'Todos')
+        : this.courses;
     },
     viewDetails(course) {
       // Acción para ver detalles del curso
       console.log('Ver detalles del curso:', course);
     },
     unenroll(course) {
-      // Acción para cancelar inscripción
+      // Acción para cancelar inscripción del curso
       console.log('Cancelar inscripción en el curso:', course);
       course.status = 'Cancelado';
       this.filterCourses();
     },
-    progress(course) {
-      return (course.progress/course.cuantity_chapters)*100	;
-    },
-    statusClass(status) {
-      // Clases condicionales para el estado
+    statusSeverity(status) {
+      // Definir estilos según el estado
       switch (status) {
         case 'En progreso':
-          return 'bg-blue-100 text-blue-800';
-        case 'Completado':
-          return 'bg-green-200 text-green-800';
+          return 'info';
+        case 'Aprobado':
+          return 'success';
+        case 'Reprobado':
+          return 'danger';
         case 'Cancelado':
-          return 'bg-red-200 text-red-800';
+          return 'warning';
         default:
-          return 'bg-gray-200 text-gray-800';
+          return 'secondary';
       }
-    }
+    },
   },
   mounted() {
     this.fetchCourses();
-  }
+  },
 };
 </script>

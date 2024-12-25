@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import ChurchView from '../views/ChurchView.vue'
 import LoginView from '../views/LoginView.vue'
 import SheepsView from '../views/SheepsView.vue'
-import MySheepsView from '../views/MySheepsView.vue'
 import ServantsView from '../views/ServantsView.vue'
 import InvitationBoarding from '@/views/InvitationBoarding.vue'
 import SingIn from '@/views/SingIn.vue'
@@ -11,6 +10,8 @@ import CursesView from '@/views/CursesView.vue'
 import MyCourses from '@/views/MyCourses.vue'
 import CoursesInCharge from '@/views/CoursesInCharge.vue'
 import HomeUser from '@/views/HomeUser.vue'
+import IncomeStatement from '@/views/IncomeStatement.vue'
+import GroupsChurch from '@/views/GroupsChurch.vue'
 
 const routes = [
   {
@@ -37,12 +38,7 @@ const routes = [
     path: '/sheeps',
     name: 'sheeps',
     component: SheepsView,
-  },
-  {
-    path: '/my-sheeps',
-    name: 'mysheeps',
-    component: MySheepsView,
-  },
+  },  
   {
     path: '/servants',
     name: 'servants',
@@ -59,7 +55,7 @@ const routes = [
     component: SingIn,
   },
   {
-    path: '/curses',
+    path: '/courses',
     name: 'curses',
     component: CursesView,
   },
@@ -78,6 +74,16 @@ const routes = [
     name: 'courses-in-charge',
     component: CoursesInCharge,
   },
+  {
+    path: '/income-statement',
+    name: 'income-statement',
+    component: IncomeStatement,
+  },
+  {
+    path: '/groups-church',
+    name: 'groups-church',
+    component: GroupsChurch,
+  }
 ];
 
 const router = createRouter({
