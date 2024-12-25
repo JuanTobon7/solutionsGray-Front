@@ -139,7 +139,7 @@ export default {
       ],
       menuItemsGroups: [
         { label: 'Grupos', path: '/groups-church' },
-        { label: 'Mi Grupo', path: '/group-2' },
+        { label: 'Mi Grupo', path: '/my-group' },
       ],
       menuItemsPeople: [
         { label: 'Servidores', path: '/servants' },

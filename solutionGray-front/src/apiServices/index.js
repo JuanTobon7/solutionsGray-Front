@@ -349,3 +349,9 @@ export const getGroups = async()=>{
   const response = await api.get('/get-groups');
   return response.data
 }
+
+export const registerServantInStrategie = async(data)=>{
+  console.log('data: ',data)
+  const response = await api.post('/register-servant-strategies',data);
+  return response.data;
+}

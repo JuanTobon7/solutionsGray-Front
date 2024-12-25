@@ -13,7 +13,9 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@balkangraph/orgchart.js": "^8.14.62",
     "@primevue/themes": "^4.0.4",
+    "apexcharts": "^4.3.0",
     "axios": "^1.7.2",
     "chart.js": "^4.4.3",
     "cors": "^2.8.5",
