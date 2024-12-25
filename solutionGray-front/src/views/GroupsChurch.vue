@@ -150,7 +150,7 @@ export default {
 </script>
 
 
-<style scoped>
+<style>
 /* Estilos de Leaflet */
 @import 'leaflet/dist/leaflet.css';
 

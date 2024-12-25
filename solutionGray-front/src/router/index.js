@@ -12,6 +12,7 @@ import CoursesInCharge from '@/views/CoursesInCharge.vue'
 import HomeUser from '@/views/HomeUser.vue'
 import IncomeStatement from '@/views/IncomeStatement.vue'
 import GroupsChurch from '@/views/GroupsChurch.vue'
+import MyGroup from '@/views/MyGroup.vue'
 
 const routes = [
   {
@@ -83,6 +84,11 @@ const routes = [
     path: '/groups-church',
     name: 'groups-church',
     component: GroupsChurch,
+  },
+  {
+    path: '/my-group',
+    name: 'my-group',
+    component: MyGroup,
   }
 ];
 
