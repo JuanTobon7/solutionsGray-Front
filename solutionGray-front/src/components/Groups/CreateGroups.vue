@@ -40,6 +40,16 @@
             class="p-2 rounded-md border border-gray-300 w-full mb-4"
             placeholder="Nombre del grupo"
           />
+          <label for="strategieName" class="block text-sm text-gray-600 mb-1">
+            Nombre de la estrategia
+          </label>
+          <textarea
+            id="strategieName"
+            type="text"
+            v-model="strategyName"
+            class="p-2 rounded-md border border-gray-300 w-full mb-4"
+            placeholder="Nombre d la estrategia"
+          ></textarea>
           <label class="block text-sm text-gray-600 mb-1">
             Selecciona al Líder o Encargado
           </label>
@@ -133,7 +143,7 @@ import L from "leaflet";
 import Dropdown from "primevue/dropdown";
 import Avatar from "primevue/avatar";
 import Button from "primevue/button";
-import { getPeople, createGroups } from "@/apiServices";
+import { getPeople, createGroups,addPersonStrategy } from "@/apiServices";
 
 export default {
   components: {
@@ -145,7 +155,8 @@ export default {
     return {
       map: null,
       marker: null,
-      groupName: "",
+      groupName: '',
+      strategyName: '',
       people: [],
       selectedPerson: null,
       selectedLocation: { lat: null, lng: null },
@@ -177,6 +188,40 @@ export default {
         }
       });
     },
+    async addPersonStrategy (data) {
+      try {
+        const {  selectedPerson } = this;
+        if(!selectedPerson || !data.groupId || !data.id){ 
+          this.$toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "Por favor completa todos los campos",
+            life: 3000,
+          });
+          return;
+        }
+        const strategy = {
+          personId: selectedPerson.id,
+          strategyId: data.id,
+          groupId: data.groupId,
+          rol: 'Lider'
+        };
+        await addPersonStrategy(strategy);
+        this.$toast.add({
+          severity: "success",
+          summary: "Estrategia Creada",
+          detail: "La estrategia ha sido creada exitosamente",
+          life: 3000,
+        });
+      }catch (e) {
+        this.$toast.add({
+          severity: "error",
+          summary: "Error",
+          detail: "Ha ocurrido un error al crear el grupo",
+          life: 3000,
+        });
+      }
+    },
     // Método para obtener las personas
     async getPeople() {
       try {
@@ -189,8 +234,8 @@ export default {
     // Método para crear el grupo
     async createGroup() {
       try {
-        const { groupName, selectedPerson, selectedLocation } = this;
-        if (!groupName || !selectedPerson || !selectedLocation.lat || !selectedLocation.lng) {
+        const { groupName, selectedPerson, selectedLocation ,strategyName} = this;
+        if (!groupName || !selectedPerson || !selectedLocation.lat || !selectedLocation.lng || !strategyName) {
           this.$toast.add({
             severity: "error",
             summary: "Error",
@@ -204,14 +249,16 @@ export default {
           leaderId: selectedPerson.id,
           latitude: selectedLocation.lat,
           longitude: selectedLocation.lng,
+          strategyName: strategyName
         };
-        await createGroups(group);
+        const response = await createGroups(group);
         this.$toast.add({
           severity: "success",
           summary: "Grupo Creado",
           detail: "El grupo ha sido creado exitosamente",
           life: 3000,
         });
+        await this.addPersonStrategy({id:response.id,groupId:response.groupId});
       } catch (e) {
         console.error("Error al crear grupo:", e);
         this.$toast.add({

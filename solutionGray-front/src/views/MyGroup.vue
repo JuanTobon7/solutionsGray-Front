@@ -30,7 +30,7 @@
     </div>
 
     <!-- Componentes Dinámicos -->
-    <StrategiesGroups v-if="showForm" :integrants="people" @close="toggleForm" />
+    <StrategiesGroups v-if="showForm" :integrantsProp="people" @close="toggleForm" />
 
     <!-- Organigrama -->
     <div id="orgchart-container" class="flex justify-center"></div>
@@ -42,6 +42,8 @@ import OrgChart from "@balkangraph/orgchart.js";
 import StrategiesGroups from "@/components/Groups/StrategiesGroups.vue";
 import ServicesGroups from "@/components/Groups/ServicesGroups.vue";
 
+import { getMyGroup,getStrategyById } from "@/apiServices";
+
 export default {
   components: {
     StrategiesGroups,
@@ -50,6 +52,7 @@ export default {
   data() {
     return {
       people: [],      
+      strategy : [],
       showForm: false,
       showServicesGroups: false,
       isEditing: false,
@@ -59,24 +62,71 @@ export default {
       orgChart: null,
     };
   },
-  mounted() {
+  async mounted() {
+    await this.getMyGroup();
     this.renderOrgChart();
   },
   methods: {
+    async getStrategyById(id){
+      try{        
+        const response = await getStrategyById(id);
+        this.strategy = response;       
+      }catch(e){
+        if (e.response?.status !== 401 && e.response?.data?.message === 'Token has expired') {
+          this.$toast.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Intentalo de nuevo',
+              life: 3000,
+          });
+        }
+      }
+    },
+    async getMyGroup(){
+      try{
+        const response = await getMyGroup();
+        console.log('strategyId',response[0].strategy_id);
+        this.people = response;       
+        await this.getStrategyById(response[0].strategy_id);
+      }catch(e){
+        if (e.response?.status !== 401 && e.response?.data?.message === 'Token has expired') {
+          this.$toast.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Intentalo de nuevo',
+              life: 3000,
+          });
+        }
+      }
+    },
     renderOrgChart() {
+      console.log('people',this.people);
       if(this.people.length === 0) {
         return;
       }
       if (this.orgChart) {
         this.orgChart.destroy(); // Destruye el organigrama previo
       }
+      const data = this.people.map((person)=>{
+        const strategy = this.strategy.find((p)=>person.id === p.id);
+        return {
+          ...person,
+          fullName: `${person.first_name} ${person.last_name}`,
+          pid: strategy?.leaderId,
+          tags: [strategy?.role],
+          }
+      })
+      console.log('data',data);
       this.orgChart = new OrgChart(document.getElementById("orgchart-container"), {
-        nodes: this.nodes,
+        nodes: data,
         nodeBinding: {
-          field_0: "name",
-          img_0: "img",
+          field_0: "fullName",
+          field_1: "tags",
+          field_2: "role",
+          field_3: "email",
+
         },
-        template: "ula",
+        template: "diva",
       });
     },
     addNode(newNode) {
@@ -89,6 +139,9 @@ export default {
     toggleServicesGroups() {
       this.showServicesGroups = !this.showServicesGroups;
     },
-  },
+  },  
 };
 </script>
+
+<style>
+</style>
