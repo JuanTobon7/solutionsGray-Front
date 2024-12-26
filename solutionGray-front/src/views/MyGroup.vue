@@ -42,6 +42,8 @@ import OrgChart from "@balkangraph/orgchart.js";
 import StrategiesGroups from "@/components/Groups/StrategiesGroups.vue";
 import ServicesGroups from "@/components/Groups/ServicesGroups.vue";
 
+import { getMyGroup,getStrategyById } from "@/apiServices";
+
 export default {
   components: {
     StrategiesGroups,
@@ -50,6 +52,7 @@ export default {
   data() {
     return {
       people: [],      
+      strategy : [],
       showForm: false,
       showServicesGroups: false,
       isEditing: false,
@@ -60,9 +63,42 @@ export default {
     };
   },
   mounted() {
-    this.renderOrgChart();
+    this.getMyGroup();
+    //this.renderOrgChart();
   },
   methods: {
+    async getStrategyById(id){
+      try{        
+        const response = await getStrategyById(id);
+        this.strategy = response;       
+      }catch(e){
+        if (e.response?.status !== 401 && e.response?.data?.message === 'Token has expired') {
+          this.$toast.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Intentalo de nuevo',
+              life: 3000,
+          });
+        }
+      }
+    },
+    async getMyGroup(){
+      try{
+        const response = await getMyGroup();
+        console.log('strategyId',response[0].strategy_id);
+        this.people = response;       
+        this.getStrategyById(response[0].strategy_id);
+      }catch(e){
+        if (e.response?.status !== 401 && e.response?.data?.message === 'Token has expired') {
+          this.$toast.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Intentalo de nuevo',
+              life: 3000,
+          });
+        }
+      }
+    },
     renderOrgChart() {
       if(this.people.length === 0) {
         return;
@@ -71,12 +107,7 @@ export default {
         this.orgChart.destroy(); // Destruye el organigrama previo
       }
       this.orgChart = new OrgChart(document.getElementById("orgchart-container"), {
-        nodes: this.nodes,
-        nodeBinding: {
-          field_0: "name",
-          img_0: "img",
-        },
-        template: "ula",
+        nodes: this.people,
       });
     },
     addNode(newNode) {

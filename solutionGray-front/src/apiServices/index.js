@@ -355,3 +355,18 @@ export const registerServantInStrategie = async(data)=>{
   const response = await api.post('/register-servant-strategies',data);
   return response.data;
 }
+
+export const getMyGroup = async()=>{
+  const response = await api.get('/get-my-group');
+  return response.data;
+}
+
+export const addPersonStrategy = async(data)=>{
+  const response = await api.post('/add-person-strategy',data);
+  return response.data;
+}
+
+export const getStrategyById = async(strategyId)=>{
+  const response = await api.get(`/get-strategy/${strategyId}`);
+  return response.data;
+}
