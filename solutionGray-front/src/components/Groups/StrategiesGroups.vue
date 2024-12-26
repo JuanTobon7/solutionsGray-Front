@@ -59,7 +59,7 @@
               :options="integrants"
               optionLabel="name"
               placeholder="Selecciona un líder"
-              :disabled="!selectedPerson && integrants"
+              :disabled="!selectedPerson || !integrants"
               class="w-full"
             >
               <template #value="slotProps">
@@ -92,7 +92,7 @@
                     class="bg-primary-100 text-primary-800"
                     shape="circle"
                   />
-                  <div>{{ slotProps.option.first_name + ' ' + slotProps.option.last_name }} - CC: {{ slotProps.option.cc }} - Phone: {{ slotProps.value.phone }}</div>
+                  <div>{{ slotProps.option.first_name + ' ' + slotProps.option.last_name }} - CC: {{ slotProps.option.cc }} - Phone: {{ slotProps.option.phone }}</div>
                 </div>
               </template>
             </Dropdown>
@@ -118,7 +118,7 @@
               Cancelar
             </button>
             <button
-              @click="submitForm"
+              @click="addPersonStrategy"
               class="bg-second-500 text-white py-1 px-2 rounded hover:bg-second-600"
             >
               Agregar
@@ -130,13 +130,19 @@
 </template>
 
 <script>
-import { getPeople , registerServantInStrategie} from "@/apiServices";
+import { getPeople , addPersonStrategy} from "@/apiServices";
 import Dropdown from "primevue/dropdown";
 import Avatar from "primevue/avatar";
 
 export default {
   props: {
-    integrantsProp: Array,
+    integrantsProp: {
+      type: Array      
+    },
+    groupId: {
+      type: String,
+      required: true
+    }
   },
   components: {
     Dropdown,
@@ -146,7 +152,7 @@ export default {
     return {
       people: [],
       rolName: '',
-      integrants: this.integrantsProp || [],
+      integrants: [],
       selectedPerson: null,
       selectedLeading: null,
     };
@@ -175,7 +181,7 @@ export default {
       if (!person || !person.first_name || !person.last_name) return "";
       return person.first_name[0] + person.last_name[0];
     },
-    async submitForm() {
+    async addPersonStrategy() {
       try{
         console.log(this.selectedPerson, this.rolName, this.selectedLeading);
         if(!this.selectedPerson  || !this.rolName){
@@ -192,7 +198,7 @@ export default {
           rol: this.rolName,
           leaderId: this.selectedLeading.id,
         };
-        await registerServantInStrategie(newIntegrant);
+        await addPersonStrategy(newIntegrant);
         this.$toast.add({
           severity: "success",
           summary: "Éxito",
@@ -212,6 +218,8 @@ export default {
     },
   },
   mounted() {
+    this.integrants = this.integrantsProp || [];
+    console.log('integrants',this.integrants);
     this.getPeople();
   },
 };

@@ -30,7 +30,7 @@
     </div>
 
     <!-- Componentes Dinámicos -->
-    <StrategiesGroups v-if="showForm" :integrants="people" @close="toggleForm" />
+    <StrategiesGroups v-if="showForm" :integrantsProp="people" @close="toggleForm" />
 
     <!-- Organigrama -->
     <div id="orgchart-container" class="flex justify-center"></div>
@@ -62,9 +62,9 @@ export default {
       orgChart: null,
     };
   },
-  mounted() {
-    this.getMyGroup();
-    //this.renderOrgChart();
+  async mounted() {
+    await this.getMyGroup();
+    this.renderOrgChart();
   },
   methods: {
     async getStrategyById(id){
@@ -87,7 +87,7 @@ export default {
         const response = await getMyGroup();
         console.log('strategyId',response[0].strategy_id);
         this.people = response;       
-        this.getStrategyById(response[0].strategy_id);
+        await this.getStrategyById(response[0].strategy_id);
       }catch(e){
         if (e.response?.status !== 401 && e.response?.data?.message === 'Token has expired') {
           this.$toast.add({
@@ -100,14 +100,33 @@ export default {
       }
     },
     renderOrgChart() {
+      console.log('people',this.people);
       if(this.people.length === 0) {
         return;
       }
       if (this.orgChart) {
         this.orgChart.destroy(); // Destruye el organigrama previo
       }
+      const data = this.people.map((person)=>{
+        const strategy = this.strategy.find((p)=>person.id === p.id);
+        return {
+          ...person,
+          fullName: `${person.first_name} ${person.last_name}`,
+          pid: strategy?.leaderId,
+          tags: [strategy?.role],
+          }
+      })
+      console.log('data',data);
       this.orgChart = new OrgChart(document.getElementById("orgchart-container"), {
-        nodes: this.people,
+        nodes: data,
+        nodeBinding: {
+          field_0: "fullName",
+          field_1: "tags",
+          field_2: "role",
+          field_3: "email",
+
+        },
+        template: "diva",
       });
     },
     addNode(newNode) {
@@ -120,6 +139,9 @@ export default {
     toggleServicesGroups() {
       this.showServicesGroups = !this.showServicesGroups;
     },
-  },
+  },  
 };
 </script>
+
+<style>
+</style>
