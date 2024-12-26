@@ -350,13 +350,18 @@ export const getGroups = async()=>{
   return response.data
 }
 
-export const getMyGroup = async()=>{
-  const response = await api.get('/get-my-group');
+export const getMyGroup = async(id)=>{
+  const response = await api.get(`/get-group/${id}`);
   return response.data;
 }
 
 export const addPersonStrategy = async(data)=>{
   const response = await api.post('/add-person-strategy',data);
+  return response.data;
+}
+
+export const getMyInfoGroup = async()=>{
+  const response = await api.get('/get-my-info-group');
   return response.data;
 }
 

@@ -191,6 +191,7 @@ export default {
     async addPersonStrategy (data) {
       try {
         const {  selectedPerson } = this;
+        console.log(data);
         if(!selectedPerson || !data.groupId || !data.id){ 
           this.$toast.add({
             severity: "error",
