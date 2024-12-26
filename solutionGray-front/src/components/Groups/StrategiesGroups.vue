@@ -139,7 +139,11 @@ export default {
     integrantsProp: {
       type: Array      
     },
-    groupId: {
+    groupIdProp: {
+      type: String,
+      required: true
+    },
+    strategieIdProp: {
       type: String,
       required: true
     }
@@ -153,6 +157,8 @@ export default {
       people: [],
       rolName: '',
       integrants: [],
+      groupId: '',
+      strategieId: '',
       selectedPerson: null,
       selectedLeading: null,
     };
@@ -194,9 +200,11 @@ export default {
           return;
         }
         const newIntegrant = {
-          servantId: this.selectedPerson.id,
+          personId: this.selectedPerson.id,
           rol: this.rolName,
           leaderId: this.selectedLeading.id,
+          strategyId:this.strategieId,
+          groupId: this.groupId
         };
         await addPersonStrategy(newIntegrant);
         this.$toast.add({
@@ -219,6 +227,8 @@ export default {
   },
   mounted() {
     this.integrants = this.integrantsProp || [];
+    this.strategieId = this.strategieIdProp;
+    this.groupId = this.groupIdProp;
     console.log('integrants',this.integrants);
     this.getPeople();
   },
