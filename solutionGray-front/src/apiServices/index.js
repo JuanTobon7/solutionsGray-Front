@@ -369,3 +369,8 @@ export const getStrategyById = async(strategyId)=>{
   const response = await api.get(`/get-strategy/${strategyId}`);
   return response.data;
 }
+
+export const getAttendanceGroup = async(data)=>{
+  const response = await api.get(`/get-attendance-group/${data.groupId}/${data.date}`);
+  return response.data;
+}
