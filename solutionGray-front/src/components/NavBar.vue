@@ -1,68 +1,79 @@
 <template>
-  <section class="w-full">
-    <div 
-      class="fixed top-0 right-0 w-full bg-primary-500 py-5 z-10"
-      :class="{'w-full': menuUser, 'md:w-[60%] lg:w-[87%]': !menuUser}"
-    >
-      <nav class="flex justify-between items-center container">
-        <div class = "flex items-center text-white gap-4">          
-          <button @click="menuUserFun" class="material-symbols-outlined text-white cursor-pointer">menu</button>
-          <span class="text-xl font-semibold">Hola {{user.name}} 👋</span>       
+    <nav class="w-full bg-primary-950 bg-opacity-90 backdrop-blur-sm p-4 fixed top-0 left-0 right-0 z-50">
+      <div class="container flex items-center justify-between">
+        <!-- Logo and Name -->
+        <div class="flex items-center gap-4">
+          <img src="../assets/solutionGrayLOGO-removebg.png" alt="Logo" class="h-12 w-12 rounded-full">
+          <span class="text-white font-semibold text-lg">Ekklesia</span>
         </div>
-        <div class="flex items-center ml-auto">
-          <div @click="toggleMenu" class="relative rounded-full cursor-pointer inline-block">
-            <img class="h-12 w-12 rounded-full" src="../assets/solutionGrayLOGO-removebg.png" alt="Profile Picture"/>
-            <i class="material-symbols-outlined  text-white absolute bottom-0 right-0 transform translate-x-2 translate-y-2">
-                expand_more
-            </i>
-          </div>
-          <!-- MenuOptions -->
-          <MenuOptions v-if="isMenuVisible" class="absolute top-24 right-0 z-50" />
-        </div>
-      </nav>
-    </div>
-  </section>
-</template>
-
-<script>
-import MenuOptions from './User/MenuOptions.vue';
-
-export default {
-  name: 'NavBar',
-  components: {
-    MenuOptions
-  },
-  data() {
-    return {
-      userName: null,
-      isMenuVisible: false,
-      menuUser: false,
-      user: {},
-    };
-  },
-  methods: {
-    toggleMenu() {
-      this.isMenuVisible = !this.isMenuVisible;
+  
+        <!-- Hamburger Icon -->
+        <button
+          class="text-white md:hidden focus:outline-none"
+          @click="toggleMenu"
+        >
+          <i class="material-symbols-outlined text-3xl">menu</i>
+        </button>
+  
+        <!-- Navigation Menu -->
+        <ul
+          :class="[
+            'md:flex gap-6 items-center',
+            menuOpen ? 'block' : 'hidden',
+            'absolute md:static top-16 left-0 right-0 bg-primary-950 md:bg-transparent md:backdrop-blur-none backdrop-blur-sm md:opacity-100 p-4 md:p-0 z-50'
+          ]"
+        >
+          <li class="text-white px-4 py-2 md:px-0 md:py-0 hover:text-primary-500">
+            Home
+          </li>
+          <li class="text-white px-4 py-2 md:px-0 md:py-0 hover:text-primary-500">
+            About
+          </li>
+          <li class="text-white px-4 py-2 md:px-0 md:py-0 hover:text-primary-500">
+            Contact
+          </li>
+          <li class="text-white md:hidden px-4 py-2 hover:bg-primary-500 flex items-center gap-2 rounded-md">
+            <button @click="to('/login')" class="flex items-center gap-2">
+              Login
+              <i class="material-symbols-outlined">login</i>
+            </button>
+          </li>
+        </ul>
+  
+        <!-- Login Button (Visible on large screens) -->
+        <button
+          @click="to('/login')"
+          class="hidden md:flex text-white px-4 py-2 rounded-md hover:bg-primary-500 items-center gap-2"
+        >
+          Login
+          <i class="material-symbols-outlined">login</i>
+        </button>
+      </div>
+    </nav>
+  </template>
+  
+  <script>
+  export default {
+    data() {
+      return {
+        menuOpen: false, // State to toggle the menu
+      };
     },
-    menuUserFun() {
-      this.menuUser = !this.menuUser;
-      this.$emit('toggle-menu');
+    methods: {
+      to(path) {
+        this.$router.push(path);
+      },
+      toggleMenu() {
+        this.menuOpen = !this.menuOpen;
+      },
     },
-      getUser() {
-        const session = this.$store.getters.userSession;
-
-        if (!session) {
-          return false;
-        }
-
-        const user = JSON.parse(session);
-        this.user = user;
-        return true;
-      },
-      },
-      
-      mounted(){
-          this.getUser()
-      }
-};
-</script>
+  };
+  </script>
+  
+  <style>
+  /* Optional: Smooth menu transition for smaller screens */
+  nav ul {
+    transition: all 0.3s ease-in-out;
+  }
+  </style>
+  

@@ -74,13 +74,13 @@
                         size="large"
                         shape="circle"
                         />
-                        <Avatar
+                    <Avatar
                         v-else
                         :label="getInitials(slotProps.data)"
                         class="bg-primary-100 flex items-center justify-center text-primary-800"
                         size="large"
                         shape="circle"
-                        />
+                    />
                 </template>
             </Column>
             <Column field="first_name" header="Nombre" class="p-4  border-b border-primary-200 text-second-800"></Column>
@@ -103,13 +103,14 @@
         </div>
       </div>
     </section>
-  </template>
+</template>
   
 <script>
     import SheduleNewPerson from "../subComponents/SheduleNewPerson.vue";
     import DataTable from 'primevue/datatable';
     import Column from 'primevue/column';
     import Avatar from "primevue/avatar";
+    import {} from '@/apiServices/'
     export default {
     name: "RegisterAssistance",
     components: {

@@ -1,5 +1,6 @@
 <template>
-  <aside class="bg-primary-700 w-[80%] md:w-[40%] lg:w-[13%] fixed h-full py-2 flex flex-col gap-2 z-10">
+  <aside class="bg-primary-700 fixed h-full py-2 flex flex-col gap-2 z-10 w-72 md:w-60"
+  >
     <!-- Botón para cerrar el menú en pantallas pequeñas -->
     <div class="flex justify-end pr-4 pt-4 lg:hidden">
       <button @click="$emit('close')" class="material-symbols-outlined cursor-pointer text-primary-50 hover:text-primary-300">
@@ -9,7 +10,7 @@
 
     <!-- Logo y Rol -->
     <section class="flex flex-col items-center p-4">
-      <img src="../assets/solutionGrayLOGO-removebg.png" class="sm:w-15 sm:h-15 md:w-[30vh]" alt="Logo">
+      <img src="../assets/solutionGrayLOGO-removebg.png" class="sm:w-15 sm:h-15 md:w-60" alt="Logo">
       <h2 class="text-2xl font-semibold text-primary-50">{{ rol }}</h2>
     </section>
 
@@ -19,7 +20,7 @@
         <!-- Inicio -->
         <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4 cursor-pointer">
           <i class="material-symbols-outlined">home</i>
-          <router-link to="/" class="block hover:text-primary-300">Inicio</router-link>
+          <router-link to="/home" class="block hover:text-primary-300">Inicio</router-link>
         </li>
 
         <!-- Church -->
@@ -129,9 +130,16 @@
 <script>
 export default {
   name: 'MenuUser',
+  props: {
+    isCloseProp: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       rol: null,
+      isClose: false,
       activeMenu: null, // Menú actualmente abierto
       menuItemsChurch: [
         { label: 'Mi iglesia', path: '/my-church' },
@@ -140,6 +148,7 @@ export default {
       menuItemsGroups: [
         { label: 'Grupos', path: '/groups-church' },
         { label: 'Mi Grupo', path: '/my-group' },
+        { label: 'Servicios', path: '/services-group' },
       ],
       menuItemsPeople: [
         { label: 'Servidores', path: '/servants' },
@@ -167,6 +176,7 @@ export default {
   mounted() {
     const session = this.$store.getters.userSession;
     if (session) this.rol = JSON.parse(session).rol;
+    this.isClose = this.isCloseProp;
   },
 };
 </script>

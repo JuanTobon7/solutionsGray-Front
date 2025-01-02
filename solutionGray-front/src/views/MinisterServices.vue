@@ -217,10 +217,4 @@ export default {
   background-position: center top;
   background-size: cover;
 }
-
-@media (min-width: 640px) {
-  .bg-image {
-    background-position: center;
-  }
-}
 </style>

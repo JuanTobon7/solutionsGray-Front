@@ -33,7 +33,7 @@
         </Card>
     </div>
     <div v-else>
-      <p class="text-gray-600">No hay culto disponible.</p>
+      <p class="text-gray-600">{{!group?'No hay culto disponible.':'No hay servicio disponible.'}}</p>
     </div>
 
     <!-- Servicios Asignados Section -->
@@ -88,12 +88,21 @@ import { mapGetters } from 'vuex';
 import Avatar from 'primevue/avatar';
 import Carousel from 'primevue/carousel';
 import Card from 'primevue/card';
-import { createWorshipService, assingService, updateWorshipService } from '@/apiServices/index';
+import { createWorshipService,createWorshipServiceGroup, assingService, updateWorshipService } from '@/apiServices/index';
 import { format } from 'date-fns-tz';
 
 
 export default {
-  props: ['edit'],
+  props: {
+    edit: {
+      type: Boolean,
+      default: false,
+    },
+    group: {
+      type: Object,
+      default: null,
+    },
+  },
   name: 'ConfirmationWorshipService',
   components: {
     Avatar,
@@ -123,6 +132,7 @@ export default {
   },
   mounted() {
     this.initializeData();
+    console.log('group in ConfirmationWorshipService', this.group);
   },
   beforeUnmount() {
     this.cleanupComponent();
@@ -154,11 +164,11 @@ export default {
     },
     async createWorshipService() {
       try {
+        console.log('culto in createWorshipService', this.culto);
         if (!this.culto || !this.culto.sermonTittle || !this.culto.date || !this.culto.description || !this.assignedServices.length) {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos.', life: 3000 });
           return;
         }
-
         const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const date = new Date(this.culto.date);
         const fullDate = format(date, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
@@ -169,10 +179,11 @@ export default {
           description: this.culto.description,
           typeWorshipId: this.culto.selectedTypeWorship,
           date: fullDate,
-          timeZone: userTimeZone
+          timeZone: userTimeZone,
+          groupId: this.group? this.group.id : null,
         };
 
-        let result = await createWorshipService(culto);
+        let result = !this.group? await createWorshipService(culto) : await createWorshipServiceGroup(culto);
         this.$toast.add({ severity: 'success', summary: 'Éxito', detail: result.message, life: 3000 });
 
         result = await assingService({ assignedServices, id: result.id });
