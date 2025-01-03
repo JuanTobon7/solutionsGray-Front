@@ -15,6 +15,8 @@ import IncomeStatement from '@/views/IncomeStatement.vue'
 import GroupsChurch from '@/views/GroupsChurch.vue'
 import MyGroup from '@/views/MyGroup.vue'
 import WorshipServicesGroups from '@/views/WorshipServicesGroups.vue'
+import ProfileView from '@/views/ProfileView.vue'
+import ConfigutarionView from '@/views/ConfigutarionView.vue'
 
 import store from '@/store'
 
@@ -64,6 +66,16 @@ const routes = [
     path: '/login',
     name: 'login',
     component: LoginView,
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: ProfileView,
+  },
+  {
+    path: '/configuration',
+    name: 'configuration',
+    component: ConfigutarionView,
   },
   {
     path: '/sheeps',

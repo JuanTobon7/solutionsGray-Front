@@ -188,7 +188,6 @@ export default {
     date30DaysAfter.setDate(today.getDate() + 30);
     this.dates = [date30DaysAgo, date30DaysAfter];
     await this.getMyInfoGroup();
-    await this.getServicesGroup();
   },
 };
 </script>

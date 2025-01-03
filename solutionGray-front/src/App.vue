@@ -56,7 +56,7 @@ export default {
       return store.getters.userSession;
     },
     isFeed(){
-      return this.$route.path === '/'
+      return this.$route.path === '/';
     }
   },
   methods: {

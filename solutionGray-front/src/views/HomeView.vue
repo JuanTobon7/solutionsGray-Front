@@ -1,6 +1,6 @@
 <template>
     <section class="w-full">
-        <div class="bg-image-start  mb-10">
+        <div id="start" class="bg-image-start  mb-10">
             <div class=" h-[70vh] bg-black bg-opacity-70">
                 <div class="container h-full flex flex-col justify-center gap-2 text-white">
                     <h1 class="text-5xl mb-4 text-center">
@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <div class="container mb-10">
+        <div id="ekklesia" class="container mb-10">
             <h2 class="text-3xl flex items-center gap-2 text-second-900 mb-3">
                 <strong>                        
                     ¿Que es Ekklesia?
@@ -34,10 +34,10 @@
                 Con Ekklesia, podrás gestionar todos los aspectos administrativos de tu iglesia desde un solo lugar, permitiendo que te concentres en lo más importante: el desarrollo espiritual y la unidad de tu comunidad. Esta aplicación ha sido creada pensando en las necesidades de cada iglesia, grande o pequeña, proporcionando una experiencia fácil de usar y completamente integrada.
             </p>
         </div>
-        <div class="bg-work mb-10">
+        <div id="contact" class="bg-work mb-10">
             <div class="bg-black bg-opacity-70 w-full">
                 <div class="container py-16">
-                    <form class="py-10 max-w-2xl w-full lg:mx-auto">
+                    <div class="py-10 max-w-2xl w-full lg:mx-auto">
                         <div class="mb-4">
                             <h2 class="text-4xl text-center text-white mb-4 font-bold">
                                 Cuéntanos de ti y tu iglesia
@@ -54,6 +54,7 @@
                                 type="text"
                                 name="first_name"
                                 id="first_name"
+                                v-model="newPerson.first_name"
                                 autocomplete="given-name"
                                 class="input-form"
                                 />
@@ -65,6 +66,7 @@
                                 type="text"
                                 name="last_name"
                                 id="last_name"
+                                v-model="newPerson.last_name"
                                 autocomplete="family-name"
                                 class="input-form"
                                 />
@@ -76,6 +78,7 @@
                                 type="email"
                                 name="email"
                                 id="email"
+                                v-model="newPerson.email"
                                 autocomplete="email"
                                 class="input-form"
                                 />
@@ -87,6 +90,7 @@
                                 type="tel"
                                 name="phone"
                                 id="phone"
+                                v-model="newPerson.phone"
                                 autocomplete="tel"
                                 class="input-form"
                                 />
@@ -97,7 +101,19 @@
                                 type="text"
                                 name="church_name"
                                 id="church_name"
+                                v-model="churchName"
                                 autocomplete="organization"
+                                class="input-form"
+                                />
+                            </div>
+                            <div>
+                                <label for="cc" class="block text-sm font-medium text-white">Cedula</label>
+                                <input
+                                type="number"
+                                min="0"
+                                name="cc"
+                                id="cc"
+                                v-model="newPerson.cc"
                                 class="input-form"
                                 />
                             </div>
@@ -135,17 +151,17 @@
                         <!-- Botón de Enviar -->
                         <div class="flex justify-end mt-8">
                         <button
-                            type="submit"
+                            @click="createPerson"
                             class="bg-second-500 hover:bg-second-600 text-white px-6 py-3 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-second-500"
                         >
                         Enviar
                             </button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="container mb-10">
+        <div id="why-ekklesia" class="container mb-10">
             <div class="mb-8">
                 <h2 class="text-3xl flex items-center gap-2 text-second-900 mb-4">
                     <strong>¿Por qué Ekklesia?</strong>
@@ -173,7 +189,7 @@
 
 <script>
 import Dropdown from 'primevue/dropdown';
-import { getCountries, getStatesByCountry } from '@/apiServices';
+import { getCountries, getStatesByCountry,savePeople,sendLead } from '@/apiServices';
 export default{
     components: {
         Dropdown,
@@ -190,6 +206,7 @@ export default{
                 phone: null,
                 country_id: null,
                 state_id: null,
+                type_person_id: 3,
             },
             churchName: null,
             features: [
@@ -268,6 +285,37 @@ export default{
                 console.error('Error al cargar los estados:', error);
             }
         },
+        async createPerson() {
+                if (!this.newPerson.country_id || !this.newPerson.state_id || !this.newPerson.type_person_id || !this.newPerson.cc || !this.newPerson.first_name || !this.newPerson.last_name || !this.newPerson.email || !this.newPerson.phone) {
+                    console.log('this.newPerson:', this.newPerson);
+                    this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos', life: 3000 });
+                    return;
+                }
+                const result = await savePeople(this.newPerson);
+                console.log('result of savePeople:', result);
+                const data = {
+                    churchName: this.churchName, 
+                    stateId: this.newPerson.state_id, 
+                    email: this.newPerson.email, 
+                    firstName: this.newPerson.first_name, 
+                    lastName: this.newPerson.last_name, 
+                    phone: this.newPerson.phone, 
+                    personId: result.id
+                }
+                await sendLead({...data});
+                this.newPerson = {
+                    cc: null,
+                    first_name: null,
+                    last_name: null,
+                    email: null,
+                    phone: null,
+                    country_id: null,
+                    state_id: null,
+                    type_person_id: 3,
+                };
+                this.churchName = null;
+                this.$toast.add({ severity: 'success', summary: 'Persona creada', detail: 'La petición ha sido exitosa', life: 3000 });
+        }
     },
     mounted() {
         this.loadCountries(); // Cargar la lista de países al montar el componente

@@ -20,6 +20,17 @@ export const login = async (data) => {
   return response.data;
 }
 
+export const logout = async () => {
+  const response = await api.post('/sing-out');
+  store.dispatch('logout');
+  return response.data;
+}
+
+export const sendLead = async (data) => {
+  const response = await api.post('/save-leads-church', data);
+  return response.data;
+}
+
 export const getChurchInfo = async()=>{
   const response = await api.get('/church');
   return response.data;
@@ -383,5 +394,10 @@ export const getServicesGroup = async(data)=>{
 export const createWorshipServiceGroup = async(data)=>{
   const response = await api.post('/create-worship-service-group',data);
   console.log('response from back: ',response)
+  return response.data;
+}
+
+export const getMyprofile = async()=>{
+  const response = await api.get('/get-my-profile');
   return response.data;
 }

@@ -33,7 +33,7 @@ api.interceptors.response.use (
           try{            
             // El servidor respondió con un código de estado fuera del rango 2xx            
             await refreshToken()
-            return api(originalRequest)
+            return await api(originalRequest)
           }catch(refreshError){
             return Promise.reject(refreshError.message);
           }            

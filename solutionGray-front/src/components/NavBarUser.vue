@@ -59,21 +59,20 @@ export default {
       this.menuUser = !this.menuUser;
       this.$emit('close',this.menuUser);
     },
-      getUser() {
-        const session = this.$store.getters.userSession;
+    getUser() {
+      const session = this.$store.getters.userSession;
 
-        if (!session) {
-          return false;
-        }
-
-        const user = JSON.parse(session);
-        this.user = user;
-        return true;
-      },
-      },
-      
-      mounted(){
-          this.getUser()
+      if (!session) {
+        return false;
       }
+
+      const user = JSON.parse(session);
+      this.user = user;
+      return true;
+    },
+  },    
+  mounted(){
+    this.getUser()
+  }
 };
 </script>
