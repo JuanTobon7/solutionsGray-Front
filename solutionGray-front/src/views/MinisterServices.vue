@@ -205,7 +205,6 @@ export default {
     const date30DaysAfter = new Date();
     date30DaysAfter.setDate(today.getDate() + 30);
     this.dates = [date30DaysAgo, date30DaysAfter];
-    await this.worshipServices();
   },
 };
 </script>

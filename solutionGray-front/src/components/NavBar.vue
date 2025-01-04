@@ -22,27 +22,26 @@
       <!-- Navigation Menu -->
       <ul
         :class="[
-          'md:flex gap-6 items-center',
+          'md:flex md:gap-6 md:items-center',
           menuOpen ? 'block' : 'hidden',
-          'absolute md:static top-16 left-0 right-0 bg-primary-950 md:bg-transparent md:backdrop-blur-none backdrop-blur-sm md:opacity-100 p-4 md:p-0 z-50'
+                    'absolute md:static top-20 left-0 right-0 bg-primary-950 bg-opacity-90 backdrop-blur-sm md:bg-transparent md:backdrop-blur-none md:opacity-100 p-4 md:p-0 z-50',
+          'space-y-4 md:space-y-0'
         ]"
       >
-      <li @click="scrollTo('start')">
-        <span class="labels cursor-pointer">Inicio</span>
-      </li>
-      <li @click="scrollTo('ekklesia')">
-        <span class="labels cursor-pointer">¿Qué Somos?</span>
-      </li>
-      <li @click="scrollTo('contact')">
-        <span class="labels cursor-pointer">Contáctanos</span>
-      </li>
-      <li @click="scrollTo('why-ekklesia')">
-        <span class="labels cursor-pointer">
-          Características
-        </span>
-      </li>
-        <li class="text-white md:hidden px-4 py-2 hover:bg-primary-500 flex items-center gap-2 rounded-md">
-          <button @click="to('/login')" class="flex items-center gap-2">
+        <li @click="scrollTo('start')" class="text-white text-center md:text-left">
+          <span class="cursor-pointer">Inicio</span>
+        </li>
+        <li @click="scrollTo('ekklesia')" class="text-white text-center md:text-left">
+          <span class="cursor-pointer">¿Qué Somos?</span>
+        </li>
+        <li @click="scrollTo('contact')" class="text-white text-center md:text-left">
+          <span class="cursor-pointer">Contáctanos</span>
+        </li>
+        <li @click="scrollTo('why-ekklesia')" class="text-white text-center md:text-left">
+          <span class="cursor-pointer">Características</span>
+        </li>
+        <li class="text-white md:hidden px-4 py-2 hover:bg-primary-500 flex items-center gap-2 rounded-md text-center">
+          <button @click="to('/login')" class="flex items-center gap-2 w-full justify-center">
             Login
             <i class="material-symbols-outlined">login</i>
           </button>
@@ -60,6 +59,7 @@
     </div>
   </nav>
 </template>
+
 
 <script>
 export default {
