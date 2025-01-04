@@ -50,7 +50,7 @@
             <DataView :value="students" layout="list"  :paginator="true" :rows="5">
                 <template #header>
                     <div class="flex flex-wrap items-center justify-between gap-2">
-                        <div class="mb-4 flex items-center gap-8">
+                        <div class="mb-4 flex flex-wrap items-center gap-8">
                                 <div class="flex items-center justify-between gap-2">
                                     <div class="flex items-center">
                                         <label for="date" class="text-sm text-gray-600">
@@ -87,17 +87,17 @@
                                     class="w-full min-w-[200px] max-w-[300px] shadow appearance-none border border-second-100 rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                                 </div>
                         </div>    
-                    <div>                  
-                    <button @click="reload" class="bg-second-500 text-white p-2 rounded-full material-symbols-outlined mr-2">
-                        refresh
-                    </button>
-                    <button 
-                    @click="showAdd = true"
-                    class="bg-second-500 text-white p-2 rounded-full material-symbols-outlined">
-                        person_add
-                    </button>
+                        <div>                  
+                            <button @click="reload" class="bg-second-500 text-white p-2 rounded-full material-symbols-outlined mr-2">
+                                refresh
+                            </button>
+                            <button 
+                            @click="showAdd = true"
+                            class="bg-second-500 text-white p-2 rounded-full material-symbols-outlined">
+                                person_add
+                            </button>
+                        </div>
                     </div>
-                </div>
                  </template>
                 <template #list="slotProps">
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">

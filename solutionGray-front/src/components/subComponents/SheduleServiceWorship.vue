@@ -2,7 +2,8 @@
   <div class="p-6">
     <div class="flex items-center gap-2 mb-6 text-second-800">      
       <h3 class="text-3xl font-semibold ">
-        {{ worshipService ? 'Editar Culto' : 'Agendar Culto' }}    
+        {{ worshipService ? 'Editar ' : 'Agendar ' }}    
+        {{ !group ? 'Culto' : 'Servicio' }}
       </h3>
       <span 
         class="material-symbols-outlined text-3xl">
@@ -20,9 +21,9 @@
           v-model="selectedTypeWorship" 
           :options="typesWorship" 
           filter 
-          filterPlaceholder="Buscar tipo de culto..."
+          :filterPlaceholder="!group?'Buscar tipo de culto...':'Buscar tipo de Servicio'"
           optionLabel="name" 
-          placeholder="Seleccione un tipo de culto" 
+          :placeholder="!group?'Seleccione un tipo de culto...':'Seleccione un tipo'" 
           class="shadow appearance-none border rounded w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-second-500"
         >
           <template #value="slotProps">
@@ -42,7 +43,7 @@
       </div>
 
       <div class="mb-4">
-        <label for="sermonTitle" class="block text-second-700 text-sm font-bold mb-2">Nombre del Culto</label>
+        <label for="sermonTitle" class="block text-second-700 text-sm font-bold mb-2">{{!group?'Nombre del Culto':'Nombre del Servicio'}}</label>
         <input
           type="text"
           id="sermonTitle"
@@ -116,11 +117,18 @@ export default {
       type: Object,
       default: null,
     },
+    group: {
+      type: Object,
+      default: null,
+    },
   },
   components: {
     Dropdown,
     Calendar,
     Button,
+  },
+  computed: {
+    
   },
   data() {
     return {

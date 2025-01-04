@@ -20,6 +20,17 @@ export const login = async (data) => {
   return response.data;
 }
 
+export const logout = async () => {
+  const response = await api.post('/sing-out');
+  store.dispatch('logout');
+  return response.data;
+}
+
+export const sendLead = async (data) => {
+  const response = await api.post('/save-leads-church', data);
+  return response.data;
+}
+
 export const getChurchInfo = async()=>{
   const response = await api.get('/church');
   return response.data;
@@ -96,8 +107,8 @@ export const getWorshipServices = async(data)=>{
 }
 
 export const getPeople = async () => {
-      const response = await api.get('/get-people');
-      return response.data
+  const response = await api.get('/get-people');
+  return response.data
 };
 
 export const registerSheep = async(data)=>{
@@ -367,5 +378,26 @@ export const getMyInfoGroup = async()=>{
 
 export const getStrategyById = async(strategyId)=>{
   const response = await api.get(`/get-strategy/${strategyId}`);
+  return response.data;
+}
+
+export const getAttendanceGroup = async(data)=>{
+  const response = await api.get(`/get-attendance-group/${data.groupId}/${data.date}`);
+  return response.data;
+}
+
+export const getServicesGroup = async(data)=>{
+  const response = await api.get(`/get-services-group/${data.groupId}/${data.minDate}/${data.maxDate}`);
+  return response.data;
+}
+
+export const createWorshipServiceGroup = async(data)=>{
+  const response = await api.post('/create-worship-service-group',data);
+  console.log('response from back: ',response)
+  return response.data;
+}
+
+export const getMyprofile = async()=>{
+  const response = await api.get('/get-my-profile');
   return response.data;
 }

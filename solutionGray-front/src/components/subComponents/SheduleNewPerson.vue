@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="createPerson">
-    <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4 lg:min-w-[80vh]">
+    <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4 lg:min-w-[80vh] mb-2">
       <!-- Columna 1: Campos de texto -->
       <div>
         <!-- Campo Cédula -->
@@ -86,10 +86,7 @@
     </div>
 
     <!-- Botones -->
-    <div class="flex justify-end gap-4 mt-4">
-      <button @click="$emit('close')" type="button" class="text-second-500 text-lg font-bold px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 transition-colors">
-        Cancelar
-      </button>
+    <div class="flex justify-end">
       <button type="submit" class="text-white text-lg font-bold px-4 py-2 rounded-md bg-second-500 shadow-lg hover:shadow-xl transition-shadow">
         Registrar
       </button>

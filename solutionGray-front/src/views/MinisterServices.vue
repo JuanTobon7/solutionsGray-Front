@@ -34,7 +34,7 @@
               showIcon
               selectionMode="range" :manualInput="false"
               v-model="dates" 
-              placeholder="dd/mm/yyyy-dd/mm/yyyy"/>  
+              placeholder="dd/mm/yyyy-dd/mm/yyyy"/>
                  
               <button
                 @click="addWorshipService"
@@ -186,7 +186,7 @@ export default {
         if(!this.dates[1]) return;
         const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const minDate = format(this.dates[0], "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
-        const maxDate = format(this.dates[this.dates.length - 1], "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });        
+        const maxDate = format(this.dates[this.dates.length - 1], "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
         this.cultos = await getWorshipServices({minDate, maxDate});
       } catch (e) {
         if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
@@ -205,7 +205,6 @@ export default {
     const date30DaysAfter = new Date();
     date30DaysAfter.setDate(today.getDate() + 30);
     this.dates = [date30DaysAgo, date30DaysAfter];
-    await this.worshipServices();
   },
 };
 </script>
@@ -216,11 +215,5 @@ export default {
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;
-}
-
-@media (min-width: 640px) {
-  .bg-image {
-    background-position: center;
-  }
 }
 </style>
