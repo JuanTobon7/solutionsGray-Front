@@ -40,12 +40,11 @@ export default {
           800: '#25402f',
           900: '#1f3528',
           950: '#111d16'
-        },
-        container: {
-          center: true
-        }
+        }        
       }
     }
   },
-  plugins: []
+  plugins: [
+    require('tailwindcss-animated') // Asegúrate de tener esto
+  ],
 }
