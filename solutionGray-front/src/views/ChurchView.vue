@@ -132,18 +132,8 @@ export default {
   },  
   mounted() {
     this.date = new Date();
-    const date = this.date;
-      const selectedYear = new Date(date).getFullYear();
-      const minDate = new Date(selectedYear, 0, 1, 0, 0, 0, 0);
-      const maxDate = new Date(selectedYear, 11, 31, 23, 59, 59, 999);
-      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const minDateFormat = format(minDate, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
-      const maxDateFormat = format(maxDate, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
-      this.getStadisticsAssistance({minDateFormat, maxDateFormat});
-      this.getStadistcsChurch({minDateFormat, maxDateFormat});
-      this.getStadisticsPeopleCourses({minDateFormat, maxDateFormat});
-      const session = this.$store.getters.userSession;
-      if (session) this.churchName = JSON.parse(session).churchName;
+    const session = this.$store.getters.userSession;
+    if (session) this.churchName = JSON.parse(session).churchName;
   },
   watch: {
     date() {
@@ -193,10 +183,6 @@ export default {
       } catch (e) {
         if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el culto.', life: 3000 });
-        }else if(e.response.status === 400 && e.response.data.message === 'No hay informacion que mostrar'){
-          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'No hay informacion que mostrar', life: 3000 });
-          this.assitance = [];
-          this.renderAssistanceChart();
         }
       }
     },
@@ -208,16 +194,7 @@ export default {
       } catch (e) {
         if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el culto.', life: 3000 });
-        }else if(e.response.status === 400 && e.response.data.message === 'No hay informacion que mostrar'){
-          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'No hay informacion que mostrar', life: 3000 });
-          this.peopleInCourses = {
-            quantity_students: 0,
-            quantity_teachers: 0,
-            quantity_active_students: 0,
-          };
-          this.renderCourseChart();
         }
-        
       }
     },
     renderDetailedStatsChart() {

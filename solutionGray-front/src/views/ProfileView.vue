@@ -14,7 +14,7 @@
               :image="user.avatar"
               size="xlarge"
               shape="circle"
-              class="w-36 h-36"
+              class="w-36 h-36 rounded-full overflow-hidden flex items-center justify-center"
             />
             <Avatar
               v-else
@@ -160,6 +160,7 @@ export default {
   data() {
     return {
       user: {},
+      rating: {}
     };
   },
   methods: {
@@ -184,7 +185,8 @@ export default {
     async getRatingByServant(){
       try{
         const userId = this.user.id
-        await getRatingByServant(userId)        
+        const rating = await getRatingByServant(userId)
+        this.rating = rating
       }catch(e){
         if (e.response.status === 401 && e.response.data.message === 'Token Expired') {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo de nuevo.' });
@@ -203,24 +205,22 @@ export default {
     },
     renderRadarChart(){
       const ctx = document.getElementById('radarChart');
+      const labels = this.rating.map((item) => item.rol_servant);
+      const data = this.rating.map((item) => item.rating);
       new Chart(ctx, {
         type: 'radar',
         data: {
-          labels: ['Habilidad 1', 'Habilidad 2', 'Habilidad 3', 'Habilidad 4', 'Habilidad 5'],
+          labels: labels,
           datasets: [
             {
-              label: 'Nivel actual',
-              data: [65, 59, 90, 81, 56],
+              label: 'Rating',
+              data: data,
               backgroundColor: 'rgba(54, 162, 235, 0.2)',
-              borderColor: 'rgba(54, 162, 235, 1)',
-              borderWidth: 1,
-            },
-            {
-              label: 'Nivel objetivo',
-              data: [80, 70, 95, 85, 60],
-              backgroundColor: 'rgba(255, 99, 132, 0.2)',
-              borderColor: 'rgba(255, 99, 132, 1)',
-              borderWidth: 1,
+              borderColor: 'rgb(54, 162, 235)',
+              pointBackgroundColor: 'rgb(54, 162, 235)',
+              pointBorderColor: '#fff',
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: 'rgb(54, 162, 235)',
             },
           ],
         },
@@ -242,6 +242,7 @@ export default {
   },
   async mounted() {
     await this.getMyprofile();
+    await this.getRatingByServant();
     this.renderRadarChart();
   },
 };

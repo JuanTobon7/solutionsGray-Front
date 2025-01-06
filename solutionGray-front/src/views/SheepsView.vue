@@ -36,7 +36,7 @@
         <DataTable 
           :value="sheepsInfo" 
           paginator
-          rows="10"
+          :rows=10
           stripedRows
           selectionMode="single"
           v-model:selection="sheepInfoById"

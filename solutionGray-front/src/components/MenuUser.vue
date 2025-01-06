@@ -10,7 +10,7 @@
 
     <!-- Logo y Rol -->
     <section class="flex flex-col items-center p-4">
-      <img src="../assets/solutionGrayLOGO-removebg.png" class="sm:w-15 sm:h-15 md:w-60" alt="Logo">
+      <img src="https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/solutionGrayLOGO-removebg.png" class="sm:w-15 sm:h-15 md:w-60" alt="Logo">
       <h2 class="text-2xl font-semibold text-primary-50">{{ rol }}</h2>
     </section>
 

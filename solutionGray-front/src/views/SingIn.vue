@@ -6,7 +6,7 @@
       class="w-[60vh] sm:h-[95vh] md:h-[85vh] shadow-lg shadow-primary-900 rounded-lg bg-gradient-to-b from-primary-800 to-primary-600 p-8 flex flex-col items-center container"
     >
       <div class="flex justify-center mb-2">
-        <img src="../assets/register-removebg.png" class="h-[30vh] w-[30vh]" />
+        <img src="https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/register-removebg.png" class="h-[30vh] w-[30vh]" />
       </div>
       <div class="w-full flex flex-col items-center">
         <h1 class="text-center font-serif text-primary-50 text-5xl mb-4 lg:mb-8">
@@ -66,7 +66,6 @@
 </template>
 
 <script>
-import vidImage from '../assets/vid.png';
 import Password from 'primevue/password';
 import { createUsers } from '@/apiServices';
 
@@ -82,7 +81,7 @@ export default {
       passwordConfirmation: null,
       birdthday: null,
       genero: null,
-      backgroundImage: vidImage,
+      backgroundImage: 'https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/vid.png',
       isAuthInvitation: null,
       error: '',  // Para mostrar mensajes de error
       message: '',  // Para mostrar mensajes de éxito
@@ -139,7 +138,7 @@ export default {
 
 <style scoped>
 .ctn-cllg {
-  background-image: url('../assets/vid.png');
+  background-image: url('https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/vid.png');
   background-position: left;
   background-size: cover;
   background-repeat: no-repeat;

@@ -172,7 +172,8 @@ export default {
     props: {
         course: {
             type: Object,
-            required: true
+            required: true,
+            default: () => ({})
         }
     },
     components: {
@@ -413,10 +414,10 @@ export default {
         }
     },
 
-    beforeMount() {
-        this.getStudents();
-        this.getAttendance();
-        this.getChapters();
+    async mounted() {
+        await this.getStudents();
+        await this.getAttendance();
+        await this.getChapters();
     }
 }
 </script>

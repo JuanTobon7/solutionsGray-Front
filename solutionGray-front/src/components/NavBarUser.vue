@@ -11,7 +11,7 @@
         </div>
         <div class="flex items-center ml-auto">
           <div @click="toggleMenu" class="relative rounded-full cursor-pointer inline-block">
-            <img class="h-12 w-12 rounded-full" src="../assets/solutionGrayLOGO-removebg.png" alt="Profile Picture"/>
+            <img class="h-12 w-12 rounded-full" src="https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/solutionGrayLOGO-removebg.png" alt="Profile Picture"/>
             <i class="material-symbols-outlined text-white absolute bottom-0 right-0 transform translate-x-2 translate-y-2">
                 expand_more
             </i>

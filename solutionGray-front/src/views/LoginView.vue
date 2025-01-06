@@ -4,7 +4,7 @@
       class="w-[60vh] h-auto md:h-[80vh] shadow-lg shadow-primary-900 rounded-lg bg-gradient-to-b from-primary-800 to-primary-600 p-8 flex flex-col items-center container"
     >
       <div class="flex justify-center mb-4">
-        <img src="../assets/solutionGrayLOGO-removebg.png" class="h-[30vh] w-[30vh]" />
+        <img src="https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/solutionGrayLOGO-removebg.png" class="h-[30vh] w-[30vh]" />
       </div>
       <div class="w-full flex flex-col items-center">
         <h1 class="text-center font-serif text-primary-50 text-5xl mb-8">
@@ -87,7 +87,7 @@ export default{
 
 <style scoped>
 .ctn-cllg {
-  background-image: url('../assets/vid.png');
+  background-image: url('https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/vid.png');
   background-position: left;
   background-size: cover;
   background-repeat: no-repeat;

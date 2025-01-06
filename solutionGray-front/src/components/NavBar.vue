@@ -4,11 +4,11 @@
       <!-- Logo and Name -->
       <div class="flex items-center gap-4 w-1/2">
         <img 
-          src="../assets/solutionGrayLOGO-removebg.png" 
+          src="https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/solutionGrayLOGO-removebg.png" 
           alt="Logo" 
           class="h-12 w-12 rounded-full" 
         />
-        <span class="text-white font-semibold text-lg">Ekklesia</span>
+        <span class="text-white font-semibold text-lg">VidDeFe</span>
       </div>
 
       <!-- Hamburger Icon -->
@@ -31,13 +31,13 @@
         <li @click="scrollTo('start')" class="text-white text-center md:text-left">
           <span class="cursor-pointer">Inicio</span>
         </li>
-        <li @click="scrollTo('ekklesia')" class="text-white text-center md:text-left">
+        <li @click="scrollTo('VidDeFe')" class="text-white text-center md:text-left">
           <span class="cursor-pointer">¿Qué Somos?</span>
         </li>
         <li @click="scrollTo('contact')" class="text-white text-center md:text-left">
           <span class="cursor-pointer">Contáctanos</span>
         </li>
-        <li @click="scrollTo('why-ekklesia')" class="text-white text-center md:text-left">
+        <li @click="scrollTo('why-VidDeFe')" class="text-white text-center md:text-left">
           <span class="cursor-pointer">Características</span>
         </li>
         <li class="text-white md:hidden px-4 py-2 hover:bg-primary-500 flex items-center gap-2 rounded-md text-center">

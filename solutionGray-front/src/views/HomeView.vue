@@ -5,11 +5,11 @@
                 <div class="container h-full flex flex-col justify-center gap-2 text-white">
                     <h1 class="text-5xl mb-4 text-center">
                         <strong>
-                            Bienvenidos a Ekklesia
+                            Bienvenidos a VidDeFe
                         </strong>
                     </h1>
                     <p class="text-lg text-center mb-6 text-white">
-                        En Ekklesia encontrarás soluciones para tu congregación: una herramienta diseñada para transformar la gestión de tu iglesia. Con funciones pensadas para establecer el orden que Dios nos enseña, Ekklesia te permite enfocarte en lo que realmente importa: el crecimiento espiritual de tu comunidad.
+                        En VidDeFe encontrarás soluciones para tu congregación: una herramienta diseñada para transformar la gestión de tu iglesia. Con funciones pensadas para establecer el orden que Dios nos enseña, VidDeFe te permite enfocarte en lo que realmente importa: el crecimiento espiritual de tu comunidad.
                     </p>
 
                     <div class="flex items-center justify-center">
@@ -20,18 +20,18 @@
                 </div>
             </div>
         </div>
-        <div id="ekklesia" class="container mb-10">
+        <div id="VidDeFe" class="container mb-10">
             <h2 class="text-3xl flex items-center gap-2 text-second-900 mb-3">
                 <strong>                        
-                    ¿Que es Ekklesia?
+                    ¿Que es VidDeFe?
                 </strong>
                 <i class="material-symbols-outlined text-3xl font-bold">church</i>
             </h2>
             <p class="text-lg text-gray-700 mb-1">
-                Ekklesia es una plataforma diseñada para facilitar la gestión y organización de iglesias, proporcionando herramientas para mantener el orden en cada aspecto de la congregación. Nos enfocamos en el crecimiento espiritual de tu comunidad, ayudándote a llevar un control eficiente de cultos, asistencias, ofrendas y más.
+                VidDeFe es una plataforma diseñada para facilitar la gestión y organización de iglesias, proporcionando herramientas para mantener el orden en cada aspecto de la congregación. Nos enfocamos en el crecimiento espiritual de tu comunidad, ayudándote a llevar un control eficiente de cultos, asistencias, ofrendas y más.
             </p>
             <p class="text-lg text-gray-700">
-                Con Ekklesia, podrás gestionar todos los aspectos administrativos de tu iglesia desde un solo lugar, permitiendo que te concentres en lo más importante: el desarrollo espiritual y la unidad de tu comunidad. Esta aplicación ha sido creada pensando en las necesidades de cada iglesia, grande o pequeña, proporcionando una experiencia fácil de usar y completamente integrada.
+                Con VidDeFe, podrás gestionar todos los aspectos administrativos de tu iglesia desde un solo lugar, permitiendo que te concentres en lo más importante: el desarrollo espiritual y la unidad de tu comunidad. Esta aplicación ha sido creada pensando en las necesidades de cada iglesia, grande o pequeña, proporcionando una experiencia fácil de usar y completamente integrada.
             </p>
         </div>
         <div id="contact" class="bg-work mb-10">
@@ -161,10 +161,10 @@
                 </div>
             </div>
         </div>
-        <div id="why-ekklesia" class="container mb-10">
+        <div id="why-VidDeFe" class="container mb-10">
             <div class="mb-8">
                 <h2 class="text-3xl flex items-center gap-2 text-second-900 mb-4">
-                    <strong>¿Por qué Ekklesia?</strong>
+                    <strong>¿Por qué VidDeFe?</strong>
                 </h2>
                 <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sequi modi culpa non. Beatae id quaerat earum architecto accusantium recusandae, saepe consectetur cum commodi nostrum tenetur quasi distinctio ipsam, sunt dolor?</p>
             </div>
@@ -326,13 +326,13 @@ export default{
 
 <style scoped>
 .bg-image-start {
-  background-image: url('../assets/vid.png');
+  background-image: url('https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/vid.png');
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;
 }
 .bg-work {
-  background-image: url('../assets/work.jpg');
+  background-image: url('https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/work.jpg');
   background-repeat: no-repeat;
   background-position: center left;
   background-size: cover;

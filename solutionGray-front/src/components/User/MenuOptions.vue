@@ -2,7 +2,7 @@
     <MenuUser :model="items" class="w-[35vh] bg-primary-200 rounded-md mr-2 p-4 personal-animated">
         <template #start>
             <div class="flex items-center gap-4 mb-4 border-b-2 border-b-primary-300">
-                <img src="../../assets/solutionGrayLOGO-removebg.png" alt="Picture User" class="w-12">
+                <img src="https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/solutionGrayLOGO-removebg.png" alt="Picture User" class="w-12">
                 <span class="text-primary-900 text-xl">{{ user.name }}</span>
             </div>
         </template>              
