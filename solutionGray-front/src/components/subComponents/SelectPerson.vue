@@ -8,15 +8,7 @@
     </div>
   </div>
 
-  <div v-else class="p-6">
-    <div v-if="message" class="text-center text-3xl text-primary-800 p-4">
-      <p>{{ message }}</p>
-      <span class="text-8xl material-symbols-outlined mb-4 text-primary-900">
-        sentiment_dissatisfied
-      </span>
-    </div>
-    
-    <div v-else>
+  <div v-else>
       <DataTable 
         :value="people" 
         class="w-full border-collapse" 
@@ -28,6 +20,7 @@
         @update:selection="onPersonSelected" 
         dataKey="id"
         tableStyle="min-width: 50rem"
+        emptyMessage="No hay personas registradas"
       >           
         <Column field="first_name" header="Primer Nombre"></Column>
         <Column field="last_name" header="Primer Apellido"></Column>
@@ -35,7 +28,6 @@
         <Column field="type_person" header="Tipo de Persona"></Column>
         <Column field="phone" header="Número de Celular"></Column>           
       </DataTable>
-    </div>
   </div>
 </template>
 
@@ -64,8 +56,10 @@ export default {
         this.loading = true;
         const response = await getPeople();
         this.people = response;
-      } catch (error) {
-        this.message = error.response.data.message;
+      } catch (e) {
+        if(e.response.status === 401 && e.response.data.message === 'Token has expired') {
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups intentalo de nuevo' });
+        }
       } finally {
         this.loading = false;
       }
@@ -73,6 +67,7 @@ export default {
     onPersonSelected(person) {
       this.selectedPerson = person;
       store.dispatch('selectPerson', person);
+      this.$toast.add({severity: 'success', summary: 'Guía Espiritual Seleccionada', detail:'Persona seleccionada correctamente',life: 3000});
     }
   },
   mounted() {

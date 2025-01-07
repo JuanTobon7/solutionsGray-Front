@@ -10,20 +10,17 @@
 
     <!-- Logo y Rol -->
     <section class="flex flex-col items-center p-4">
-      <img src="../assets/solutionGrayLOGO-removebg.png" class="sm:w-15 sm:h-15 md:w-60" alt="Logo">
+      <img src="https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/solutionGrayLOGO-removebg.png" class="sm:w-15 sm:h-15 md:w-60" alt="Logo">
       <h2 class="text-2xl font-semibold text-primary-50">{{ rol }}</h2>
     </section>
 
     <!-- Menú de Navegación -->
     <nav>
       <ul class="text-primary-50 text-xl">
-        <!-- Inicio -->
         <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4 cursor-pointer">
           <i class="material-symbols-outlined">home</i>
           <router-link to="/home" class="block hover:text-primary-300">Inicio</router-link>
         </li>
-
-        <!-- Church -->
         <li 
           @click="toggleMenu('church')" 
           class="px-4 py-2 flex items-center justify-between gap-4 hover:bg-primary-600 cursor-pointer" 
@@ -42,8 +39,6 @@
             </li>
           </ul>
         </div>
-
-        <!-- Grupos -->
         <li 
           @click="toggleMenu('groups')" 
           class="px-4 py-2 flex items-center justify-between gap-4 hover:bg-primary-600 cursor-pointer" 
@@ -62,8 +57,6 @@
             </li>
           </ul>
         </div>
-
-        <!-- People -->
         <li 
           @click="toggleMenu('people')" 
           class="px-4 py-2 flex items-center justify-between gap-4 hover:bg-primary-600 cursor-pointer" 
@@ -82,8 +75,6 @@
             </li>
           </ul>
         </div>
-
-        <!-- Cursos -->
         <li 
           @click="toggleMenu('curses')" 
           class="px-4 py-2 flex items-center justify-between gap-4 hover:bg-primary-600 cursor-pointer" 
@@ -102,8 +93,6 @@
             </li>
           </ul>
         </div>
-
-        <!-- Ingresos -->
         <li 
           @click="toggleMenu('ingresos')" 
           class="px-4 py-2 flex items-center justify-between gap-4 hover:bg-primary-600 cursor-pointer" 

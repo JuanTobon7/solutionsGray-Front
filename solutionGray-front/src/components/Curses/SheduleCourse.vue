@@ -1,6 +1,6 @@
 <template>
   <section class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center">
-    <div class="container max-w-3xl bg-white rounded-lg shadow-lg p-6 max-h-[90vh] overflow-y-auto">
+    <div class="container bg-white rounded-lg shadow-lg p-6 max-h-[90vh] overflow-y-auto">
       <!-- Header -->
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-semibold text-gray-800">Horarios del Curso</h2>

@@ -7,7 +7,13 @@ export const start = async () => {
 }
 
 export const login = async (data) => {
-  const response = await api.post('/login', { email: data.email, password: data.password });  
+  console.log('secrets: ',import.meta.env)
+  const response = await api.post('/login', { 
+    email: data.email, 
+    password: data.password,
+    client_secret: import.meta.env.VITE_SSR_CLIENT,
+    client_id: import.meta.env.VITE_SSR_CLIENT_ID
+  });  
   if (response.data.name || response.data.email) {
     const user = {
       name: response.data.name,
@@ -166,7 +172,12 @@ export const getStatesByCountry = async(idCountry)=>{
 }
 
 export const savePeople = async(data)=>{
-  const response = await api.post('/save-people',data);
+  const response = await api.post('/save-people',
+    {
+      ...data,
+      client_secret: import.meta.env.VITE_SSR_CLIENT,
+      client_id: import.meta.env.VITE_SSR_CLIENT_ID
+    });
   return response.data;
 }
 
@@ -399,5 +410,16 @@ export const createWorshipServiceGroup = async(data)=>{
 
 export const getMyprofile = async()=>{
   const response = await api.get('/get-my-profile');
+  return response.data;
+}
+
+//administrativeApp
+export const getLeads = async()=>{
+  const response = await api.get('/get-leads');
+  return response.data;
+}
+
+export const updateLead = async(data)=>{
+  const response = await api.put(`/update-lead/${data.id}`,data);
   return response.data;
 }

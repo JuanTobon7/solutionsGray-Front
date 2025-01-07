@@ -1,43 +1,48 @@
 <template>
   <section class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center">
     <div class="container h-[95vh] w-full flex items-center justify-center sm:px-6">
-      <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg w-full sm:min-w-[90%] flex flex-col max-h-full overflow-y-auto">
-        <!-- Header del modal -->
+      <div class="bg-white p-6 rounded-lg shadow-lg w-full flex flex-col max-h-full overflow-y-auto">
         <div class="flex justify-between items-center mb-4 sm:mb-6">
           <h2 class="text-lg sm:text-xl font-semibold text-gray-800">Registro de Ingresos</h2>
           <span @click="$emit('close')" class="material-symbols-outlined text-2xl cursor-pointer text-gray-600 hover:text-gray-800 transition duration-200">close</span>
         </div>
-
-        <!-- Selección de Moneda -->
         <div class="flex flex-col mb-4">
           <label for="currency" class="text-gray-600 mb-2 font-semibold">Tipo de Moneda</label>
           <Dropdown 
             v-model="selectedCurrency" 
             :options="currencies" 
-            filter 
             filterMatchMode="contains" 
             filterBy="currency_type,currency_symbol,country_id" 
             optionLabel="currency_type" 
             placeholder="Buscar por tipo, símbolo o país" 
-            class="w-full md:w-14rem"
+            class="max-w-3/4 md:w-full"
+            :panelClass="['w-3/4 md:w-full overflow-x-auto']"
           >
+            <!-- Personalización del valor seleccionado -->
             <template #value="slotProps">
-              <div v-if="slotProps.value" class="flex items-center gap-2">
-                <span style="width: 18px" :class="`fi fi-${slotProps.value.country_id.toLowerCase()}`"></span>
-                <div>{{ slotProps.value.currency_symbol + ' ' + slotProps.value.currency_type + ' ' + slotProps.value.country_name}}</div>
+              <div v-if="slotProps.value" class="flex items-center gap-2 max-w-3/4">
+                <span :class="`fi fi-${slotProps.value.country_id.toLowerCase()}`"></span>
+                <p>
+                  {{ slotProps.value.currency_symbol + ' ' + slotProps.value.currency_type + ' ' + slotProps.value.country_name }}
+                </p>
               </div>
               <span v-else>
                 {{ slotProps.placeholder }}
               </span>
             </template>
+
+            <!-- Personalización de las opciones desplegables -->
             <template #option="slotProps">
-              <div class="flex items-center gap-2">
-                <span style="width: 18px" :class="`fi fi-${slotProps.option.country_id.toLowerCase()}`"></span>
-                <div>{{ slotProps.option.currency_symbol + ' - ' + slotProps.option.currency_type + ' (' + slotProps.option.country_id + ')' + ' ' + slotProps.option.country_name}}</div>
+              <div class="flex items-center gap-2 max-w-3/4">
+                <span :class="`fi fi-${slotProps.option.country_id.toLowerCase()}`"></span>
+                <p>
+                  {{ slotProps.option.currency_symbol + ' - ' + slotProps.option.currency_type + ' (' + slotProps.option.country_id + ')' + ' ' + slotProps.option.country_name }}
+                </p>
               </div>
             </template>
           </Dropdown>
         </div>
+
 
         <!-- Selección del Donante -->
         <div class="flex flex-col mb-4">
@@ -47,31 +52,12 @@
             :options="people"
             optionLabel="name"
             placeholder="Selecciona un Donante"
-            class="w-full"
+            class="max-w-3/4 md:w-full"
+            :panelClass="['']"
           >
             <template #value="slotProps">
-              <div v-if="slotProps.value" class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-full flex items-center">
-                  <Avatar
-                    v-if="slotProps.value.avatar"
-                    :image="slotProps.value.avatar"
-                    shape="circle"
-                  />
-                  <Avatar
-                    v-else
-                    :label="getInitials(slotProps.value)"
-                    class="bg-primary-100 flex items-center justify-center text-primary-800"
-                    shape="circle"
-                  />
-                </div>
-                <div>{{ slotProps.value.first_name + ' ' + slotProps.value.last_name }} - CC: {{ slotProps.value.cc }} - Phone: {{ slotProps.value.phone }}</div>
-              </div>
-              <span v-else>{{ slotProps.placeholder }}</span>
-            </template>
-
-            <template #option="slotProps">
-              <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-full flex items-center">
+              <div v-if="slotProps.value" class="flex flex-col md:flex-row items-center gap-4">
+                <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
                   <Avatar
                     v-if="slotProps.option.avatar"
                     :image="slotProps.option.avatar"
@@ -84,7 +70,51 @@
                     shape="circle"
                   />
                 </div>
-                <div>{{ slotProps.option.first_name + ' ' + slotProps.option.last_name }} - CC: {{ slotProps.option.cc }} - Phone: {{ slotProps.option.phone }}</div>
+
+                <!-- Información -->
+                <div class="flex flex-col sm:flex-row sm:items-center sm:gap-4 text-sm">
+                  <p class="font-semibold text-gray-800">
+                    {{ slotProps.option.first_name + ' ' + slotProps.option.last_name }}
+                  </p>
+                  <p class="text-gray-600">
+                    CC: {{ slotProps.option.cc }}
+                  </p>
+                  <p class="text-gray-600">
+                    Phone: {{ slotProps.option.phone }}
+                  </p>
+                </div>
+              </div>
+              <span v-else>{{ slotProps.placeholder }}</span>
+            </template>
+
+            <template #option="slotProps">
+              <div class="flex items-center gap-4">
+                <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                  <Avatar
+                    v-if="slotProps.option.avatar"
+                    :image="slotProps.option.avatar"
+                    shape="circle"
+                  />
+                  <Avatar
+                    v-else
+                    :label="getInitials(slotProps.option)"
+                    class="bg-primary-100 flex items-center justify-center text-primary-800"
+                    shape="circle"
+                  />
+                </div>
+
+                <!-- Información -->
+                <div class="flex flex-col sm:flex-row sm:items-center gap-1 md:gap-2 text-sm">
+                  <p>
+                    {{ slotProps.option.first_name + ' ' + slotProps.option.last_name }}
+                  </p>
+                  <p>
+                    CC: {{ slotProps.option.cc }}
+                  </p>
+                  <p>
+                    Phone: {{ slotProps.option.phone }}
+                  </p>
+                </div>
               </div>
             </template>
           </Dropdown>
@@ -105,7 +135,7 @@
               optionValue="id" 
               optionLabel="name" 
               placeholder="Tipo de Ofrenda" 
-              class="w-full md:w-1/2"
+              class="w-3/4 md:w-full"
             />
             <input
               type="number"

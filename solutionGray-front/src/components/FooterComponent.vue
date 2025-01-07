@@ -5,17 +5,17 @@
         <!-- Foto de la app -->
         <div class="flex justify-center md:justify-start">
           <img 
-            src="../assets/solutionGrayLOGO-removebg.png" 
-            alt="Logo de Ekklesia" 
+            src="https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/solutionGrayLOGO-removebg.png" 
+            alt="Logo de VidDeFe" 
             class="w-32 h-32 rounded-full" 
           />
         </div>
 
         <!-- Sección de información -->
         <div class="text-center md:text-left">
-          <h3 class="text-2xl font-semibold mb-4 text-primary-50">Sobre Ekklesia</h3>
+          <h3 class="text-2xl font-semibold mb-4 text-primary-50">Sobre VidDeFe</h3>
           <p class="text-sm md:text-base">
-            Ekklesia es una plataforma diseñada para gestionar cultos cristianos y 
+            VidDeFe es una plataforma diseñada para gestionar cultos cristianos y 
             facilitar la organización de la iglesia. ¡Conoce más sobre nosotros!
           </p>
         </div>

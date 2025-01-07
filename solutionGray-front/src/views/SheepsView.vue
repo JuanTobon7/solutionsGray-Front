@@ -14,7 +14,8 @@
     <!-- Vista de detalle de Oveja seleccionada -->
     <div v-if="sheepInfoById">
       <SheepInfoCard 
-        :sheep="sheepInfoById" 
+        :sheep="sheepInfoById"
+        :mySheep="isMySheep"
         @close="sheepInfoById = null" 
       />
     </div>
@@ -36,7 +37,7 @@
         <DataTable 
           :value="sheepsInfo" 
           paginator
-          rows="10"
+          :rows=10
           stripedRows
           selectionMode="single"
           v-model:selection="sheepInfoById"
@@ -107,7 +108,7 @@
     <!-- Modal para agregar nueva oveja -->
     <AddSheepCard 
       v-if="newSheepVisible" 
-      @close="newSheepVisible = false" 
+      @close="newSheepVisible = false"
     />
   </section>
 </template>
@@ -131,6 +132,7 @@ export default {
   data() {
     return {
       sheepsInfo: [],          // Lista de ovejas
+      isMySheep: false,
       newSheepVisible: false,  // Modal para agregar ovejas
       sheepInfoById: null,     // Detalle de oveja seleccionada
       loading: true,           // Estado de carga
@@ -142,7 +144,13 @@ export default {
       this.loading = true;
       try {
         this.sheepsInfo = await getSheeps();
-      } finally {
+        this.isMySheep = false;
+      }catch(e){
+        if(e.response.status === 401 && e.resposnse.data.message === 'Token has expired'){
+          this.$toast.add({severity:'error', summary:'Error', detail:'Ups algo paso, intentalo de nuevo', life: 3000});
+        }
+      }
+       finally {
         this.loading = false;
       }
     },
@@ -150,7 +158,12 @@ export default {
       this.loading = true;
       try {
         this.sheepsInfo = await getMySheeps();
-      } finally {
+        this.isMySheep = true;
+      } catch(e){
+        if(e.response.status === 401 && e.resposnse.data.message === 'Token has expired'){
+          this.$toast.add({severity:'error', summary:'Error', detail:'Ups algo paso, intentalo de nuevo', life: 3000});
+        }
+      }finally {
         this.loading = false;
       }
     },
