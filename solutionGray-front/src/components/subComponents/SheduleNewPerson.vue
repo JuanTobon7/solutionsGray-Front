@@ -1,8 +1,8 @@
 <template>
   <form @submit.prevent="createPerson">
-    <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4 lg:min-w-[80vh] mb-2">
+    <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4 md:min-w-[80vh] mb-2">
       <!-- Columna 1: Campos de texto -->
-      <div>
+      <div class="w-3/4 md:w-full">
         <!-- Campo Cédula -->
         <div>
           <label class="block text-sm font-medium text-gray-700">Cédula</label>
@@ -35,9 +35,9 @@
       </div>
 
       <!-- Columna 2: Dropdowns -->
-      <div>
+      <div class="w-3/4 md:w-full">
         <!-- Dropdown País -->
-        <div class="flex flex-col">
+        <div class="flex flex-col mb-2">
           <label class="block text-sm font-medium text-gray-700 mb-1">País</label>
           <Dropdown
             id="countries"
@@ -53,7 +53,7 @@
         </div>
 
         <!-- Dropdown Estado/Provincia -->
-        <div class="flex flex-col">
+        <div class="flex flex-col mb-2">
           <label class="block text-sm font-medium text-gray-700 mb-1">Estado/Provincia</label>
           <Dropdown
             id="states"

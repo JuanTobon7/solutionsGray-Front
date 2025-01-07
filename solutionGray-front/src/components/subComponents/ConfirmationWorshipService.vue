@@ -40,36 +40,58 @@
     <div class="mt-4 lg:max-w-[130vh]">
       <h4 class="text-xl font-semibold text-gray-800 mb-4">Servicios Asignados</h4>
       <div>
-        <Carousel 
-          v-if="assignedServices.length" 
-          :value="assignedServices" 
-          :numVisible="numVisible"
-          :containerClass="'flex justify-center items-center bg-gray-100 p-2 rounded-md'"
-          :showNavigators="assignedServices.length > numVisible"
+        <DataView           
+          :value="assignedServices"         
+          :paginator="assignedServices.length > 3"
+          :rows="3"
+          emptyMessage="No hay servicios asignados"
         >
-          <template #item="slotProps">
-            <div class="p-4 bg-white shadow-lg rounded-lg flex flex-col items-center justify-center mr-4 max-w-[50vh]">
-              <div class="w-20 h-20 rounded-full overflow-hidden mb-2">
-                <Avatar
-                  v-if="slotProps.data.person.avatar"
-                  :image="slotProps.data.person.avatar"
-                  size="xlarge"
-                  shape="circle"
-                />
-                <Avatar
-                  v-else
-                  :label="getInitials(slotProps.data.person)"
-                  class="bg-primary-100 flex items-center justify-center text-primary-800"
-                  size="xlarge"
-                  shape="circle"
-                />
+          <template #list="slotProps">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+              <div
+                v-for="(item, index) in slotProps.items"
+                :key="index"
+                class="p-4 bg-white shadow-lg rounded-lg flex flex-col items-center justify-center"
+              >
+                <!-- Avatar -->
+                <div class="w-20 h-20 rounded-full overflow-hidden mb-2">
+                  <Avatar
+                    v-if="item.person.avatar"
+                    :image="item.person.avatar"
+                    size="xlarge"
+                    shape="circle"
+                  />
+                  <Avatar
+                    v-else
+                    :label="getInitials(item.person)"
+                    class="bg-primary-100 flex items-center justify-center text-primary-800"
+                    size="xlarge"
+                    shape="circle"
+                  />
+                </div>
+
+                <!-- Información de la persona -->
+                <p class="text-lg font-semibold text-center">
+                  {{ item.person.first_name + ' ' + item.person.last_name }}
+                </p>
+                <p>Rating: {{ item.rating }}</p>
+                <p class="text-sm text-center text-gray-600">
+                  {{ item.service.name }}
+                </p>
+
+                <!-- Botones de acción -->
+                <div class="flex space-x-2 mt-4">
+                  <button 
+                    @click="removeAssignment(index)" 
+                    class="material-symbols-outlined text-red-500 cursor-pointer"
+                  >
+                    delete
+                  </button>
+                </div>
               </div>
-              <p class="text-lg font-semibold text-center">{{ slotProps.data.person.first_name + ' ' + slotProps.data.person.last_name }}</p>
-              <p class="text-sm text-center text-gray-600">{{ slotProps.data.service.name }}</p>              
             </div>
           </template>
-        </Carousel>
-        <p v-else class="text-gray-600">No hay servicios asignados todavía.</p>
+        </DataView>
       </div>
     </div>
 
@@ -86,7 +108,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import Avatar from 'primevue/avatar';
-import Carousel from 'primevue/carousel';
+import DataView from 'primevue/dataview';
 import Card from 'primevue/card';
 import { createWorshipService,createWorshipServiceGroup, assingService, updateWorshipService } from '@/apiServices/index';
 import { format } from 'date-fns-tz';
@@ -106,7 +128,7 @@ export default {
   name: 'ConfirmationWorshipService',
   components: {
     Avatar,
-    Carousel,
+    DataView,
     Card,
   },
   data() {

@@ -17,6 +17,7 @@ import MyGroup from '@/views/MyGroup.vue'
 import WorshipServicesGroups from '@/views/WorshipServicesGroups.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import ConfigutarionView from '@/views/ConfigutarionView.vue'
+import AdministrativeView from '@/views/AdministrativeView.vue'
 
 import store from '@/store'
 
@@ -71,6 +72,11 @@ const routes = [
     path: '/profile',
     name: 'profile',
     component: ProfileView,
+  },
+  {
+    path: '/administrative',
+    name: 'administrative',
+    component: AdministrativeView,
   },
   {
     path: '/configuration',

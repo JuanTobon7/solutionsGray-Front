@@ -23,6 +23,7 @@
         :value="cultos"
         :paginator="true"
         :rows="5"
+        emptyMessage="No hay cultos programados"
       >
         <template #header>
           <div class="flex flex-wrap justify-between items-center">
@@ -48,10 +49,10 @@
         <!-- Template para renderizar elementos en la lista -->
         <template #list="slotProps">
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div
-        v-for="(items, index) in slotProps.items"
-        :key="index" class="w-full full">
-           
+            <div
+              v-for="(items, index) in slotProps.items"
+              :key="index" class="w-full full">
+            
               <div
                 class="transition-transform duration-200 hover:-translate-y-2 shadow-md shadow-gray-400 rounded-lg sm:rounded-2xl cursor-pointer w-full h-full overflow-hidden"
                 @click="showInfo(items)"

@@ -52,8 +52,8 @@
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <div class="mb-4 flex flex-wrap items-center gap-8">
                                 <div class="flex items-center justify-between gap-2">
-                                    <div class="flex items-center">
-                                        <label for="date" class="text-sm text-gray-600">
+                                    <div class="flex flex-wrap items-center">
+                                        <label for="date" class="text-sm mb-1 text-gray-600">
                                             Seleccione la fecha para ver los asistentes:
                                         </label>
                                         <Calendar
@@ -81,8 +81,8 @@
                                     </div>
                                 </div>
 
-                                <div class="flex items-center">                 
-                                    <label for="date" class="text-sm text-gray-600">Seleccione el capitulo visto visto:</label>
+                                <div class="flex flex-wrap items-center">                 
+                                    <label for="date" class="text-sm mb-1 text-gray-600">Seleccione el capitulo visto visto:</label>
                                     <Dropdown for="date" v-model="selectedChapter" :options="chapters" option-label="name" placeholder="Seleccione una capitulo" required
                                     class="w-full min-w-[200px] max-w-[300px] shadow appearance-none border border-second-100 rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
                                 </div>
@@ -110,7 +110,7 @@
                                 <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-20"></div>
                                 <div class="px-4 py-6 -mt-14 relative">
                                     <div class="bg-white p-6 rounded-lg shadow-lg">
-                                        <div class="flex items-center space-x-4">
+                                        <div class="flex flex-col md:flex-row items-center space-x-4">
                                             <!-- Avatar o iniciales de la persona -->
                                             <div class="w-16 h-16 rounded-full overflow-hidden">
                                                 <Avatar
@@ -244,7 +244,6 @@ export default {
     computed: {
         progress() {
                 if (this.attendance.length === 0) {
-                console.log('No hay datos en attendance');
                 return 0; // Retorna 0 o lo que tenga sentido para tu lógica
                 }
                 const maxNumbChapter = Math.max(...this.attendance.map(item => item.numb_chapter));
@@ -255,11 +254,21 @@ export default {
     methods: {        
         // Método para obtener los estudiantes
         async getStudents() {
-            const students = await getStudentsCourse(this.course.teacher_course_id);
-            this.students = students.map(student => ({
-                ...student,
-                isAttend: false, // Inicializamos isAttend como false para cada estudiante
-            }));
+            try{
+                const students = await getStudentsCourse(this.course.teacher_course_id);
+                this.students = students.map(student => ({
+                    ...student,
+                    isAttend: false, // Inicializamos isAttend como false para cada estudiante
+                }));
+            }catch(e){
+                if(e.response && e.response.status === 401 && e.response.data.message === 'Token Expired'){
+                    this.students = [];
+                    this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo pasó. Intenta de nuevo', life: 3000 });
+                }else{
+                    this.students = [];
+                }                
+            }
+
         },
 
         // Obtener las iniciales de un estudiante
@@ -374,34 +383,55 @@ export default {
             });
         },
         // Método para obtener la asistencia de todos los estudiantes
-        async getAttendance() {            
-            const attendance = await getAttendanceCourse(this.course.teacher_course_id);
-            
-            // Formatear las fechas en la respuesta para que tengan un formato adecuado
-            this.dateOptions = attendance.map(date => {
-                   return {
-                    date: new Date(date.date),   // Guardar solo la fecha como string
-                   };
-            });            
-            // Seleccionar la última fecha de la lista de opciones
-            const length = this.dateOptions.length;
-            if (length > 0) {
-                this.selectedDate = this.dateOptions[length - 1].date;  // Asegurar que selectedDate sea una cadena de texto
+        async getAttendance() {
+            try{            
+                const attendance = await getAttendanceCourse(this.course.teacher_course_id);
+                
+                // Formatear las fechas en la respuesta para que tengan un formato adecuado
+                this.dateOptions = attendance.map(date => {
+                    return {
+                        date: new Date(date.date),   // Guardar solo la fecha como string
+                    };
+                });            
+                // Seleccionar la última fecha de la lista de opciones
+                const length = this.dateOptions.length;
+                if (length > 0) {
+                    this.selectedDate = this.dateOptions[length - 1].date;  // Asegurar que selectedDate sea una cadena de texto
+                }else{
+                    return this.selectedDate = null;
+                }
+                this.attendance = attendance.map(att => ({
+                    id: att.id,
+                    studentId: att.student_id,
+                    date: parseISO(att.date), // Convertimos la fecha recibida a formato ISO
+                    chapter_id: att.chapter_id,
+                    status: att.status,
+                    numb_chapter: att.numb_chapter
+                }));
+                console.log('attendance:',this.attendance)
+            }catch(e){
+                if(e.response && e.response.status === 401 && e.response.data.message === 'Token Expired'){
+                    this.attendance = [];
+                    this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo pasó. Intenta de nuevo', life: 3000 });
+                }else{
+                    this.attendance = [];
+                }
             }
-            this.attendance = attendance.map(att => ({
-                id: att.id,
-                studentId: att.student_id,
-                date: parseISO(att.date), // Convertimos la fecha recibida a formato ISO
-                chapter_id: att.chapter_id,
-                status: att.status,
-                numb_chapter: att.numb_chapter
-            }));
-            console.log('attendance:',this.attendance)
+
         },
 
         async getChapters() {
-            const chapters = await getChaptersCourse(this.course.course_id);
-            this.chapters = chapters;
+            try{
+                const chapters = await getChaptersCourse(this.course.course_id);
+                this.chapters = chapters;
+            }catch(e){
+                if(e.response && e.response.status === 401 && e.response.data.message === 'Token Expired'){
+                    this.chapters = [];
+                    this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo pasó. Intenta de nuevo', life: 3000 });
+                }else{
+                    this.chapters = [];
+                }
+            }
         },
         async closeEvaluate(){
             this.showEvaluteStudents=false

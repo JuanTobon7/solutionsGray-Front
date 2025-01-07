@@ -13,8 +13,11 @@
                     </p>
 
                     <div class="flex items-center justify-center">
-                        <button class="bg-second-500 hover:bg-second-600 text-white px-4 py-2 rounded-md mt-4">
-                            Conocer más
+                        <button 
+                            @click="scrollTo('contact')"
+                            class="bg-second-500 hover:bg-second-600 text-white px-4 py-2 rounded-md mt-4"
+                        >
+                            Unirme a VidDeFe
                         </button>
                     </div>
                 </div>
@@ -268,6 +271,16 @@ export default{
         }
     },
     methods: {
+        scrollTo(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                });
+
+            }
+        },
         async loadCountries() {
             try {
                 const response = await getCountries(); // Obtener países desde la BD

@@ -1,7 +1,7 @@
 <template>
   <section class="w-full h-screen flex items-center justify-center ctn-cllg">
     <div
-      class="w-[60vh] h-auto md:h-[80vh] shadow-lg shadow-primary-900 rounded-lg bg-gradient-to-b from-primary-800 to-primary-600 p-8 flex flex-col items-center container"
+      class="w-[60vh] h-auto shadow-lg shadow-primary-900 rounded-lg bg-gradient-to-b from-primary-800 to-primary-600 p-8 flex flex-col items-center container"
     >
       <div class="flex justify-center mb-4">
         <img src="https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/solutionGrayLOGO-removebg.png" class="h-[30vh] w-[30vh]" />

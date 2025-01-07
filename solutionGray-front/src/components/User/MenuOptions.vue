@@ -68,6 +68,7 @@ export default {
                 this.logout();
             } else if (item.path) {
                 this.$router.push(item.path);
+                this.$emit('closeOpt');
             }
         }
     },

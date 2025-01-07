@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6">
+  <div>
     <h3 class="text-2xl font-semibold text-gray-800 mb-4">Asignar Servicios</h3>
 
     <!-- Formulario para asignar servicios -->
@@ -29,26 +29,46 @@
           <template #option="slotProps">
             <div
               v-if="selectedService !== null"
-              class="w-full flex items-center justify-between"
+              class="w-full flex items-center justify-between gap-4"
             >
-            <div class="flex items-center gap-4">
-              <Avatar
-                  v-if="slotProps.option.avatar"
-                  :image="slotProps.option.avatar"
-                  shape="circle"
-                />
-                <Avatar
-                  v-else
-                  :label="getInitials(slotProps.option)"
-                  class="bg-primary-100 flex items-center justify-center text-primary-800"
-                  shape="circle"
-                />
-                <p>{{ slotProps.option.first_name + ' ' + slotProps.option.last_name }}</p>
-                <Rating v-model="slotProps.option.rating" readonly :stars="5" :cancel="false"/>
-                <p>Cantidad de Servicios: {{slotProps.option.cuantity_services || 0}}</p>
+              <!-- Información del avatar y datos del servidor -->
+              <div class="flex items-center gap-4 flex-wrap md:flex-nowrap">
+                <!-- Avatar -->
+                <div class="w-12 h-12 rounded-full overflow-hidden">
+                  <Avatar
+                    v-if="slotProps.option.avatar"
+                    :image="slotProps.option.avatar"
+                    shape="circle"
+                    size="large"
+
+                  />
+                  <Avatar
+                    v-else
+                    :label="getInitials(slotProps.option)"
+                    class="bg-primary-100 flex items-center justify-center text-primary-800"
+                    size="large"
+                    shape="circle"
+                  />
+                </div>
+                <!-- Datos del servidor -->
+                <div class="flex flex-col md:flex-row md:items-center gap-2">
+                  <p class="">
+                    {{ slotProps.option.first_name + ' ' + slotProps.option.last_name }}
+                  </p>
+                  <Rating
+                    v-model="slotProps.option.rating"
+                    readonly
+                    :stars="5"
+                    :cancel="false"
+                  />
+                  <p class="">
+                    Servicios: {{ slotProps.option.cuantity_services || 0 }}
+                  </p>
+                </div>
               </div>
+              <!-- Botón de información -->
               <button
-                class="material-symbols-outlined text-gray-600 hover:scale-110"
+                class="material-symbols-outlined text-gray-600 hover:text-gray-800 hover:scale-110 transition-transform"
                 @click.stop="showInfo(slotProps.option)"
               >
                 info
@@ -56,7 +76,6 @@
             </div>
           </template>
         </Dropdown>
-       
       </div>
 
       <div class="flex justify-end">
@@ -74,45 +93,64 @@
     <div class="mt-6 max-w-[130vh]">
       <h4 class="text-xl font-semibold text-gray-800 mb-4">Servicios Asignados</h4>
       <div>
-        <Carousel 
-          v-if="assignedServices.length" 
-          :value="assignedServices" 
-          :numVisible="numVisible"
-          :containerClass="'flex justify-center items-center bg-gray-100 p-2 rounded-md'"
-          :showNavigators="assignedServices.length > numVisible"
+        <DataView           
+          :value="assignedServices"         
+          :paginator="assignedServices.length > 3"
+          :rows="3"
+          emptyMessage="No hay servicios asignados"
         >
-          <template #item="slotProps">
-            <div class="p-4 bg-white shadow-lg rounded-lg flex flex-col items-center justify-center mr-4 max-w-[50vh]">
-              <div class="w-20 h-20 rounded-full overflow-hidden mb-2">
-                <Avatar
-                  v-if="slotProps.data.person.avatar"
-                  :image="slotProps.data.person.avatar"
-                  size="xlarge"
-                  shape="circle"
-                />
-                <Avatar
-                  v-else
-                  :label="getInitials(slotProps.data.person)"
-                  class="bg-primary-100 flex items-center justify-center text-primary-800"
-                  size="xlarge"
-                  shape="circle"
-                />
-              </div>
-              <p class="text-lg font-semibold text-center">{{ slotProps.data.person.first_name + ' ' + slotProps.data.person.last_name }}</p>
-              <p>Rating: {{slotProps.data.rating}}</p>
-              <p class="text-sm text-center text-gray-600">{{ slotProps.data.service.name }}</p>
-              <div class="flex space-x-2 mt-4">
-                <button @click="editAssignment(slotProps.index)" class="material-symbols-outlined text-orange-500 cursor-pointer">
-                  edit
-                </button>
-                <button @click="removeAssignment(slotProps.index)" class="material-symbols-outlined text-red-500 cursor-pointer">
-                  delete
-                </button>
+          <template #list="slotProps">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+              <div
+                v-for="(item, index) in slotProps.items"
+                :key="index"
+                class="p-4 bg-white shadow-lg rounded-lg flex flex-col items-center justify-center"
+              >
+                <!-- Avatar -->
+                <div class="w-20 h-20 rounded-full overflow-hidden mb-2">
+                  <Avatar
+                    v-if="item.person.avatar"
+                    :image="item.person.avatar"
+                    size="xlarge"
+                    shape="circle"
+                  />
+                  <Avatar
+                    v-else
+                    :label="getInitials(item.person)"
+                    class="bg-primary-100 flex items-center justify-center text-primary-800"
+                    size="xlarge"
+                    shape="circle"
+                  />
+                </div>
+
+                <!-- Información de la persona -->
+                <p class="text-lg font-semibold text-center">
+                  {{ item.person.first_name + ' ' + item.person.last_name }}
+                </p>
+                <p>Rating: {{ item.rating }}</p>
+                <p class="text-sm text-center text-gray-600">
+                  {{ item.service.name }}
+                </p>
+
+                <!-- Botones de acción -->
+                <div class="flex space-x-2 mt-4">
+                  <button 
+                    @click="editAssignment(index)" 
+                    class="material-symbols-outlined text-orange-500 cursor-pointer"
+                  >
+                    edit
+                  </button>
+                  <button 
+                    @click="removeAssignment(index)" 
+                    class="material-symbols-outlined text-red-500 cursor-pointer"
+                  >
+                    delete
+                  </button>
+                </div>
               </div>
             </div>
           </template>
-        </Carousel>
-        <p v-else class="text-gray-600">No hay servicios asignados todavía.</p>
+        </DataView>
       </div>
     </div>
 
@@ -133,19 +171,19 @@
 
 <script>
 import Dropdown from 'primevue/dropdown';
-import Button from 'primevue/button';
-import Carousel from 'primevue/carousel';
 import Avatar from 'primevue/avatar';
 import Rating from 'primevue/rating';
+import DataView from 'primevue/dataview';
 import EditAssignedService from './EditedAssignedService.vue'; // Import the new component
 import { getServants, getRolesServices, deleteAssingServices,getRatingsByService } from '@/apiServices/index';
 import { mapGetters } from 'vuex';
+import Button from 'primevue/button';
 
 export default {
   components: {
     Dropdown,
+    DataView,
     Button,
-    Carousel,
     Avatar,
     Rating,
     EditAssignedService, // Register the component

@@ -200,7 +200,7 @@
                 <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-20"></div>
                 <div class="px-4 py-6 -mt-14 relative">
                   <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <div class="flex items-center space-x-4">
+                    <div class="flex flex-col md:flex-row items-center space-x-4">
                       <!-- Avatar o iniciales de la persona -->
                       <div class="w-16 h-16 rounded-full overflow-hidden">
                         <Avatar

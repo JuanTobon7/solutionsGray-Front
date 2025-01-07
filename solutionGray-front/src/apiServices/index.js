@@ -412,3 +412,14 @@ export const getMyprofile = async()=>{
   const response = await api.get('/get-my-profile');
   return response.data;
 }
+
+//administrativeApp
+export const getLeads = async()=>{
+  const response = await api.get('/get-leads');
+  return response.data;
+}
+
+export const updateLead = async(data)=>{
+  const response = await api.put(`/update-lead/${data.id}`,data);
+  return response.data;
+}

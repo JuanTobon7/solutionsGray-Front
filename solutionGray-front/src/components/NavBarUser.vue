@@ -16,14 +16,16 @@
                 expand_more
             </i>
           </div>
-          <!-- MenuOptions -->
-          <MenuOptions v-if="isMenuVisible" class="absolute top-24 right-0 z-50 transition-opacity duration-300" />
+          <MenuOptions 
+            v-if="isMenuVisible" 
+            @closeOpt="isMenuVisible = false" 
+            class="absolute top-24 right-0 z-50 transition-opacity duration-300" 
+          />
         </div>
       </nav>
     </div>
   </section>
 
-  <!-- MenuUser with improved transition -->
   <MenuUser 
     v-if="menuUser"
     class="transition-transform duration-300 ease-in-out"
