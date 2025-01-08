@@ -16,7 +16,7 @@
             optionLabel="currency_type" 
             placeholder="Buscar por tipo, símbolo o país" 
             class="max-w-3/4 md:w-full"
-            :panelClass="['w-3/4 md:w-full overflow-x-auto']"
+            :panelClass="['w-3/4 overflow-x-auto']"
           >
             <!-- Personalización del valor seleccionado -->
             <template #value="slotProps">
@@ -53,7 +53,7 @@
             optionLabel="name"
             placeholder="Selecciona un Donante"
             class="max-w-3/4 md:w-full"
-            :panelClass="['']"
+            :panelClass="['w-3/4 overflow-x-auto']"
           >
             <template #value="slotProps">
               <div v-if="slotProps.value" class="flex flex-col md:flex-row items-center gap-4">

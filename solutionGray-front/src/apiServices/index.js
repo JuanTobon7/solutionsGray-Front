@@ -420,6 +420,6 @@ export const getLeads = async()=>{
 }
 
 export const updateLead = async(data)=>{
-  const response = await api.put(`/update-lead/${data.id}`,data);
+  const response = await api.put(`/update-lead/${data.leadId}`,data);
   return response.data;
 }

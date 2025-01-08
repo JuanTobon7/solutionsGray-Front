@@ -45,7 +45,7 @@
              Volver
              <i class="material-symbols-outlined text-primary-50">arrow_back</i>
            </button>
-          <button @click="editServiceAndWorship" class="bg-second-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
+          <button v-if="$hasRole('SuperAdmin')" @click="editServiceAndWorship" class="bg-second-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
             Editar Culto y Servicios
             <i class="material-symbols-outlined">edit</i>
           </button>
@@ -153,7 +153,7 @@
         </div>
 
         <!-- Botón para gestionar ofrendas -->
-        <div class="flex flex-col sm:flex-row items-center justify-center mt-8 gap-4">
+        <div v-if="$hasRole('Admin')" class="flex flex-col sm:flex-row items-center justify-center mt-8 gap-4">
           <!-- Botón de descarga -->
           <button class="bg-second-500 text-white px-5 py-2 rounded-md transition-all duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
             Descargar Reporte
