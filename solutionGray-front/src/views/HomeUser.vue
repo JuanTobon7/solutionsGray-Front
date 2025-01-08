@@ -30,7 +30,7 @@
         :key="index" class="w-full full">
            
               <div
-                class="transition-transform duration-200 hover:-translate-y-2 shadow-md shadow-gray-400 rounded-lg sm:rounded-2xl overflow-hidden w-full h-full"
+                class="shadow-md shadow-gray-400 rounded-lg overflow-hidden w-full h-full"
               >
                 <!-- Imagen de fondo -->
                 <div

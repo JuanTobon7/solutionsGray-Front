@@ -15,34 +15,34 @@
           <!-- Card 1: Siervos -->
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Siervos</h3>
-            <span class="text-3xl font-bold text-primary-800">{{ quantityservants }}</span>
+            <span class="text-3xl font-bold text-primary-800">{{ quantityservants || 0 }}</span>
           </div>
 
           <!-- Card 2: Grupos -->
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Grupos</h3>
-            <span class="text-3xl font-bold text-primary-800">{{ quantitygroups }}</span>
+            <span class="text-3xl font-bold text-primary-800">{{ quantitygroups || 0 }}</span>
           </div>
 
           <!-- Card 3: Ovejas -->
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Ovejas</h3>
-            <span class="text-3xl font-bold text-primary-800">{{ quantitysheeps }}</span>
+            <span class="text-3xl font-bold text-primary-800">{{ quantitysheeps || 0 }}</span>
           </div>
           
           <!-- Card 4: Nuevos -->
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Nuevos</h3>
-            <span class="text-3xl font-bold text-primary-800">{{ quantity_new_times }}</span>
+            <span class="text-3xl font-bold text-primary-800">{{ quantity_new_times || 0}}</span>
           </div>
 
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Estudiantes en Crecimiento</h3>
-            <span class="text-3xl font-bold text-primary-800">{{ peopleInCourses.quantity_active_students }}</span>
+            <span class="text-3xl font-bold text-primary-800">{{ peopleInCourses.quantity_active_students || 0 }}</span>
           </div>
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Maestos</h3>
-            <span class="text-3xl font-bold text-primary-800">{{ peopleInCourses.quantity_teachers }}</span>
+            <span class="text-3xl font-bold text-primary-800">{{ peopleInCourses.quantity_teachers || 0 }}</span>
           </div>
         </div>
 
@@ -183,6 +183,9 @@ export default {
       } catch (e) {
         if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el culto.', life: 3000 });
+        }else{
+          this.assitance = [];
+          this.renderAssistanceChart();
         }
       }
     },
@@ -194,6 +197,9 @@ export default {
       } catch (e) {
         if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el culto.', life: 3000 });
+        }else{
+          this.peopleInCourses = {};
+          this.renderCourseChart();
         }
       }
     },
