@@ -339,13 +339,13 @@ export default{
 
 <style scoped>
 .bg-image-start {
-  background-image: url('https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/vid.png');
+  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png');
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;
 }
 .bg-work {
-  background-image: url('https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/work.jpg');
+  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe.com/photos/work.jpg');
   background-repeat: no-repeat;
   background-position: center left;
   background-size: cover;

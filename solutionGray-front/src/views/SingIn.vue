@@ -81,7 +81,7 @@ export default {
       passwordConfirmation: null,
       birdthday: null,
       genero: null,
-      backgroundImage: 'https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/vid.png',
+      backgroundImage: 'https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png',
       isAuthInvitation: null,
       error: '',  // Para mostrar mensajes de error
       message: '',  // Para mostrar mensajes de éxito
@@ -138,7 +138,7 @@ export default {
 
 <style scoped>
 .ctn-cllg {
-  background-image: url('https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/vid.png');
+  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png');
   background-position: left;
   background-size: cover;
   background-repeat: no-repeat;
