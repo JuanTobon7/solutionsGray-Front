@@ -1,68 +1,100 @@
 <template>
-  <section class="w-full">
-    <div 
-      class="fixed top-0 right-0 w-full bg-primary-500 py-5 z-10"
-      :class="{'w-full': menuUser, 'md:w-[60%] lg:w-[87%]': !menuUser}"
-    >
-      <nav class="flex justify-between items-center container">
-        <div class = "flex items-center text-white gap-4">          
-          <button @click="menuUserFun" class="material-symbols-outlined text-white cursor-pointer">menu</button>
-          <span class="text-xl font-semibold">Hola {{user.name}} 👋</span>       
-        </div>
-        <div class="flex items-center ml-auto">
-          <div @click="toggleMenu" class="relative rounded-full cursor-pointer inline-block">
-            <img class="h-12 w-12 rounded-full" src="../assets/solutionGrayLOGO-removebg.png" alt="Profile Picture"/>
-            <i class="material-symbols-outlined  text-white absolute bottom-0 right-0 transform translate-x-2 translate-y-2">
-                expand_more
-            </i>
-          </div>
-          <!-- MenuOptions -->
-          <MenuOptions v-if="isMenuVisible" class="absolute top-24 right-0 z-50" />
-        </div>
-      </nav>
+  <nav class="w-full bg-primary-950 bg-opacity-90 backdrop-blur-sm p-4 fixed top-0 left-0 right-0 z-50">
+    <div class="container flex items-center justify-between">
+      <!-- Logo and Name -->
+      <div class="flex items-center gap-4 w-1/2">
+        <img 
+          src="https://s3.us-east-2.amazonaws.com/viddefe.com/photos/solutionGrayLOGO-removebg.png" 
+          alt="Logo" 
+          class="h-12 w-12 rounded-full" 
+        />
+        <span class="text-white font-semibold text-lg">VidDeFe</span>
+      </div>
+
+      <!-- Hamburger Icon -->
+      <button
+        class="text-white md:hidden focus:outline-none"
+        @click="toggleMenu"
+      >
+        <i class="material-symbols-outlined text-3xl">menu</i>
+      </button>
+
+      <!-- Navigation Menu -->
+      <ul
+        :class="[
+          'md:flex md:gap-6 md:items-center',
+          menuOpen ? 'block' : 'hidden',
+                    'absolute md:static top-20 left-0 right-0 bg-primary-950 bg-opacity-90 backdrop-blur-sm md:bg-transparent md:backdrop-blur-none md:opacity-100 p-4 md:p-0 z-50',
+          'space-y-4 md:space-y-0'
+        ]"
+      >
+        <li @click="scrollTo('start')" class="text-white text-center md:text-left">
+          <span class="cursor-pointer">Inicio</span>
+        </li>
+        <li @click="scrollTo('VidDeFe')" class="text-white text-center md:text-left">
+          <span class="cursor-pointer">¿Qué Somos?</span>
+        </li>
+        <li @click="scrollTo('contact')" class="text-white text-center md:text-left">
+          <span class="cursor-pointer">Contáctanos</span>
+        </li>
+        <li @click="scrollTo('why-VidDeFe')" class="text-white text-center md:text-left">
+          <span class="cursor-pointer">Características</span>
+        </li>
+        <li class="text-white md:hidden px-4 py-2 hover:bg-primary-500 flex items-center gap-2 rounded-md text-center">
+          <button @click="to('/login')" class="flex items-center gap-2 w-full justify-center">
+            Login
+            <i class="material-symbols-outlined">login</i>
+          </button>
+        </li>
+      </ul>
+
+      <!-- Login Button (Visible on large screens) -->
+      <button
+        @click="to('/login')"
+        class="hidden md:flex text-white px-4 py-2 rounded-md hover:bg-primary-500 items-center gap-2"
+      >
+        Login
+        <i class="material-symbols-outlined">login</i>
+      </button>
     </div>
-  </section>
+  </nav>
 </template>
 
-<script>
-import MenuOptions from './User/MenuOptions.vue';
 
+<script>
 export default {
-  name: 'NavBar',
-  components: {
-    MenuOptions
-  },
   data() {
     return {
-      userName: null,
-      isMenuVisible: false,
-      menuUser: false,
-      user: {},
+      menuOpen: false, // State to toggle the menu
     };
   },
   methods: {
+    to(path) {
+      this.$router.push(path);
+    },
     toggleMenu() {
-      this.isMenuVisible = !this.isMenuVisible;
+      this.menuOpen = !this.menuOpen;
     },
-    menuUserFun() {
-      this.menuUser = !this.menuUser;
-      this.$emit('toggle-menu');
-    },
-      getUser() {
-        const session = this.$store.getters.userSession;
+    scrollTo(sectionId) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
 
-        if (!session) {
-          return false;
-        }
-
-        const user = JSON.parse(session);
-        this.user = user;
-        return true;
-      },
-      },
-      
-      mounted(){
-          this.getUser()
       }
+    },
+  },
 };
 </script>
+
+<style>
+/* Optional: Smooth menu transition for smaller screens */
+nav ul {
+  transition: all 0.3s ease-in-out;
+}
+.labels{
+  @apply text-white px-4 py-2 rounded-md hover:bg-primary-500 cursor-pointer;
+}
+</style>

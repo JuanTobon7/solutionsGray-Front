@@ -45,7 +45,7 @@
              Volver
              <i class="material-symbols-outlined text-primary-50">arrow_back</i>
            </button>
-          <button @click="editServiceAndWorship" class="bg-second-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
+          <button v-if="$hasRole('SuperAdmin')" @click="editServiceAndWorship" class="bg-second-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
             Editar Culto y Servicios
             <i class="material-symbols-outlined">edit</i>
           </button>
@@ -153,7 +153,7 @@
         </div>
 
         <!-- Botón para gestionar ofrendas -->
-        <div class="flex flex-col sm:flex-row items-center justify-center mt-8 gap-4">
+        <div v-if="$hasRole('Admin')" class="flex flex-col sm:flex-row items-center justify-center mt-8 gap-4">
           <!-- Botón de descarga -->
           <button @click="GetReporte" class="bg-second-500 text-white px-5 py-2 rounded-md transition-all duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
             Descargar Reporte
@@ -200,7 +200,7 @@
                 <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-20"></div>
                 <div class="px-4 py-6 -mt-14 relative">
                   <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <div class="flex items-center space-x-4">
+                    <div class="flex flex-col md:flex-row items-center space-x-4">
                       <!-- Avatar o iniciales de la persona -->
                       <div class="w-16 h-16 rounded-full overflow-hidden">
                         <Avatar
@@ -542,7 +542,7 @@ export default {
 
 <style scoped>
 .bg-image {
-  background-image: url('../../assets/vid.png'); /* Imagen de fondo del culto */
+  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png'); /* Imagen de fondo del culto */
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

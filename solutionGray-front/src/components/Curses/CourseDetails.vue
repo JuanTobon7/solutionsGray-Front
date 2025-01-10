@@ -1,6 +1,6 @@
 <template>
     <section class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center">
-      <div class="container max-w-3xl bg-white rounded-lg shadow-lg p-6 max-h-[80vh]">
+      <div class="container bg-white rounded-lg shadow-lg p-6 max-h-[80vh]">
         <!-- Header -->
         <div class="flex justify-between items-center border-b pb-4 mb-4">
           <h2 class="text-2xl font-bold text-second-800">{{ courseData.name }}</h2>
@@ -52,15 +52,3 @@
     }
   };
   </script>
-  
-  <style scoped>
-  /* Opcionales estilos para mejorar la interfaz */
-  .container {
-    max-height: 90vh;
-    overflow-y: auto;
-  }
-  .material-symbols-outlined {
-    font-size: 24px;
-  }
-  </style>
-  

@@ -94,7 +94,13 @@
       <div class="flex items-center gap-2 mb-4">
         <span class="material-symbols-outlined text-second-800">edit_calendar</span>
         <h2 class="text-2xl text-second-800 font-semibold mr-2">Registro de Visitas</h2>
-        <button @click="showRegistervisits = true" class="material-symbols-outlined rounded-md p-1 bg-second-500 text-white font-bold">add</button>
+        <button 
+          v-if="isMysheep"
+          @click="showRegistervisits = true" 
+          class="material-symbols-outlined rounded-md p-1 bg-second-500 text-white font-bold"
+        >
+          add
+        </button>
       </div>
       
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -125,6 +131,10 @@
       sheep: {
         type: Object,
         required: true
+      },
+      mySheep: {
+        type: Boolean,
+        default: false
       }
     },
     components: {
@@ -140,7 +150,8 @@
           email: 'pepito@gmail.com'
         },
         curses: [],
-        visits: []
+        visits: [],
+        isMysheep: false
       }
     },
     methods: {
@@ -178,6 +189,7 @@
     async mounted() {
       await this.getVisitsFun();
       await this.getCourses();
+      this.isMysheep = this.mySheep;
     }
   };
   </script>

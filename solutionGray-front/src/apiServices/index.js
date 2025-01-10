@@ -7,7 +7,13 @@ export const start = async () => {
 }
 
 export const login = async (data) => {
-  const response = await api.post('/login', { email: data.email, password: data.password });  
+  console.log('secrets: ',import.meta.env)
+  const response = await api.post('/login', { 
+    email: data.email, 
+    password: data.password,
+    client_secret: import.meta.env.VITE_SSR_CLIENT,
+    client_id: import.meta.env.VITE_SSR_CLIENT_ID
+  });  
   if (response.data.name || response.data.email) {
     const user = {
       name: response.data.name,
@@ -17,6 +23,17 @@ export const login = async (data) => {
     }
     store.dispatch('login', user);  
   }
+  return response.data;
+}
+
+export const logout = async () => {
+  const response = await api.post('/sing-out');
+  store.dispatch('logout');
+  return response.data;
+}
+
+export const sendLead = async (data) => {
+  const response = await api.post('/save-leads-church', data);
   return response.data;
 }
 
@@ -96,8 +113,8 @@ export const getWorshipServices = async(data)=>{
 }
 
 export const getPeople = async () => {
-      const response = await api.get('/get-people');
-      return response.data
+  const response = await api.get('/get-people');
+  return response.data
 };
 
 export const registerSheep = async(data)=>{
@@ -155,7 +172,12 @@ export const getStatesByCountry = async(idCountry)=>{
 }
 
 export const savePeople = async(data)=>{
-  const response = await api.post('/save-people',data);
+  const response = await api.post('/save-people',
+    {
+      ...data,
+      client_secret: import.meta.env.VITE_SSR_CLIENT,
+      client_id: import.meta.env.VITE_SSR_CLIENT_ID
+    });
   return response.data;
 }
 
@@ -348,4 +370,56 @@ export const createGroups = async(data)=>{
 export const getGroups = async()=>{
   const response = await api.get('/get-groups');
   return response.data
+}
+
+export const getMyGroup = async(id)=>{
+  const response = await api.get(`/get-group/${id}`);
+  return response.data;
+}
+
+export const addPersonStrategy = async(data)=>{
+  const response = await api.post('/add-person-strategy',data);
+  return response.data;
+}
+
+export const getMyInfoGroup = async()=>{
+  const response = await api.get('/get-my-info-group');
+  return response.data;
+}
+
+export const getStrategyById = async(strategyId)=>{
+  const response = await api.get(`/get-strategy/${strategyId}`);
+  return response.data;
+}
+
+export const getAttendanceGroup = async(data)=>{
+  const response = await api.get(`/get-attendance-group/${data.groupId}/${data.date}`);
+  return response.data;
+}
+
+export const getServicesGroup = async(data)=>{
+  const response = await api.get(`/get-services-group/${data.groupId}/${data.minDate}/${data.maxDate}`);
+  return response.data;
+}
+
+export const createWorshipServiceGroup = async(data)=>{
+  const response = await api.post('/create-worship-service-group',data);
+  console.log('response from back: ',response)
+  return response.data;
+}
+
+export const getMyprofile = async()=>{
+  const response = await api.get('/get-my-profile');
+  return response.data;
+}
+
+//administrativeApp
+export const getLeads = async()=>{
+  const response = await api.get('/get-leads');
+  return response.data;
+}
+
+export const updateLead = async(data)=>{
+  const response = await api.put(`/update-lead/${data.leadId}`,data);
+  return response.data;
 }
