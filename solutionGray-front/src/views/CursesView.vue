@@ -22,7 +22,7 @@
             placeholder="Buscar por nombre o descripción" 
             class="w-full p-2 border border-gray-200 focus:border-green-300 rounded-md"
           />         
-          <button @click="toggleAddCourse" class="material-symbols-outlined p-1 rounded-md bg-second-500 text-white font-semibold">
+          <button v-if="$hasRole('SuperAdmin')" @click="toggleAddCourse" class="material-symbols-outlined p-1 rounded-md bg-second-500 text-white font-semibold">
             add
           </button>
         </div>
@@ -38,6 +38,7 @@
             <div>
               <div class="w-full flex justify-end">
                 <button 
+                  v-if="$hasRole('SuperAdmin')"
                   class="relative flex items-center justify-center w-10 h-10 rounded-full border border-yellow-500 bg-gray-50 hover:bg-gray-100 transition-colors"
                   title="Editar"
                   @click="editCourse(item)"
@@ -64,6 +65,7 @@
 
                 <!-- Botón Asignar Profesor -->
                 <button 
+                  v-if="$hasRole('SuperAdmin')"
                   @click="toggleAssignProfessor(item)" 
                   class="w-full bg-second-500 text-white py-1 rounded-md hover:bg-second-600 transition">
                   Asignar Profesor

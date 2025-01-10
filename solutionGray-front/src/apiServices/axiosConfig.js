@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_PROXY_HOST,
+    baseURL: import.meta.env.VITE_API_HOST,
     withCredentials: true,
     maxContentLength: 25000000,
     maxBodyLength: 25000000
@@ -32,8 +32,11 @@ api.interceptors.response.use (
         if (error.response.status === 401 && error.response.data.message === 'Token Expired') {
           try{            
             // El servidor respondió con un código de estado fuera del rango 2xx            
-            await refreshToken()
-            return api(originalRequest)
+            await refreshToken({
+              client_secret: import.meta.env.VITE_SSR_CLIENT,
+              client_id: import.meta.env.VITE_SSR_CLIENT_ID
+            })
+            return await api(originalRequest)
           }catch(refreshError){
             return Promise.reject(refreshError.message);
           }            

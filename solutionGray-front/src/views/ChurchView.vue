@@ -15,34 +15,34 @@
           <!-- Card 1: Siervos -->
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Siervos</h3>
-            <span class="text-3xl font-bold text-primary-800">{{ quantityservants }}</span>
+            <span class="text-3xl font-bold text-primary-800">{{ quantityservants || 0 }}</span>
           </div>
 
           <!-- Card 2: Grupos -->
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Grupos</h3>
-            <span class="text-3xl font-bold text-primary-800">{{ quantitygroups }}</span>
+            <span class="text-3xl font-bold text-primary-800">{{ quantitygroups || 0 }}</span>
           </div>
 
           <!-- Card 3: Ovejas -->
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Ovejas</h3>
-            <span class="text-3xl font-bold text-primary-800">{{ quantitysheeps }}</span>
+            <span class="text-3xl font-bold text-primary-800">{{ quantitysheeps || 0 }}</span>
           </div>
           
           <!-- Card 4: Nuevos -->
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Nuevos</h3>
-            <span class="text-3xl font-bold text-primary-800">{{ quantity_new_times }}</span>
+            <span class="text-3xl font-bold text-primary-800">{{ quantity_new_times || 0}}</span>
           </div>
 
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Estudiantes en Crecimiento</h3>
-            <span class="text-3xl font-bold text-primary-800">{{ peopleInCourses.quantity_active_students }}</span>
+            <span class="text-3xl font-bold text-primary-800">{{ peopleInCourses.quantity_active_students || 0 }}</span>
           </div>
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Maestos</h3>
-            <span class="text-3xl font-bold text-primary-800">{{ peopleInCourses.quantity_teachers }}</span>
+            <span class="text-3xl font-bold text-primary-800">{{ peopleInCourses.quantity_teachers || 0 }}</span>
           </div>
         </div>
 
@@ -132,18 +132,8 @@ export default {
   },  
   mounted() {
     this.date = new Date();
-    const date = this.date;
-      const selectedYear = new Date(date).getFullYear();
-      const minDate = new Date(selectedYear, 0, 1, 0, 0, 0, 0);
-      const maxDate = new Date(selectedYear, 11, 31, 23, 59, 59, 999);
-      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const minDateFormat = format(minDate, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
-      const maxDateFormat = format(maxDate, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
-      this.getStadisticsAssistance({minDateFormat, maxDateFormat});
-      this.getStadistcsChurch({minDateFormat, maxDateFormat});
-      this.getStadisticsPeopleCourses({minDateFormat, maxDateFormat});
-      const session = this.$store.getters.userSession;
-      if (session) this.churchName = JSON.parse(session).churchName;
+    const session = this.$store.getters.userSession;
+    if (session) this.churchName = JSON.parse(session).churchName;
   },
   watch: {
     date() {
@@ -193,8 +183,7 @@ export default {
       } catch (e) {
         if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el culto.', life: 3000 });
-        }else if(e.response.status === 400 && e.response.data.message === 'No hay informacion que mostrar'){
-          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'No hay informacion que mostrar', life: 3000 });
+        }else{
           this.assitance = [];
           this.renderAssistanceChart();
         }
@@ -208,16 +197,10 @@ export default {
       } catch (e) {
         if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el culto.', life: 3000 });
-        }else if(e.response.status === 400 && e.response.data.message === 'No hay informacion que mostrar'){
-          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'No hay informacion que mostrar', life: 3000 });
-          this.peopleInCourses = {
-            quantity_students: 0,
-            quantity_teachers: 0,
-            quantity_active_students: 0,
-          };
+        }else{
+          this.peopleInCourses = {};
           this.renderCourseChart();
         }
-        
       }
     },
     renderDetailedStatsChart() {

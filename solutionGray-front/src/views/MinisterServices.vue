@@ -23,6 +23,7 @@
         :value="cultos"
         :paginator="true"
         :rows="5"
+        emptyMessage="No hay cultos programados"
       >
         <template #header>
           <div class="flex flex-wrap justify-between items-center">
@@ -34,7 +35,7 @@
               showIcon
               selectionMode="range" :manualInput="false"
               v-model="dates" 
-              placeholder="dd/mm/yyyy-dd/mm/yyyy"/>  
+              placeholder="dd/mm/yyyy-dd/mm/yyyy"/>
                  
               <button
                 @click="addWorshipService"
@@ -48,10 +49,10 @@
         <!-- Template para renderizar elementos en la lista -->
         <template #list="slotProps">
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div
-        v-for="(items, index) in slotProps.items"
-        :key="index" class="w-full full">
-           
+            <div
+              v-for="(items, index) in slotProps.items"
+              :key="index" class="w-full full">
+            
               <div
                 class="transition-transform duration-200 hover:-translate-y-2 shadow-md shadow-gray-400 rounded-lg sm:rounded-2xl cursor-pointer w-full h-full overflow-hidden"
                 @click="showInfo(items)"
@@ -186,7 +187,7 @@ export default {
         if(!this.dates[1]) return;
         const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const minDate = format(this.dates[0], "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
-        const maxDate = format(this.dates[this.dates.length - 1], "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });        
+        const maxDate = format(this.dates[this.dates.length - 1], "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
         this.cultos = await getWorshipServices({minDate, maxDate});
       } catch (e) {
         if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
@@ -205,22 +206,15 @@ export default {
     const date30DaysAfter = new Date();
     date30DaysAfter.setDate(today.getDate() + 30);
     this.dates = [date30DaysAgo, date30DaysAfter];
-    await this.worshipServices();
   },
 };
 </script>
 
 <style scoped>
 .bg-image {
-  background-image: url('../assets/vid.png');
+  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png');
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;
-}
-
-@media (min-width: 640px) {
-  .bg-image {
-    background-position: center;
-  }
 }
 </style>

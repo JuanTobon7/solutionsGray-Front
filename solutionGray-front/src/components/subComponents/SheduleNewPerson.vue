@@ -1,8 +1,8 @@
 <template>
   <form @submit.prevent="createPerson">
-    <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4 lg:min-w-[80vh]">
+    <div class="grid sm:grid-cols-1 lg:grid-cols-2 gap-4 md:min-w-[80vh] mb-2">
       <!-- Columna 1: Campos de texto -->
-      <div>
+      <div class="w-3/4 md:w-full">
         <!-- Campo Cédula -->
         <div>
           <label class="block text-sm font-medium text-gray-700">Cédula</label>
@@ -35,9 +35,9 @@
       </div>
 
       <!-- Columna 2: Dropdowns -->
-      <div>
+      <div class="w-3/4 md:w-full">
         <!-- Dropdown País -->
-        <div class="flex flex-col">
+        <div class="flex flex-col mb-2">
           <label class="block text-sm font-medium text-gray-700 mb-1">País</label>
           <Dropdown
             id="countries"
@@ -53,7 +53,7 @@
         </div>
 
         <!-- Dropdown Estado/Provincia -->
-        <div class="flex flex-col">
+        <div class="flex flex-col mb-2">
           <label class="block text-sm font-medium text-gray-700 mb-1">Estado/Provincia</label>
           <Dropdown
             id="states"
@@ -86,10 +86,7 @@
     </div>
 
     <!-- Botones -->
-    <div class="flex justify-end gap-4 mt-4">
-      <button @click="$emit('close')" type="button" class="text-second-500 text-lg font-bold px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 transition-colors">
-        Cancelar
-      </button>
+    <div class="flex justify-end">
       <button type="submit" class="text-white text-lg font-bold px-4 py-2 rounded-md bg-second-500 shadow-lg hover:shadow-xl transition-shadow">
         Registrar
       </button>

@@ -1,6 +1,6 @@
 <template>
   <section class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center">
-    <div class="container max-w-3xl bg-white rounded-lg shadow-lg p-6 max-h-[80vh] overflow-y-auto">
+    <div class="container bg-white rounded-lg shadow-lg p-6 max-h-[80vh] overflow-y-auto">
       <div class="flex w-full items-center justify-between">
         <h2 class="text-2xl font-semibold mb-6">Asignar Profesor a Curso {{ course.name }}</h2>
         <button @click="$emit('close')" class="text-gray-600 hover:text-gray-800 transition">
@@ -21,9 +21,11 @@
             placeholder="Selecciona un Profesor"
             class="w-full"
           >
+            <!-- Template para el valor seleccionado -->
             <template #value="slotProps">
-              <div v-if="slotProps.value" class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-full flex items-center">
+              <div v-if="slotProps.value" class="flex items-center gap-4 flex-wrap md:flex-nowrap">
+                <!-- Avatar -->
+                <div class="w-8 h-8 rounded-full overflow-hidden">
                   <Avatar
                     v-if="slotProps.value.avatar"
                     :image="slotProps.value.avatar"
@@ -36,14 +38,23 @@
                     shape="circle"
                   />
                 </div>
-                <div>{{ slotProps.value.first_name + ' ' + slotProps.value.last_name }} - CC: {{ slotProps.value.cc }} - Teléfono: {{ slotProps.value.phone }}</div>
+                <!-- Información del profesor -->
+                <div class="flex flex-col md:flex-row md:items-center gap-2">
+                  <span>
+                    {{ slotProps.value.first_name + ' ' + slotProps.value.last_name }}
+                  </span>
+                  <span>CC: {{ slotProps.value.cc }}</span>
+                  <span>Teléfono: {{ slotProps.value.phone }}</span>
+                </div>
               </div>
               <span v-else>{{ slotProps.placeholder }}</span>
             </template>
 
+            <!-- Template para las opciones disponibles -->
             <template #option="slotProps">
-              <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-full flex items-center">
+              <div class="flex items-center gap-4 flex-wrap md:flex-nowrap">
+                <!-- Avatar -->
+                <div class="w-8 h-8 rounded-full overflow-hidden">
                   <Avatar
                     v-if="slotProps.option.avatar"
                     :image="slotProps.option.avatar"
@@ -56,47 +67,81 @@
                     shape="circle"
                   />
                 </div>
-                <div>{{ slotProps.option.first_name + ' ' + slotProps.option.last_name }} - CC: {{ slotProps.option.cc }} - Teléfono: {{ slotProps.option.phone }}</div>
+                <!-- Información del profesor -->
+                <div class="flex flex-col md:flex-row md:items-center gap-2">
+                  <span>
+                    {{ slotProps.option.first_name + ' ' + slotProps.option.last_name }}
+                  </span>
+                  <span>CC: {{ slotProps.option.cc }}</span>
+                  <span>Teléfono: {{ slotProps.option.phone }}</span>
+                </div>
               </div>
             </template>
           </Dropdown>
+
         </div>
 
         <p v-if="professorSelected" class="text-md font-semibold text-green-600">
-          Profesor seleccionado: {{ professorSelected.name }}
+          Profesor seleccionado: {{ professorSelected.first_name + ' ' + professorSelected.last_name }}
         </p>
       </div>
-
-      <!-- Configurar Horarios -->
-      <div class="mb-4">
-        <div class="flex items-center gap-2 mb-2">
+      <div class="mb-6">
+        <div class="flex items-center justify-between gap-4 mb-4">
           <h3 class="text-lg font-semibold text-gray-700">Configurar Horarios</h3>
-          <button @click="addSchedule" class="material-symbols-outlined p-1 rounded-md bg-second-500 text-white font-semibold">add</button>
+          <button 
+            @click="addSchedule" 
+            class="flex items-center gap-2 p-2 rounded-md bg-second-500 text-white font-semibold hover:bg-second-600 transition"
+          >
+            <span class="material-symbols-outlined">add</span> Agregar
+          </button>
         </div>
-        <div v-for="(schedule, index) in schedules" :key="index" class="flex gap-4 mb-2 items-center">
-          <select v-model="schedule.day" class="p-2 border rounded-md w-full md:w-1/3">
-            <option disabled value="">Día</option>
-            <option value="Lunes">Lunes</option>
-            <option value="Martes">Martes</option>
-            <option value="Miércoles">Miércoles</option>
-            <option value="Jueves">Jueves</option>
-            <option value="Viernes">Viernes</option>
-            <option value="Sábado">Sábado</option>
-            <option value="Domingo">Domingo</option>
-          </select>
-          <label class="md:col-span-1">
-            Hora de Inicio:
-            <input type="time" v-model="schedule.startTime" class="p-2 border rounded-md w-full" />
-          </label>
-          <label class="md:col-span-1">
-            Hora de Fin:
-            <input type="time" v-model="schedule.endTime" class="p-2 border rounded-md w-full" />
-          </label>
-          <button @click="removeSchedule(index)" class="text-red-500 hover:text-red-700 transition">Eliminar</button>
+        <div 
+          v-for="(schedule, index) in schedules" 
+          :key="index" 
+          class="flex flex-wrap items-center gap-4 p-4 border rounded-md mb-4 bg-gray-50 shadow-sm"
+        >
+          <div class="w-full md:w-1/3">
+            <label for="day" class="block text-sm font-semibold text-gray-600 mb-1">Día</label>
+            <select 
+              v-model="schedule.day" 
+              class="p-2 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-second-500"
+            >
+              <option disabled value="">Seleccione un día</option>
+              <option value="Lunes">Lunes</option>
+              <option value="Martes">Martes</option>
+              <option value="Miércoles">Miércoles</option>
+              <option value="Jueves">Jueves</option>
+              <option value="Viernes">Viernes</option>
+              <option value="Sábado">Sábado</option>
+              <option value="Domingo">Domingo</option>
+            </select>
+          </div>
+          <div class="w-full md:w-1/4">
+            <label for="startTime" class="block text-sm font-semibold text-gray-600 mb-1">Hora de Inicio</label>
+            <input 
+              type="time" 
+              v-model="schedule.startTime" 
+              class="p-2 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-second-500"
+            />
+          </div>
+          <div class="w-full md:w-1/4">
+            <label for="endTime" class="block text-sm font-semibold text-gray-600 mb-1">Hora de Fin</label>
+            <input 
+              type="time" 
+              v-model="schedule.endTime" 
+              class="p-2 border rounded-md w-full focus:outline-none focus:ring-2 focus:ring-second-500"
+            />
+          </div>
+          <div class="w-full md:w-auto flex justify-end">
+            <button 
+              @click="removeSchedule(index)" 
+              class="text-red-500 hover:text-red-700 font-semibold transition"
+            >
+              Eliminar
+            </button>
+          </div>
         </div>
       </div>
-
-      <!-- Guardar Asignación -->
       <div class="mt-6 flex justify-end">
         <button @click="saveAssignment" class="bg-second-500 text-white py-2 px-4 rounded-md hover:bg-second-600 transition">Guardar Asignación</button>
       </div>

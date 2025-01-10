@@ -4,7 +4,7 @@
     <div v-if="culto && culto.sermonTittle" class="flex items-center justify-center">
       <Card class="transition-transform duration-200 hover:-translate-y-2 shadow-md shadow-gray-400 overflow-hidden">
         <template #header>
-          <img src="../../assets/vid.png" alt="Culto Image" class="w-full h-44 object-cover" />
+          <img src="https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png" alt="Culto Image" class="w-full h-44 object-cover" />
         </template>
        <!-- Título y subtítulo -->
        <template #title>
@@ -33,43 +33,65 @@
         </Card>
     </div>
     <div v-else>
-      <p class="text-gray-600">No hay culto disponible.</p>
+      <p class="text-gray-600">{{!group?'No hay culto disponible.':'No hay servicio disponible.'}}</p>
     </div>
 
     <!-- Servicios Asignados Section -->
     <div class="mt-4 lg:max-w-[130vh]">
       <h4 class="text-xl font-semibold text-gray-800 mb-4">Servicios Asignados</h4>
       <div>
-        <Carousel 
-          v-if="assignedServices.length" 
-          :value="assignedServices" 
-          :numVisible="numVisible"
-          :containerClass="'flex justify-center items-center bg-gray-100 p-2 rounded-md'"
-          :showNavigators="assignedServices.length > numVisible"
+        <DataView           
+          :value="assignedServices"         
+          :paginator="assignedServices.length > 3"
+          :rows="3"
+          emptyMessage="No hay servicios asignados"
         >
-          <template #item="slotProps">
-            <div class="p-4 bg-white shadow-lg rounded-lg flex flex-col items-center justify-center mr-4 max-w-[50vh]">
-              <div class="w-20 h-20 rounded-full overflow-hidden mb-2">
-                <Avatar
-                  v-if="slotProps.data.person.avatar"
-                  :image="slotProps.data.person.avatar"
-                  size="xlarge"
-                  shape="circle"
-                />
-                <Avatar
-                  v-else
-                  :label="getInitials(slotProps.data.person)"
-                  class="bg-primary-100 flex items-center justify-center text-primary-800"
-                  size="xlarge"
-                  shape="circle"
-                />
+          <template #list="slotProps">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+              <div
+                v-for="(item, index) in slotProps.items"
+                :key="index"
+                class="p-4 bg-white shadow-lg rounded-lg flex flex-col items-center justify-center"
+              >
+                <!-- Avatar -->
+                <div class="w-20 h-20 rounded-full overflow-hidden mb-2">
+                  <Avatar
+                    v-if="item.person.avatar"
+                    :image="item.person.avatar"
+                    size="xlarge"
+                    shape="circle"
+                  />
+                  <Avatar
+                    v-else
+                    :label="getInitials(item.person)"
+                    class="bg-primary-100 flex items-center justify-center text-primary-800"
+                    size="xlarge"
+                    shape="circle"
+                  />
+                </div>
+
+                <!-- Información de la persona -->
+                <p class="text-lg font-semibold text-center">
+                  {{ item.person.first_name + ' ' + item.person.last_name }}
+                </p>
+                <p>Rating: {{ item.rating }}</p>
+                <p class="text-sm text-center text-gray-600">
+                  {{ item.service.name }}
+                </p>
+
+                <!-- Botones de acción -->
+                <div class="flex space-x-2 mt-4">
+                  <button 
+                    @click="removeAssignment(index)" 
+                    class="material-symbols-outlined text-red-500 cursor-pointer"
+                  >
+                    delete
+                  </button>
+                </div>
               </div>
-              <p class="text-lg font-semibold text-center">{{ slotProps.data.person.first_name + ' ' + slotProps.data.person.last_name }}</p>
-              <p class="text-sm text-center text-gray-600">{{ slotProps.data.service.name }}</p>              
             </div>
           </template>
-        </Carousel>
-        <p v-else class="text-gray-600">No hay servicios asignados todavía.</p>
+        </DataView>
       </div>
     </div>
 
@@ -86,18 +108,27 @@
 <script>
 import { mapGetters } from 'vuex';
 import Avatar from 'primevue/avatar';
-import Carousel from 'primevue/carousel';
+import DataView from 'primevue/dataview';
 import Card from 'primevue/card';
-import { createWorshipService, assingService, updateWorshipService } from '@/apiServices/index';
+import { createWorshipService,createWorshipServiceGroup, assingService, updateWorshipService } from '@/apiServices/index';
 import { format } from 'date-fns-tz';
 
 
 export default {
-  props: ['edit'],
+  props: {
+    edit: {
+      type: Boolean,
+      default: false,
+    },
+    group: {
+      type: Object,
+      default: null,
+    },
+  },
   name: 'ConfirmationWorshipService',
   components: {
     Avatar,
-    Carousel,
+    DataView,
     Card,
   },
   data() {
@@ -123,6 +154,7 @@ export default {
   },
   mounted() {
     this.initializeData();
+    console.log('group in ConfirmationWorshipService', this.group);
   },
   beforeUnmount() {
     this.cleanupComponent();
@@ -154,11 +186,11 @@ export default {
     },
     async createWorshipService() {
       try {
+        console.log('culto in createWorshipService', this.culto);
         if (!this.culto || !this.culto.sermonTittle || !this.culto.date || !this.culto.description || !this.assignedServices.length) {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos.', life: 3000 });
           return;
         }
-
         const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const date = new Date(this.culto.date);
         const fullDate = format(date, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
@@ -169,10 +201,11 @@ export default {
           description: this.culto.description,
           typeWorshipId: this.culto.selectedTypeWorship,
           date: fullDate,
-          timeZone: userTimeZone
+          timeZone: userTimeZone,
+          groupId: this.group? this.group.id : null,
         };
 
-        let result = await createWorshipService(culto);
+        let result = !this.group? await createWorshipService(culto) : await createWorshipServiceGroup(culto);
         this.$toast.add({ severity: 'success', summary: 'Éxito', detail: result.message, life: 3000 });
 
         result = await assingService({ assignedServices, id: result.id });
