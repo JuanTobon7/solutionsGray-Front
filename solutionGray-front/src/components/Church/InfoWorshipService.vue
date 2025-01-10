@@ -147,7 +147,7 @@
             <div v-for="items in offerings" :key="items.type_contribution" class="bg-gray-50 p-4 rounded-md shadow-md text-center">
               <p class="text-sm font-semibold text-gray-800">{{items.type_contribution}}</p>
               <p class="text-2xl text-second-500">$ {{items.amount || '0.00'}}</p>
-            
+
             </div>
           </div>
         </div>
@@ -268,10 +268,9 @@ import Chart from 'primevue/chart';
 import RecordMonetaryIncome from '../subComponents/RecordMonetaryIncome.vue';
 import EditWorshipService from './EditWorshipService.vue';
 import SheduleNewPerson from '../subComponents/SheduleNewPerson.vue';
+import Chartjs from 'chart.js/auto';
 import jsPDF from 'jspdf';
-import formato from './format.txt';
-
-console.log(formato); // Deberías ver el contenido del archivo como una cadena de texto.
+import formato from './format.b64.js';
 
 export default {
   name: 'PDFGenerator',
@@ -298,8 +297,8 @@ export default {
       datasets: [
         {
           data: [],
-          backgroundColor: ['#6b9c7a', '#8b7d6b', '#524741', '#a3c4ac'],
-          hoverBackgroundColor: ['#4b7e5c', '#756759', '#483e3b', '#6b9c7a']
+          backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
+          hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
         }
       ]
     },
@@ -308,6 +307,7 @@ export default {
           maintainAspectRatio: false,
           plugins: {
             legend: {
+              display: true,
               position: 'top',
               labels: {
                 color: '#4A4A4A' // Color del texto de la leyenda
@@ -446,41 +446,85 @@ export default {
         console.log(e);
       }
     },
-    GetReporte() {
-
-
-      const doc = new jsPDF();
-
-
-      doc.addImage(formato, 'PNG', 10, 10, 190, 277);
-      doc.text("Hello world!", 10, 10);
-      // Definir el tamaño de la fuente
-      const fontSize = 16;
-      doc.setFontSize(fontSize);
-
-      doc.save("document.pdf");
-    }
-    /*
     
-      // Obtener el ancho y la altura de la página
-      const pageWidth = doc.internal.pageSize.width;
-      const pageHeight = doc.internal.pageSize.height;
-      
-      // Obtener el ancho del texto
-      const textWidth = doc.getTextWidth(text);
-      
-      // Calcular la posición para centrar el texto
-      const x = (pageWidth - textWidth) / 2; // Centrado horizontal
-      const y = pageHeight / 2; // Centrado vertical
-      
-      // Agregar el texto al documento en las coordenadas calculadas
-      doc.text(text, x, y);
-      
-      // Guardar el PDF con un nombre
-      doc.save("document.pdf");
+    GetReporte() {
+  try {
+    const doc = new jsPDF();
+
+    // Validar formato de la imagen de fondo
+    if (!formato.startsWith("data:image/png;base64,")) {
+      console.error("El formato Base64 no es válido.");
+      return;
     }
-      */
-  },
+    doc.addImage(formato, "PNG", 10, 10, 190, 277);
+
+    // Extraer valores del array offerings
+    
+    const primicias = this.offerings.find(item => item.type_contribution === 'primicias')?.amount || 0.0;
+    const diezmos = this.offerings.find(item => item.type_contribution === 'diezmos')?.amount || 0.0;
+    const ofrendaGeneral = this.offerings.find(item => item.type_contribution === 'ofrendaGeneral')?.amount || 0.0;
+    const ofrendaEspecial = this.offerings.find(item => item.type_contribution === 'ofrendaEspecial')?.amount || 0.0;
+    const ofrendaPro = this.offerings.find(item => item.type_contribution === 'ofrendaPro')?.amount || 0.0;
+    
+    const totalGeneral = this.getTotalOfferings();
+         
+    const fontSize = 16;
+    doc.setFontSize(fontSize);
+
+    // Configuración del gráfico
+    const chartData = {
+      labels: ["Primicias", "Diezmos", "Ofrenda General", "Ofrenda Especial", "Ofrenda Pro"],
+      datasets: [
+        {
+          data: [primicias, diezmos, ofrendaGeneral, ofrendaEspecial, ofrendaPro],
+          backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
+          hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
+        },
+      ],
+    };
+
+    const chartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+    };
+
+    // Crear canvas temporal para el gráfico
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+
+    // Generar el gráfico con Chart.js
+    new Chartjs(context, {
+      type: "pie",
+      data: chartData,
+      options: chartOptions,
+    });
+
+    
+    
+    const image = canvas.toDataURL("image/png");
+
+      // Agregar gráfico al PDF
+      doc.addImage(image, "PNG", 10, 200, 180, 90); // Ajustar según necesites
+
+      // Mostrar valores en el PDF
+      doc.text(`$${primicias}`, 150, 105);
+      doc.text(`$${diezmos}`, 150, 115);
+      doc.text(`$${ofrendaGeneral}`, 150, 125);
+      doc.text(`$${ofrendaEspecial}`, 150, 155);
+      doc.text(`$${ofrendaPro}`, 150, 165);
+      doc.text(`$${totalGeneral}`, 150, 196);
+
+      // Descargar el PDF
+      doc.save("document.pdf");
+    
+  } catch (error) {
+    console.error("Error al generar el reporte:", error);
+  }
+},
+},
+
+
+
   computed:{
     numAttends() {
       const attends = this.attends.filter((person) => person.isAttend === true);
