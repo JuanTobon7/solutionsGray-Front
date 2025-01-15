@@ -92,6 +92,11 @@ export const verifyInvitationBoarding = async(data)=>{
   return response.data;
 }
 
+export const verifyChurchLead = async(data)=>{
+  const response = await api.post('/verify-church-lead',{emailToken:data.token});
+  return response.data;
+}
+
 export const refreshToken = async()=>{
   const response = await api.post('/refresh-token');
   return response.data;

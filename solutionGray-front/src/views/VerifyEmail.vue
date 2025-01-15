@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { verifyInvitationBoarding } from '@/apiServices';
+import { verifyInvitationBoarding,verifyChurchLead } from '@/apiServices';
 import store from '@/store';
 
 export default {
@@ -32,11 +32,19 @@ export default {
  methods: {
    async catchToken() {
      try {
-       const url = window.location.href;
-       const tokenParam = url.split('token=')[1];
-       this.token = tokenParam;
-
-       const response = await verifyInvitationBoarding({ token: this.token });
+      let response
+      const url = window.location.href;
+      const urlParams = new URLSearchParams(window.location.search);
+      const tokenParam = urlParams.get('token');
+      const typeParam = url.split('type=')[1];
+      this.token = tokenParam;
+      console.log('typeParam',typeParam)
+      if (typeParam === 'lead') {
+        response = await verifyChurchLead({ token: this.token });
+      } else {
+        // Handle invitationBoarding type
+        response = await verifyInvitationBoarding({ token: this.token });
+      }
 
       document.cookie = `emailToken=${this.token}`; // Guarda el token en las cookies
 

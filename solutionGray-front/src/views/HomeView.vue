@@ -316,7 +316,7 @@ export default{
                     personId: result.id
                 }
                 await sendLead({...data});
-                this.newPerson = {
+                /*this.newPerson = {
                     cc: null,
                     first_name: null,
                     last_name: null,
@@ -326,7 +326,7 @@ export default{
                     state_id: null,
                     type_person_id: 3,
                 };
-                this.churchName = null;
+                this.churchName = null;*/
                 this.$toast.add({ severity: 'success', summary: 'Persona creada', detail: 'La petición ha sido exitosa', life: 3000 });
         }
     },
