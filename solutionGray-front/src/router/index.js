@@ -3,7 +3,7 @@ import ChurchView from '../views/ChurchView.vue'
 import LoginView from '../views/LoginView.vue'
 import SheepsView from '../views/SheepsView.vue'
 import ServantsView from '../views/ServantsView.vue'
-import InvitationBoarding from '@/views/InvitationBoarding.vue'
+import VerifyEmail from '@/views/VerifyEmail.vue'
 import SingIn from '@/views/SingIn.vue'
 import MinisterServices from '@/views/MinisterServices.vue'
 import CursesView from '@/views/CursesView.vue'
@@ -94,9 +94,9 @@ const routes = [
     component: ServantsView,
   },
   {
-    path: '/invitation-boarding',
-    name: 'invitation-boarding',
-    component: InvitationBoarding,
+    path: '/verify-email',
+    name: 'verify-email',
+    component: VerifyEmail,
   },
   {
     path: '/sing-in',

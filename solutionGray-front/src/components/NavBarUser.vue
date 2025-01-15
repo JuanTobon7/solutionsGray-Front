@@ -11,9 +11,15 @@
         </div>
         <div class="flex items-center ml-auto">
           <div @click="toggleMenu" class="relative rounded-full cursor-pointer inline-block">
-            <img class="h-12 w-12 rounded-full" src="https://s3.us-east-2.amazonaws.com/viddefe.com/photos/solutionGrayLOGO-removebg.png" alt="Profile Picture"/>
-            <i class="material-symbols-outlined text-white absolute bottom-0 right-0 transform translate-x-2 translate-y-2">
-                expand_more
+            <Avatar
+              v-if="user.avatar"
+              :image="user.avatar"
+              size="xlarge"
+              shape="circle"
+              class="flex items-center justify-center w-12 h-12 rounded-full overflow-hidden shadow-md border-4 border-primary-700"
+            />
+            <i class="material-symbols-outlined text-white absolute bottom-0 right-0 transform translate-x-2 translate-y-2 rounded-full bg-primary-700">
+              expand_more
             </i>
           </div>
           <MenuOptions 
@@ -38,11 +44,13 @@
 <script>
 import MenuOptions from './User/MenuOptions.vue';
 import MenuUser from './MenuUser.vue';
+import Avatar from 'primevue/avatar';
 
 export default {
   name: 'NavBar',
   components: {
     MenuOptions,
+    Avatar,
     MenuUser,
   },
   data() {
