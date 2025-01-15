@@ -49,8 +49,8 @@ export default {
   },
   computed: {
     showNavBar() {
-      const excludedPaths = ['/login', '/invitation-boarding'];
-      return !excludedPaths.includes(this.$route.path);
+      const excludedPaths = ['login', 'verify-email','sing-in'];
+      return !excludedPaths.includes(this.$route.name);
     },
     userSession() {
       return store.getters.userSession;

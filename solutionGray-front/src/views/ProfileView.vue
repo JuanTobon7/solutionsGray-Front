@@ -11,10 +11,10 @@
         <div class="relative group">          
             <Avatar
               v-if="user.avatar"
-              :image="user.avatar"
+              :image="avatar"
               size="xlarge"
               shape="circle"
-              class="w-36 h-36 rounded-full overflow-hidden flex items-center justify-center"
+              class="flex items-center justify-center w-60 h-60 rounded-full overflow-hidden"
             />
             <Avatar
               v-else
@@ -150,7 +150,7 @@
 <script>
 import Avatar from 'primevue/avatar';
 import { Chart } from 'chart.js';
-import {getRatingByServant,getMyprofile} from '@/apiServices'
+import {getRatingByServant,getMyprofile,updatePhoto} from '@/apiServices'
 
 export default {
   name: 'ProfileView',
@@ -160,18 +160,32 @@ export default {
   data() {
     return {
       user: {},
-      rating: {}
+      rating: {},
+      selectedFile: null,
     };
   },
+  computed: {
+    avatar(){
+      return this.user.avatar
+    }
+  },
   methods: {
-    updateAvatar(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.user.avatar = e.target.result;
-        };
-        reader.readAsDataURL(file);
+    async updateAvatar(event) {
+      try {
+        this.selectedFile = event.target.files[0];
+        const formData = new FormData();
+        formData.append('photo', this.selectedFile); // El nombre debe coincidir: 'file'
+        if(formData.get('photo').size > 5000000){
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'La imagen no debe pesar más de 5MB' });
+          return
+        }
+        const response = await updatePhoto(formData);
+        this.user.avatar = response.avatar;
+        this.$toast.add({ severity: 'success', summary: 'Éxito', detail: 'Foto de perfil actualizada', life: 3000 });
+      } catch (e) {
+        if (e.response.status === 401 && e.response.data.message === 'Token Expired') {
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo de nuevo.' });
+        }
       }
     },
     getInitials() {

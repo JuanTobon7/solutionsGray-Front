@@ -19,7 +19,8 @@ export const login = async (data) => {
       name: response.data.name,
       email: response.data.email,
       rol: response.data.rol,
-      churchName: response.data.churchName
+      churchName: response.data.churchName,
+      avatar: response.data.avatar
     }
     store.dispatch('login', user);  
   }
@@ -88,6 +89,11 @@ export const sendInvitationBoarding = async(data)=>{
 
 export const verifyInvitationBoarding = async(data)=>{
   const response = await api.post('/accept-invitation',{emailToken:data.token});
+  return response.data;
+}
+
+export const verifyChurchLead = async(data)=>{
+  const response = await api.post('/verify-church-lead',{emailToken:data.token});
   return response.data;
 }
 
@@ -421,5 +427,14 @@ export const getLeads = async()=>{
 
 export const updateLead = async(data)=>{
   const response = await api.put(`/update-lead/${data.leadId}`,data);
+  return response.data;
+}
+
+export const updatePhoto = async (data) => {
+  const response = await api.put('/update-photo', data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return response.data;
 }
