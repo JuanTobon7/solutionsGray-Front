@@ -47,7 +47,6 @@ import Avatar from 'primevue/avatar';
 import { getGroups } from '../apiServices';
 
 export default {
-  name: 'MapWithLeaflet',
   components: {
     CreateGroups,
     InfoGroups,
@@ -150,10 +149,4 @@ export default {
 </script>
 
 
-<style>
-/* Estilos de Leaflet */
-@import 'leaflet/dist/leaflet.css';
 
-/* Estilo para el popup */
-
-</style>

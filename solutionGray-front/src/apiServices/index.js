@@ -443,3 +443,8 @@ export const updatePhoto = async (data) => {
   });
   return response.data;
 }
+
+export const getParentsChurches = async()=>{
+  const response = await api.get('/get-parents-churches');
+  return response.data;
+}

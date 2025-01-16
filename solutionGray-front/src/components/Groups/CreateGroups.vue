@@ -284,9 +284,3 @@ export default {
 </script>
 
 
-<style>
-#map {
-  width: 100%;
-  border-radius: 8px;
-}
-</style>
