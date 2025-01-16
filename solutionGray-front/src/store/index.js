@@ -5,7 +5,7 @@ import VuexPersistence from 'vuex-persist';
 const sessionPersist = new VuexPersistence({
   storage: window.sessionStorage, // Cambia a localStorage si quieres persistencia entre sesiones
   reducer: (state) => {
-    const { tempEmail,qualifyService, ...persistedState } = state;  // Excluir tempEmail
+    const { tempEmail,qualifyService,newUser, ...persistedState } = state;  // Excluir tempEmail
     return persistedState;
   }
 })
@@ -24,6 +24,7 @@ const store = createStore({
   state() {
     return {
       user: null,
+      newUser: null,
       authInvitation: null,
       selectPerson: null,
       selectGuide: null,
@@ -36,6 +37,9 @@ const store = createStore({
   getters: {
     user(state) {
       return state.user;
+    },
+    newUser(state) {
+      return state.newUser;
     },
     userSession(state) {
       return state.user ? JSON.stringify(state.user) : null;
@@ -63,6 +67,9 @@ const store = createStore({
     setUser(state, user) {
       state.user = user;
     },
+    setNewUser(state, user) {
+      state.newUser = user;
+    },
     flushSession(state) {
       state.user = null;
       state.authInvitation = null;
@@ -71,6 +78,9 @@ const store = createStore({
       state.worshipService = null;
       state.assignedServices = [];
       state.tempEmail = null;  // Limpiar el estado temporal al cerrar la sesión
+    },
+    flushNewUser(state) {
+      state.newUser = null;
     },
     setAuthInvitation(state, isInvitated) {
       state.authInvitation = isInvitated;
@@ -112,6 +122,12 @@ const store = createStore({
     },
     logout({ commit }) {
       commit('flushSession');
+    },
+    register({ commit }, user) {
+      commit('setNewUser', user);
+    },
+    deleteRegister({ commit }) {
+      commit('flushNewUser');
     },
     loadInvitation({ commit }, isInvitated) {
       commit('setAuthInvitation', isInvitated);

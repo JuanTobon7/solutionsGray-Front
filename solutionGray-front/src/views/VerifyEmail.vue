@@ -59,13 +59,15 @@ export default {
          life: 5000,
        });
        console.log('Respuesta de la invitación: ', response);
-
+       this.$store.dispatch('register', response);
        if (this.message === 'Ya Haz sido aceptado') {
          store.dispatch('loadInvitation', true);
          // Redireccionar y pasar el email usando state
          store.dispatch('setTempEmail', this.email);
+         console.log('email', this.email);
          this.$router.push({ 
-           path: '/sing-in', 
+           name: 'sing-in',
+           params: { email: this.email,type:typeParam },
          });
        }
      } catch (error) {

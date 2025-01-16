@@ -16,7 +16,8 @@ export const login = async (data) => {
   });  
   if (response.data.name || response.data.email) {
     const user = {
-      name: response.data.name,
+      firstName: response.data.firstName,
+      lastName: response.data.lastName,
       email: response.data.email,
       rol: response.data.rol,
       churchName: response.data.churchName,
@@ -188,7 +189,11 @@ export const savePeople = async(data)=>{
 }
 
 export const createUsers = async(data)=>{
-  const response = await api.post('/create-users',data);
+  const response = await api.post('/create-users', {
+    ...data,
+    client_secret: import.meta.env.VITE_SSR_CLIENT,
+    client_id: import.meta.env.VITE_SSR_CLIENT_ID
+  });
   return response.data;
 }
 
