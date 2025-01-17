@@ -10,7 +10,7 @@
 
         <!-- Header Section with Logo and Title -->
         <div class="text-center mb-4">
-          <img src="https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/shepPNG-removebg-preview.png" alt="Logo" class="w-24 sm:w-32 mx-auto">
+          <img src="https://s3.us-east-2.amazonaws.com/viddefe.com/photos/shepPNG-removebg-preview.png" alt="Logo" class="w-24 sm:w-32 mx-auto">
           <h2 class="text-2xl sm:text-3xl font-bold text-second-800">
             Invitar a un nuevo voluntario
           </h2>

@@ -6,13 +6,13 @@
       class="w-[60vh] sm:h-[95vh] md:h-[85vh] shadow-lg shadow-primary-900 rounded-lg bg-gradient-to-b from-primary-800 to-primary-600 p-8 flex flex-col items-center container"
     >
       <div class="flex justify-center mb-2">
-        <img src="https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/register-removebg.png" class="h-[30vh] w-[30vh]" />
+        <img src="https://s3.us-east-2.amazonaws.com/viddefe.com/photos/register-removebg.png" class="h-[30vh] w-[30vh]" />
       </div>
       <div class="w-full flex flex-col items-center">
         <h1 class="text-center font-serif text-primary-50 text-5xl mb-4 lg:mb-8">
           <strong>Registrarme</strong>
         </h1>
-        <form class="w-full max-w-sm" @submit.prevent="validateForm">
+        <div class="w-full max-w-sm">
           <div class="mb-2">
             <label class="block text-primary-50 text-md font-bold mb-2" for="email"> Email </label>
             <input
@@ -57,7 +57,7 @@
               Crear Usuario
             </button>
           </div>
-        </form>
+        </div>
         <span>{{message}}</span>
         <span class="text-primary-50 text-center cursor-pointer">Términos y Condiciones de Privacidad</span>
       </div>
@@ -75,13 +75,13 @@ export default {
   },
   data() {
     return {
-      name: null,
+      newUser: this.$store.getters.newUser,
       email: this.$store.getters.tempEmail ,  // Obtener el email desde el state
       password: null,
       passwordConfirmation: null,
       birdthday: null,
       genero: null,
-      backgroundImage: 'https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/vid.png',
+      backgroundImage: 'https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png',
       isAuthInvitation: null,
       error: '',  // Para mostrar mensajes de error
       message: '',  // Para mostrar mensajes de éxito
@@ -90,6 +90,9 @@ export default {
   mounted(){
     this.isAuthInvitation = this.$store.getters.authInvitation ? true : false;
     console.log(this.$route.state?.email);
+    console.log('newUser',this.newUser);
+    const router = this.$router;
+    console.log('params router',router.params);
   },
   methods: {
     async validateForm() {
@@ -108,6 +111,7 @@ export default {
       await this.registerUser();
     },
     async registerUser() {
+    try{      
       // Aquí puedes proceder con el registro (por ejemplo, enviar los datos a la API)
       console.log('Registrando usuario con los datos:', {
         email: this.email,
@@ -117,6 +121,7 @@ export default {
       });
 
       const response = await createUsers({
+        emailToken: this.newUser.id, //el id es el mismo token del email
         email: this.email,
         password: this.password,
         birthday: this.birdthday,
@@ -126,19 +131,24 @@ export default {
       this.$toast.add({
         severity: 'info',
         summary: 'Registro',
-        detail: response.message,
-        life: 5000,
+        detail: 'Usuario registrado con éxito',
+        life: 3000,
       });
-      this.$router.push({ path: '/login' });
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      this.$router.push({ name: 'login' });
       console.log(response);
+    }catch(error){
+      console.log(error);
+      this.error = 'Ha ocurrido un error al intentar registrarte. Por favor, intenta de nuevo.';
     }
+  },
   }
 }
 </script>
 
 <style scoped>
 .ctn-cllg {
-  background-image: url('https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/vid.png');
+  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png');
   background-position: left;
   background-size: cover;
   background-repeat: no-repeat;

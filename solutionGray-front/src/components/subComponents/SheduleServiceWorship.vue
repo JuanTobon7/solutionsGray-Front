@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6">
+  <div>
     <div class="flex items-center gap-2 mb-6 text-second-800">      
       <h3 class="text-3xl font-semibold ">
         {{ worshipService ? 'Editar ' : 'Agendar ' }}    

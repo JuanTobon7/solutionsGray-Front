@@ -16,10 +16,12 @@ export const login = async (data) => {
   });  
   if (response.data.name || response.data.email) {
     const user = {
-      name: response.data.name,
+      firstName: response.data.firstName,
+      lastName: response.data.lastName,
       email: response.data.email,
       rol: response.data.rol,
-      churchName: response.data.churchName
+      churchName: response.data.churchName,
+      avatar: response.data.avatar
     }
     store.dispatch('login', user);  
   }
@@ -88,6 +90,11 @@ export const sendInvitationBoarding = async(data)=>{
 
 export const verifyInvitationBoarding = async(data)=>{
   const response = await api.post('/accept-invitation',{emailToken:data.token});
+  return response.data;
+}
+
+export const verifyChurchLead = async(data)=>{
+  const response = await api.post('/verify-church-lead',{emailToken:data.token});
   return response.data;
 }
 
@@ -182,7 +189,11 @@ export const savePeople = async(data)=>{
 }
 
 export const createUsers = async(data)=>{
-  const response = await api.post('/create-users',data);
+  const response = await api.post('/create-users', {
+    ...data,
+    client_secret: import.meta.env.VITE_SSR_CLIENT,
+    client_id: import.meta.env.VITE_SSR_CLIENT_ID
+  });
   return response.data;
 }
 
@@ -410,5 +421,40 @@ export const createWorshipServiceGroup = async(data)=>{
 
 export const getMyprofile = async()=>{
   const response = await api.get('/get-my-profile');
+  return response.data;
+}
+
+//administrativeApp
+export const getLeads = async()=>{
+  const response = await api.get('/get-leads');
+  return response.data;
+}
+
+export const updateLead = async(data)=>{
+  const response = await api.put(`/update-lead/${data.leadId}`,data);
+  return response.data;
+}
+
+export const updatePhoto = async (data) => {
+  const response = await api.put('/update-photo', data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+}
+
+export const getParentsChurches = async()=>{
+  const response = await api.get('/get-parents-churches');
+  return response.data;
+}
+
+export const createChurch = async(data)=>{
+  const response = await api.post('/create-church',data);
+  return response.data;
+}
+
+export const updateRolServant = async(data)=>{
+  const response = await api.put(`/update-rol-servant/${data.id}`,data);
   return response.data;
 }

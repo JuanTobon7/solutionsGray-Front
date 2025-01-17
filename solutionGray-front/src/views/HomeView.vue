@@ -13,8 +13,11 @@
                     </p>
 
                     <div class="flex items-center justify-center">
-                        <button class="bg-second-500 hover:bg-second-600 text-white px-4 py-2 rounded-md mt-4">
-                            Conocer más
+                        <button 
+                            @click="scrollTo('contact')"
+                            class="bg-second-500 hover:bg-second-600 text-white px-4 py-2 rounded-md mt-4"
+                        >
+                            Unirme a VidDeFe
                         </button>
                     </div>
                 </div>
@@ -268,6 +271,16 @@ export default{
         }
     },
     methods: {
+        scrollTo(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                });
+
+            }
+        },
         async loadCountries() {
             try {
                 const response = await getCountries(); // Obtener países desde la BD
@@ -303,7 +316,7 @@ export default{
                     personId: result.id
                 }
                 await sendLead({...data});
-                this.newPerson = {
+                /*this.newPerson = {
                     cc: null,
                     first_name: null,
                     last_name: null,
@@ -313,7 +326,7 @@ export default{
                     state_id: null,
                     type_person_id: 3,
                 };
-                this.churchName = null;
+                this.churchName = null;*/
                 this.$toast.add({ severity: 'success', summary: 'Persona creada', detail: 'La petición ha sido exitosa', life: 3000 });
         }
     },
@@ -326,13 +339,13 @@ export default{
 
 <style scoped>
 .bg-image-start {
-  background-image: url('https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/vid.png');
+  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png');
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;
 }
 .bg-work {
-  background-image: url('https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/work.jpg');
+  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe.com/photos/work.jpg');
   background-repeat: no-repeat;
   background-position: center left;
   background-size: cover;

@@ -12,17 +12,15 @@
     </div>
 
     <div>
-      <!-- Sección del encabezado -->
       <div class="flex flex-wrap gap-2 justify-between items-center mb-4">
         <div>
           <h3 class="text-2xl text-second-800 font-semibold">
             Ubicaciones de Grupos de la iglesia
           </h3>
           <p class="text-gray-700 text-sm">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut, ipsam placeat beatae voluptatum eos aliquam dolor excepturi voluptate.
+            Aqui miraras los grupos de la iglesia distribuidos en el mapa
           </p>
         </div>
-        <!-- Botón mejorado -->
         <button 
           @click="stepper"
           class="flex items-center gap-2 bg-second-500 hover:bg-second-600 px-2 py-1 rounded-lg text-white shadow-md">
@@ -30,8 +28,6 @@
           Crear Grupo
         </button>
       </div>
-
-      <!-- Mapa: Renderiza solo si showStepper es false -->
       <div id="map" v-if="!showStepper" class="rounded-md container max-h-[80vh] z-0" style="height: 600px;"></div>
       
     </div>
@@ -47,7 +43,6 @@ import Avatar from 'primevue/avatar';
 import { getGroups } from '../apiServices';
 
 export default {
-  name: 'MapWithLeaflet',
   components: {
     CreateGroups,
     InfoGroups,
@@ -64,7 +59,7 @@ export default {
   methods: {
     initializeMap() {
       // Centrar el mapa en una ubicación predeterminada
-      this.map = L.map('map').setView([4.11447990, -73.58533949], 15);
+      this.map = L.map('map').setView([4.11447990, -73.58533949], 10);
 
       // Añadir capa base de OpenStreetMap
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -72,7 +67,6 @@ export default {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(this.map);
 
-      // Agregar marcadores dinámicamente desde los datos de `groups`
       this.groups.forEach((group) => {
         const lat = parseFloat(group.latitude);
         const lng = parseFloat(group.longitude);
@@ -119,7 +113,6 @@ export default {
         const response = await getGroups();
         this.groups = response.filter((group) => group.latitude && group.longitude); // Filtrar grupos válidos
         console.log('Grupos cargados:', this.groups);
-        this.initializeMap(); // Inicializa el mapa después de cargar los datos
       } catch (e) {
         console.error('Error al cargar los grupos:', e);
         if (e.response && e.response.status !== 401 && e.response.data.message === 'Token has expired') {
@@ -145,15 +138,10 @@ export default {
   },
   mounted() {
     this.getGroups(); // Cargar datos y configurar el mapa al montar el componente
+    this.initializeMap();
   },
 };
 </script>
 
 
-<style>
-/* Estilos de Leaflet */
-@import 'leaflet/dist/leaflet.css';
 
-/* Estilo para el popup */
-
-</style>

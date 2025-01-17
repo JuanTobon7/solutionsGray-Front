@@ -5,7 +5,7 @@
        class="w-[65vh] h-auto md:h-[50vh] shadow-lg shadow-primary-900 rounded-lg bg-gradient-to-b from-primary-800 to-primary-600 p-8 flex flex-col items-center container"
      >
      <div class="flex justify-center mb-4">
-       <img src="https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/solutionGrayLOGO-removebg.png" class="h-[30vh] w-[30vh]" />
+       <img src="https://s3.us-east-2.amazonaws.com/viddefe.com/photos/register-removebg.png" class="h-[30vh] w-[30vh]" />
      </div>
      <div class="w-full flex flex-col items-center">
        <h1 class="text-center text-primary-50 text-2xl mb-8">     
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { verifyInvitationBoarding } from '@/apiServices';
+import { verifyInvitationBoarding,verifyChurchLead } from '@/apiServices';
 import store from '@/store';
 
 export default {
@@ -32,11 +32,19 @@ export default {
  methods: {
    async catchToken() {
      try {
-       const url = window.location.href;
-       const tokenParam = url.split('token=')[1];
-       this.token = tokenParam;
-
-       const response = await verifyInvitationBoarding({ token: this.token });
+      let response
+      const url = window.location.href;
+      const urlParams = new URLSearchParams(window.location.search);
+      const tokenParam = urlParams.get('token');
+      const typeParam = url.split('type=')[1];
+      this.token = tokenParam;
+      console.log('typeParam',typeParam)
+      if (typeParam === 'lead') {
+        response = await verifyChurchLead({ token: this.token });
+      } else {
+        // Handle invitationBoarding type
+        response = await verifyInvitationBoarding({ token: this.token });
+      }
 
       document.cookie = `emailToken=${this.token}`; // Guarda el token en las cookies
 
@@ -51,13 +59,15 @@ export default {
          life: 5000,
        });
        console.log('Respuesta de la invitación: ', response);
-
+       this.$store.dispatch('register', response);
        if (this.message === 'Ya Haz sido aceptado') {
          store.dispatch('loadInvitation', true);
          // Redireccionar y pasar el email usando state
          store.dispatch('setTempEmail', this.email);
+         console.log('email', this.email);
          this.$router.push({ 
-           path: '/sing-in', 
+           name: 'sing-in',
+           params: { email: this.email,type:typeParam },
          });
        }
      } catch (error) {
@@ -73,7 +83,7 @@ export default {
 
 <style scoped>
 .ctn-cllg {
- background-image: url('https://vid-de-fe.s3.us-east-2.amazonaws.com/photos/vid.png');
+ background-image: url('https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png');
  background-position: left;
  background-size: cover;
  background-repeat: no-repeat;

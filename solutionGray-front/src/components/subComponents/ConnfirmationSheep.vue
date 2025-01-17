@@ -6,7 +6,7 @@
         <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-20"></div>
         <div class="p-6 -mt-14 relative z-10">
           <div class="bg-white p-4 rounded-lg shadow-lg relative z-10">
-            <div class="flex items-center space-x-4">
+            <div class="flex flex-wrap items-center justify-center space-x-4">
               <div class="w-16 h-16 rounded-full overflow-hidden">
                 <Avatar
                   v-if="selectedPerson.avatar"
@@ -40,7 +40,7 @@
         <div class="bg-gradient-to-r from-green-500 to-green-800 h-20"></div>
         <div class="p-6 -mt-14 relative z-10">
           <div class="bg-white p-4 rounded-lg shadow-lg relative z-10">
-            <div class="flex items-center space-x-4">
+            <div class="flex flex-wrap items-center justify-center space-x-4">
               <div class="w-16 h-16 rounded-full overflow-hidden">
                 <Avatar
                   v-if="selectedGuide.avatar"

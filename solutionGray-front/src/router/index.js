@@ -3,7 +3,7 @@ import ChurchView from '../views/ChurchView.vue'
 import LoginView from '../views/LoginView.vue'
 import SheepsView from '../views/SheepsView.vue'
 import ServantsView from '../views/ServantsView.vue'
-import InvitationBoarding from '@/views/InvitationBoarding.vue'
+import VerifyEmail from '@/views/VerifyEmail.vue'
 import SingIn from '@/views/SingIn.vue'
 import MinisterServices from '@/views/MinisterServices.vue'
 import CursesView from '@/views/CursesView.vue'
@@ -17,6 +17,7 @@ import MyGroup from '@/views/MyGroup.vue'
 import WorshipServicesGroups from '@/views/WorshipServicesGroups.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import ConfigutarionView from '@/views/ConfigutarionView.vue'
+import AdministrativeView from '@/views/AdministrativeView.vue'
 
 import store from '@/store'
 
@@ -73,6 +74,11 @@ const routes = [
     component: ProfileView,
   },
   {
+    path: '/administrative',
+    name: 'administrative',
+    component: AdministrativeView,
+  },
+  {
     path: '/configuration',
     name: 'configuration',
     component: ConfigutarionView,
@@ -88,12 +94,12 @@ const routes = [
     component: ServantsView,
   },
   {
-    path: '/invitation-boarding',
-    name: 'invitation-boarding',
-    component: InvitationBoarding,
+    path: '/verify-email',
+    name: 'verify-email',
+    component: VerifyEmail,
   },
   {
-    path: '/sing-in',
+    path: '/sing-in/:email/:type',
     name: 'sing-in',
     component: SingIn,
   },

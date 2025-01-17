@@ -8,7 +8,7 @@
       </div>
     </div>
   
-    <div v-else class="p-6">
+    <div v-else>
       <DataTable 
         :value="people" 
         class="w-full border-collapse" 
@@ -20,6 +20,7 @@
         @update:selection="onGuideSelected" 
         dataKey="id"
         tableStyle="min-width: 50rem"
+        emptyMessage="No hay registros para mostrar"
       >           
         <Column field="first_name" header="Primer Nombre"></Column>
         <Column field="last_name" header="Primer Apellido"></Column>
@@ -50,13 +51,20 @@
    },
    methods: {
        async getServants() {
-           this.loading = true;
-           const response = await getServants();
-           this.people = response
-           this.loading = false;
+        try{          
+          this.loading = true;
+          const response = await getServants();
+          this.people = response
+          this.loading = false;
+        }catch(e){
+          if(e.response.status === 401 && e.response.data.message === 'Token has expired'){
+            this.$toast.add({severity: 'error', summary: 'Error', detail: 'Ups algo paso intentalo de nuevo', life: 3000});          
+          }
+        }
        },
        onGuideSelected(guide) {
            this.$store.dispatch('selectGuide', guide);
+           this.$toast.add({severity: 'success', summary: 'Guía Espiritual Seleccionada', detail:'Persona seleccionada correctamente',life: 3000});
        }
    },
    mounted() {
