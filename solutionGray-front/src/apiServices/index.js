@@ -453,3 +453,8 @@ export const createChurch = async(data)=>{
   const response = await api.post('/create-church',data);
   return response.data;
 }
+
+export const updateRolServant = async(data)=>{
+  const response = await api.put(`/update-rol-servant/${data.id}`,data);
+  return response.data;
+}
