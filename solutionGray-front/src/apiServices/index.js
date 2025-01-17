@@ -74,11 +74,6 @@ export const getServants = async()=>{
   return response.data;
 }
 
-export const getServantById = async(id)=>{
-  const response = await api.get(`/servant/${id}`);
-  return response.data;
-}
-
 export const sendInvitationBoarding = async(data)=>{
   const response = await api.post('/invitation-boarding',data);
   return {

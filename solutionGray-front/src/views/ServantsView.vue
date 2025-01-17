@@ -99,7 +99,7 @@
             </Column>
             <Column header="Ver usuario" class="p-2 border-b border-primary-200 text-second-800">
               <template #body="{ data }">
-                <button @click="handleServantsInfo(data.id)" class="bg-second-500 text-white p-1 rounded-full material-symbols-outlined">
+                <button @click="handleServantsInfo(data)" class="bg-second-500 text-white p-1 rounded-full material-symbols-outlined">
                   visibility
                 </button>
               </template>
@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import { getServants, getServantById,updateRolServant} from '../apiServices/index'
+import { getServants,updateRolServant} from '../apiServices/index'
 import AddServantCard from '@/components/Servants/AddServantCard.vue';
 import InfoServantCard from '@/components/Servants/InfoServantCard.vue';
 import DataTable from 'primevue/datatable';
@@ -172,13 +172,8 @@ export default {
     getInitials(item) {
       return item.first_name.charAt(0) + item.last_name.charAt(0);
     },
-    async handleServantsInfo(id) {
-      try{
-        const servantInfoById = await getServantById(id);
-        this.servantInfoById = servantInfoById;
-      }catch(error){
-        console.log(error);
-      }
+    async handleServantsInfo(data) {
+     this.selectedServant = data
     },
     formatDate(dateString) {
       if (!dateString) return 'N/A';
