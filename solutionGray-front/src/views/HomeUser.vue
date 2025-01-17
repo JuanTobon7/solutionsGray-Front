@@ -241,4 +241,5 @@ export default {
   background-position: center top;
   background-size: cover;
 }
+
 </style>

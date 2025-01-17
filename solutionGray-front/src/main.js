@@ -17,6 +17,9 @@ import 'primevue/resources/themes/lara-light-green/theme.css'
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 import "/node_modules/flag-icons/css/flag-icons.min.css";
+// En main.js o el archivo principal
+import 'leaflet/dist/leaflet.css';
+
 
 const app = createApp(App)
 

@@ -165,7 +165,7 @@ export default {
       } catch (e) {
         if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el culto.', life: 3000 });
-        }else if(e.response.status === 400 && e.response.data.message === 'No hay informacion que mostrar'){
+        }else {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'No hay informacion que mostrar', life: 3000 });
           this.quantitygroups = 0;
           this.quantitysheeps = 0;

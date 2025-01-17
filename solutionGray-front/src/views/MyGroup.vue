@@ -9,14 +9,14 @@
         "Un grupo comprometido con la transformación espiritual."
       </p>
     </div>
-
-    <!-- Descripción y Botones -->
     <div>
       <p class="mb-4 text-gray-700">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil nulla illo
-        provident quas maiores vitae iste, blanditiis veniam animi eaque, itaque,
-        consectetur saepe! Repudiandae aliquam in quasi minima nisi repellendus.
+        Los grupos son espacios diseñados para fortalecer la unidad, el aprendizaje mutuo y el crecimiento colectivo. 
+        Cada integrante aporta valor único, y juntos trabajan para alcanzar objetivos comunes, fomentando un ambiente 
+        de apoyo, respeto y propósito. Aquí se crean conexiones significativas y se desarrollan estrategias que impactan 
+        tanto a los miembros como a su entorno.
       </p>
+
       <div class="flex items-center justify-end gap-4">
         <button
           @click="toggleForm"
@@ -241,7 +241,7 @@ export default {
           }
         })
       } catch (e) {
-        this.handleError(e, "Error al obtener información del grupo");
+        this.handleError(e, "Error al obtener los asistentes");
       }
     },
     renderOrgChart() {
