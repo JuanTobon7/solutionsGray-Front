@@ -7,7 +7,7 @@
       <nav class="flex justify-between items-center container">
         <div class="flex items-center text-white gap-4">          
           <button @click="menuUserFun" class="material-symbols-outlined text-white cursor-pointer">menu</button>
-          <span class="text-xl font-semibold">Hola {{ user.name }} 👋</span>       
+          <span class="text-xl font-semibold">Hola {{ userName }} 👋</span>       
         </div>
         <div class="flex items-center ml-auto">
           <div @click="toggleMenu" class="relative rounded-full cursor-pointer inline-block">
@@ -17,6 +17,13 @@
               size="xlarge"
               shape="circle"
               class="flex items-center justify-center w-12 h-12 rounded-full overflow-hidden shadow-md border-4 border-primary-700"
+            />
+            <Avatar 
+            v-else
+            :label="getInitials(user)"
+            size="large"
+            shape="circle"
+            class="bg-primary-50 flex items-center  w-12 h-12  verflow-hidden shadow-md border-4 border-primary-700 justify-center text-primary-800 rounded-full"
             />
             <i class="material-symbols-outlined text-white absolute bottom-0 right-0 transform translate-x-2 translate-y-2 rounded-full bg-primary-700">
               expand_more
@@ -55,12 +62,18 @@ export default {
   },
   data() {
     return {
-      userName: null,
       isMenuVisible: false,
       menuUser: true,
       user: {},
     };
   },
+
+  computed: {
+    userName() {
+      return this.user.firstName + ' ' + this.user.lastName;
+    },
+  },
+
   methods: {
     toggleMenu() {
       this.isMenuVisible = !this.isMenuVisible;
@@ -80,8 +93,11 @@ export default {
       this.user = user;
       return true;
     },
+    getInitials(user) {
+      return user.firstName.charAt(0) + user.lastName.charAt(0);
+    },
   },    
-  mounted(){
+  beforeMount(){
     this.getUser()
   }
 };
