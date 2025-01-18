@@ -1,10 +1,12 @@
 <template>
   <section class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50">
-    <div class="container h-auto md:h-[95vh] w-full sm:px-6 flex items-center justify-center">
-      <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg w-full sm:min-w-[70%] flex flex-col max-h-full overflow-y-auto">
+    <div class="container md:h-[95vh] h-full w-full sm:px-6 flex items-center justify-center">
+      <div
+        class="bg-white p-6 sm:p-8 rounded-lg shadow-lg w-full flex flex-col overflow-hidden max-h-[90vh] sm:max-h-[95vh]"
+      >
         <div class="flex justify-between items-center mb-4 sm:mb-6">
           <h2 class="text-lg sm:text-xl font-semibold text-gray-800">
-            Formulario de Creación de Cultos
+            Formulario de Creación de Grupos
           </h2>
           <button
             @click="closeMap"
@@ -13,119 +15,115 @@
             close
           </button>
         </div>
-
-        <!-- Sección de Ubicación -->
-        <div class="mb-6">
-          <h3 class="text-lg font-medium text-gray-700 mb-2">
-            Escoger Ubicación
-          </h3>
-          <p class="text-sm text-gray-600 mb-2">
-            Haz clic en el mapa para seleccionar una ubicación. La latitud y longitud aparecerán automáticamente.
-          </p>
-          <div id="map" style="height: 400px;" class="rounded-md mb-4"></div>
-        </div>
-
-        <!-- Sección de Información del Grupo -->
-        <div class="mb-6">
-          <h3 class="text-lg font-medium text-gray-700 mb-2">
-            Información del Grupo
-          </h3>
-          <label for="name" class="block text-sm text-gray-600 mb-1">
-            Nombre del Grupo
-          </label>
-          <input
-            id="name"
-            type="text"
-            v-model="groupName"
-            class="p-2 rounded-md border border-gray-300 w-full mb-4"
-            placeholder="Nombre del grupo"
-          />
-          <label for="strategieName" class="block text-sm text-gray-600 mb-1">
-            Nombre de la estrategia
-          </label>
-          <textarea
-            id="strategieName"
-            type="text"
-            v-model="strategyName"
-            class="p-2 rounded-md border border-gray-300 w-full mb-4"
-            placeholder="Nombre d la estrategia"
-          ></textarea>
-          <label class="block text-sm text-gray-600 mb-1">
-            Selecciona al Líder o Encargado
-          </label>
-          <Dropdown
-            v-model="selectedPerson"
-            :options="people"
-            optionLabel="name"
-            placeholder="Selecciona a un Líder o Encargado del Grupo"
-            class="w-full"
-          >
-            <!-- Template para el valor seleccionado -->
-            <template #value="slotProps">
-              <div
-                v-if="slotProps.value"
-                class="flex items-center gap-2 flex-wrap sm:flex-nowrap"
-              >
-                <div class="w-8 h-8 rounded-full flex items-center">
-                  <Avatar
-                    v-if="slotProps.value.avatar"
-                    :image="slotProps.value.avatar"
-                    shape="circle"
-                  />
-                  <Avatar
-                    v-else
-                    :label="getInitials(slotProps.value)"
-                    class="bg-primary-100 flex items-center justify-center text-primary-800"
-                    shape="circle"
-                  />
-                </div>
+        <div class="flex-1 overflow-y-auto">
+          <div class="mb-6">
+            <h3 class="text-lg font-medium text-gray-700 mb-2">
+              Escoger Ubicación
+            </h3>
+            <p class="text-sm text-gray-600 mb-2">
+              Haz clic en el mapa para seleccionar una ubicación. La latitud y longitud aparecerán automáticamente.
+            </p>
+            <div id="map" style="height: 400px;" class="rounded-md mb-4"></div>
+          </div>
+          <div class="mb-6">
+            <h3 class="text-lg font-medium text-gray-700 mb-2">
+              Información del Grupo
+            </h3>
+            <label for="name" class="block text-sm text-gray-600 mb-1">
+              Nombre del Grupo
+            </label>
+            <input
+              id="name"
+              type="text"
+              v-model="groupName"
+              class="p-2 rounded-md border border-gray-300 w-full mb-4"
+              placeholder="Nombre del grupo"
+            />
+            <label for="strategieName" class="block text-sm text-gray-600 mb-1">
+              Nombre de la estrategia
+            </label>
+            <textarea
+              id="strategieName"
+              type="text"
+              v-model="strategyName"
+              class="p-2 rounded-md border border-gray-300 w-full mb-4"
+              placeholder="Nombre de la estrategia"
+            ></textarea>
+            <label class="block text-sm text-gray-600 mb-1">
+              Selecciona al Líder o Encargado
+            </label>
+            <Dropdown
+              v-model="selectedPerson"
+              :options="people"
+              optionLabel="name"
+              placeholder="Selecciona a un Líder o Encargado del Grupo"
+              class="w-full"
+            >
+              <!-- Template para el valor seleccionado -->
+              <template #value="slotProps">
                 <div
-                  class="text-sm sm:text-base flex flex-col sm:flex-row gap-1 sm:gap-2"
+                  v-if="slotProps.value"
+                  class="flex items-center gap-2 flex-wrap sm:flex-nowrap"
                 >
-                  <span>{{ slotProps.value.first_name + ' ' + slotProps.value.last_name }}</span>
-                  <span class="hidden sm:inline">-</span>
-                  <span>CC: {{ slotProps.value.cc }}</span>
-                  <span class="hidden sm:inline">-</span>
-                  <span>Phone: {{ slotProps.value.phone }}</span>
+                  <div class="w-8 h-8 rounded-full flex items-center">
+                    <Avatar
+                      v-if="slotProps.value.avatar"
+                      :image="slotProps.value.avatar"
+                      shape="circle"
+                    />
+                    <Avatar
+                      v-else
+                      :label="getInitials(slotProps.value)"
+                      class="bg-primary-100 flex items-center justify-center text-primary-800"
+                      shape="circle"
+                    />
+                  </div>
+                  <div
+                    class="text-sm sm:text-base flex flex-col sm:flex-row gap-1 sm:gap-2"
+                  >
+                    <span>{{ slotProps.value.first_name + ' ' + slotProps.value.last_name }}</span>
+                    <span class="hidden sm:inline">-</span>
+                    <span>CC: {{ slotProps.value.cc }}</span>
+                    <span class="hidden sm:inline">-</span>
+                    <span>Phone: {{ slotProps.value.phone }}</span>
+                  </div>
                 </div>
-              </div>
-              <span v-else>{{ slotProps.placeholder }}</span>
-            </template>
+                <span v-else>{{ slotProps.placeholder }}</span>
+              </template>
 
-            <!-- Template para las opciones -->
-            <template #option="slotProps">
-              <div
-                class="flex items-center gap-2 flex-wrap sm:flex-nowrap py-2 px-3 hover:bg-gray-100 rounded"
-              >
-                <div class="w-8 h-8 rounded-full flex items-center">
-                  <Avatar
-                    v-if="slotProps.option.avatar"
-                    :image="slotProps.option.avatar"
-                    shape="circle"
-                  />
-                  <Avatar
-                    v-else
-                    :label="getInitials(slotProps.option)"
-                    class="bg-primary-100 flex items-center justify-center text-primary-800"
-                    shape="circle"
-                  />
-                </div>
+              <!-- Template para las opciones -->
+              <template #option="slotProps">
                 <div
-                  class="text-sm sm:text-base flex flex-col sm:flex-row gap-1 sm:gap-2"
+                  class="flex items-center gap-2 flex-wrap sm:flex-nowrap py-2 px-3 hover:bg-gray-100 rounded"
                 >
-                  <span>{{ slotProps.option.first_name + ' ' + slotProps.option.last_name }}</span>
-                  <span class="hidden sm:inline">-</span>
-                  <span>CC: {{ slotProps.option.cc }}</span>
-                  <span class="hidden sm:inline">-</span>
-                  <span>Phone: {{ slotProps.option.phone }}</span>
+                  <div class="w-8 h-8 rounded-full flex items-center">
+                    <Avatar
+                      v-if="slotProps.option.avatar"
+                      :image="slotProps.option.avatar"
+                      shape="circle"
+                    />
+                    <Avatar
+                      v-else
+                      :label="getInitials(slotProps.option)"
+                      class="bg-primary-100 flex items-center justify-center text-primary-800"
+                      shape="circle"
+                    />
+                  </div>
+                  <div
+                    class="text-sm sm:text-base flex flex-col sm:flex-row gap-1 sm:gap-2"
+                  >
+                    <span>{{ slotProps.option.first_name + ' ' + slotProps.option.last_name }}</span>
+                    <span class="hidden sm:inline">-</span>
+                    <span>CC: {{ slotProps.option.cc }}</span>
+                    <span class="hidden sm:inline">-</span>
+                    <span>Phone: {{ slotProps.option.phone }}</span>
+                  </div>
                 </div>
-              </div>
-            </template>
-          </Dropdown>
+              </template>
+            </Dropdown>
+          </div>
         </div>
-
-        <!-- Botón de Guardar -->
-        <div class="flex justify-end">
+        <div class="flex justify-end mt-4">
           <Button
             label="Guardar"
             icon="pi pi-save"
@@ -137,6 +135,7 @@
     </div>
   </section>
 </template>
+
 
 <script>
 import L from "leaflet";
@@ -284,9 +283,3 @@ export default {
 </script>
 
 
-<style>
-#map {
-  width: 100%;
-  border-radius: 8px;
-}
-</style>

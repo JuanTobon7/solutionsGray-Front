@@ -99,7 +99,7 @@ const routes = [
     component: VerifyEmail,
   },
   {
-    path: '/sing-in',
+    path: '/sing-in/:email/:type',
     name: 'sing-in',
     component: SingIn,
   },

@@ -22,9 +22,7 @@
         <div v-if="tableView" class="p-4 sm:p-6 overflow-x-auto">
           <DataTable 
             :value="servantsInfo" 
-            v-model:selection="selectedServant"
             stripedRows
-            selectionMode="single"
             class="w-full border-collapse" 
             tableStyle="min-width: 40rem;"
           >           
@@ -41,6 +39,24 @@
                 </div>
               </div>
           </template>
+            <Column field="avatar" header="Foto" class="p-2 sm:p-4 text-center border-b border-primary-200 text-second-800">
+              <template #body="slotProps">
+                <Avatar
+                  v-if="slotProps.data.avatar"
+                  :image="slotProps.data.avatar"
+                  size="large"
+                  class="flex items-center justify-center"
+                  shape="circle"
+                />
+                <Avatar
+                  v-else
+                  :label="getInitials(slotProps.data)"
+                  class="bg-primary-100 flex items-center justify-center text-primary-800"
+                  size="large"
+                  shape="circle"
+                />
+              </template>
+            </Column>
             <Column field="first_name" header="Primer Nombre" class="p-2 sm:p-4 text-center border-b border-primary-200 text-second-800"></Column>
             <Column field="last_name" header="Primer Apellido" class="p-2 sm:p-4 text-center border-b border-primary-200 text-second-800"></Column>
             <Column field="email" header="Email" class="p-2 sm:p-4 text-center border-b border-primary-200 text-second-800"></Column>
@@ -58,7 +74,36 @@
                 </Tag>
               </template>
             </Column> 
-              
+            <Column field="user_rol" header="Rol de Usuario" class="p-2 border-b border-primary-200 text-second-800">
+                <template #body="{ data }">
+                  <Dropdown 
+                      @change="onStatusChange(data, $event)"
+                      v-model="data.user_rol" 
+                      :options="roles" 
+                      optionValue="user_rol"
+                      placeholder="Selecciona el Rol"
+                      class="w-full"
+                  >
+                      <template #value="{ value }">
+                          <div class="flex align items-center">
+                              <span>{{ value }}</span>
+                          </div>                                    
+                      </template>
+                      <template #option="{ option }">
+                          <div class="flex align-items-center">
+                              <span>{{ option.user_rol }}</span>
+                          </div>
+                      </template>
+                    </Dropdown>
+                </template>
+            </Column>
+            <Column header="Ver usuario" class="p-2 border-b border-primary-200 text-second-800">
+              <template #body="{ data }">
+                <button @click="handleServantsInfo(data.id)" class="bg-second-500 text-white p-1 rounded-full material-symbols-outlined">
+                  visibility
+                </button>
+              </template>
+            </Column>
           </DataTable>
         </div>
     </div>    
@@ -74,20 +119,24 @@
 </template>
 
 <script>
-import { getServants, getServantById} from '../apiServices/index'
+import { getServants, getServantById,updateRolServant} from '../apiServices/index'
 import AddServantCard from '@/components/Servants/AddServantCard.vue';
 import InfoServantCard from '@/components/Servants/InfoServantCard.vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Tag from 'primevue/tag';
+import Dropdown from 'primevue/dropdown';
+import Avatar from 'primevue/avatar';
 
 export default {
   components: {
-    DataTable,
-    Column,
-    Tag,
     AddServantCard,
     InfoServantCard,
+    DataTable,
+    Dropdown,
+    Column,
+    Avatar,
+    Tag,
   },
   data() {
     return {
@@ -97,7 +146,13 @@ export default {
       servantInfoById: null,
       loading:true,
       selectedServant: null,
-      date: null
+      date: null,
+      roles: [
+        {user_rol_id: 1, user_rol: 'User'},
+        {user_rol_id: 2, user_rol: 'Admin'},
+        {user_rol_id:3,  user_rol: 'Super Admin'},
+        {user_rol_id:4,  user_rol: 'Pastor'}
+      ]
     };
   },
   methods: {
@@ -132,7 +187,20 @@ export default {
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
-    }
+    },
+    async onStatusChange(servant, newStatus) {
+      console.log('servant', servant);
+      console.log('newStatus', newStatus);
+      const rolId = this.roles.find((rol) => rol.user_rol === newStatus.value).user_rol_id;
+      const payload = { id: servant.id, userRolId: rolId };
+      await updateRolServant(payload);
+      this.$toast.add({
+        severity: 'success',
+        summary: 'Rol actualizado',
+        detail: `Rol de ${servant.first_name} correctamente actualizado`,
+        life: 3000,
+      });
+    },
   },
   async mounted() {
     await this.getServants();

@@ -122,16 +122,19 @@
     </section>
   
     <spanRatingService v-if="!checkQualified" :serviceWorshipId = "serviceWorshipId" @close="checkQualified=true"/>    
+    <CreateChurch v-if="createChurch" @close="createChurch = false"/>
 </template>
 
 <script>
 import {checkQualifiedRating,getMyLastServices,getWorshipServices} from '@/apiServices/'
 import spanRatingService from '@/components/spanRatingService.vue';
+import CreateChurch from '@/components/Church/CreateChurch.vue';
 import DataView from 'primevue/dataview';
 import { format } from 'date-fns';
 export default {
     components: {
         spanRatingService,
+        CreateChurch,
         DataView
     },
     data(){
@@ -141,7 +144,8 @@ export default {
             messageServices: '',
             privileges: [],
             worshipServices: [],
-            churchName: 'Mi Iglesia'
+            churchName: '',
+            createChurch: false
         }
     },
         methods: {
@@ -152,81 +156,90 @@ export default {
             dateFormated = dateFormated.charAt(0).toUpperCase() + dateFormated.slice(1);
             return dateFormated.replace(/,/g, ' ');
           },
-            async getServicesWorhsip (){
-                try {
-                  const today = new Date();
+          async getServicesWorhsip (){
+              try {
+                const today = new Date();
+                const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                const date30DaysAfter = new Date()
+                date30DaysAfter.setDate(today.getDate() + 30);
+                const minDate = format(today, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
+                const maxDate = format(date30DaysAfter, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });                
+                const response = await getWorshipServices({minDate, maxDate});
+                this.worshipServices = response;                  
+              } catch (e) {
+                  console.log('heyyy',e.response.data)
+                  console.log(e.response.status)
+                  console.log(e.response.data.message)
+                  if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
+                      this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Intentalo de nuevo.', life: 3000 });
+                  }
+              }
+          },
+          async checkQualifiedRatingFun() {
+              try {
                   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                  const date30DaysAfter = new Date()
-                  date30DaysAfter.setDate(today.getDate() + 30);
-                  const minDate = format(today, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
-                  const maxDate = format(date30DaysAfter, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });                
-                  const response = await getWorshipServices({minDate, maxDate});
-                  this.worshipServices = response;                  
-                } catch (e) {
-                    console.log('heyyy',e.response.data)
-                    console.log(e.response.status)
-                    console.log(e.response.data.message)
-                    if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
-                        this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Intentalo de nuevo.', life: 3000 });
-                    }
-                }
-            },
-            async checkQualifiedRatingFun() {
-                try {
-                    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                    const currentDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
-                    const response = await checkQualifiedRating(currentDate);
-                    console.log('heloo',response);
-                    this.checkQualified = true
-                } catch (e) {
-                    console.log('heyyy',e.response.data)
-                    console.log(e.response.status)
-                    console.log(e.response.data.message)
-                    if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
-                        this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Intentalo de nuevo.', life: 3000 });
-                    }else if(e.response.status === 400 && e.response.data.message === 'No ha calificado'){
-                        this.serviceWorshipId = e.response.data.id
-                        console.log('serviceWorshipId in Home',this.serviceWorshipId)
-                        this.checkQualified = false
-                    }
-                }
-            },
-            async getMyLastServicesFun() {
-                try {
-                    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                    const date = format(new Date(), "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
-                    console.log('date',date);
-                    const response = await getMyLastServices(date);
-                    this.privileges = response
-                    console.log('heloo',response);
-                } catch (e) {
-                    console.log('heyyy',e.response.data)
-                    console.log(e.response.status)
-                    console.log(e.response.data.message)
-                    if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
-                        this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Intentalo de nuevo.', life: 3000 });
-                    }else if(e.response.status === 400 && e.response.data.message === 'No hay servicios asignados'){
-                        this.messageServices = e.response.data.message                    
-                    }
-            }
-       
-        },
+                  const currentDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
+                  const response = await checkQualifiedRating(currentDate);
+                  console.log('heloo',response);
+                  this.checkQualified = true
+              } catch (e) {
+                  console.log('heyyy',e.response.data)
+                  console.log(e.response.status)
+                  console.log(e.response.data.message)
+                  if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
+                      this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Intentalo de nuevo.', life: 3000 });
+                  }else if(e.response.status === 400 && e.response.data.message === 'No ha calificado'){
+                      this.serviceWorshipId = e.response.data.id
+                      console.log('serviceWorshipId in Home',this.serviceWorshipId)
+                      this.checkQualified = false
+                  }
+              }
+          },
+          async getMyLastServicesFun() {
+            try {
+                const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                const date = format(new Date(), "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
+                console.log('date',date);
+                const response = await getMyLastServices(date);
+                this.privileges = response
+                console.log('heloo',response);
+            } catch (e) {
+              console.log('heyyy',e.response.data)
+              console.log(e.response.status)
+              console.log(e.response.data.message)
+              if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
+                  this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Intentalo de nuevo.', life: 3000 });
+              }else if(e.response.status === 400 && e.response.data.message === 'No hay servicios asignados'){
+                  this.messageServices = e.response.data.message                    
+              }
+            }       
+         },
+         verifyExistChurch(){
+          const session = this.$store.getters.userSession;
+          const user = JSON.parse(session);
+          if(user.churchName){
+            this.churchName = user.churchName;
+            return
+          }
+          this.createChurch = true;
+         }
     },
     mounted() {
+        this.verifyExistChurch();
         this.checkQualifiedRatingFun();
         this.getMyLastServicesFun();
-        this.getServicesWorhsip();
-        const session = this.$store.getters.userSession;
-        if (session) this.churchName = JSON.parse(session).churchName;
+        this.getServicesWorhsip();        
     }
 }
 </script>
 
 <style scoped>
+
 .bg-image {
   background-image: url('https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png');
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;
 }
+
 </style>

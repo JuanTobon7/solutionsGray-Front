@@ -65,6 +65,10 @@ export default {
                 const payload = {
                     leadId: lead.id,
                     status: lead.lead_status,
+                    firstName:lead.first_name,
+                    lastName:lead.last_name,
+                    email:lead.email,
+                    churchName:lead.church_name
                 };
                 await updateLead(payload);
                 console.log('hello im interesting')
