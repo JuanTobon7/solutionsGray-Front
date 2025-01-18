@@ -145,6 +145,7 @@ export default {
           life: 4000,
           closable: true,
         });
+        this.$emit('close');
       } catch (error) {
         this.$toast.add({
           severity: 'error',

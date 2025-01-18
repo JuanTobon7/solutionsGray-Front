@@ -98,12 +98,22 @@ export default {
     async validateForm() {
       this.error = '';  // Limpiar mensajes de error anteriores
       if(!this.email || !this.password || !this.passwordConfirmation){
-        this.error = 'Por favor, completa todos los campos.';
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Todos los campos son requeridos',
+          life: 3000,
+        });
         return;
       }
       // Verificación de que las contraseñas coincidan
       if (this.password !== this.passwordConfirmation) {
-        this.error = 'Las contraseñas no coinciden.';
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Las contraseñas no coinciden',
+          life: 3000,
+        });
         return;
       }
 
@@ -139,7 +149,12 @@ export default {
       console.log(response);
     }catch(error){
       console.log(error);
-      this.error = 'Ha ocurrido un error al intentar registrarte. Por favor, intenta de nuevo.';
+      this.$toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Ocurrió un error al registrar el usuario',
+        life: 3000,
+      });
     }
   },
   }

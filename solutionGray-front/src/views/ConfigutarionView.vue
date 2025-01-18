@@ -45,38 +45,6 @@
         </form>
       </div>
   
-      <!-- Notification Preferences Section -->
-      <div class="w-full bg-white p-6 rounded-lg shadow-md mb-6">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Preferencias de Notificaciones</h3>
-        <form @submit.prevent="updateNotifications">
-          <div class="mb-4 flex items-center">
-            <input
-              type="checkbox"
-              id="emailNotifications"
-              v-model="notifications.email"
-              class="mr-2"
-            />
-            <label for="emailNotifications" class="text-gray-600">Notificaciones por Email</label>
-          </div>
-          <div class="mb-4 flex items-center">
-            <input
-              type="checkbox"
-              id="smsNotifications"
-              v-model="notifications.sms"
-              class="mr-2"
-            />
-            <label for="smsNotifications" class="text-gray-600">No enviar notificaciones</label>
-          </div>
-          <button
-            type="submit"
-            class="w-full bg-primary-500 text-white py-2 px-4 rounded hover:bg-primary-600"
-          >
-            Guardar Preferencias
-          </button>
-        </form>
-      </div>
-  
-      <!-- Account Deletion Section -->
       <div class="w-full bg-white p-6 rounded-lg shadow-md">
         <h3 class="text-lg font-semibold text-red-600 mb-4">Eliminar Cuenta</h3>
         <p class="text-gray-600 mb-4">
@@ -93,6 +61,8 @@
   </template>
   
   <script>
+import { resetPassword } from '@/apiServices';
+
   export default {
     name: 'ConfigurationView',
     data() {
@@ -109,13 +79,51 @@
       };
     },
     methods: {
-      changePassword() {
-        if (this.passwords.new !== this.passwords.confirm) {
-          alert('Las contraseñas no coinciden.');
+      async changePassword() {
+        try{          
+          if (this.passwords.new !== this.passwords.confirm) {
+            this.$toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Las contraseñas no coinciden.',
+            life: 3000
+          });
           return;
         }
-        // Perform password change logic here
-        alert('Contraseña actualizada exitosamente.');
+        const payload = {
+          password: this.passwords.current, 
+          newPassword: this.passwords.new, 
+          personId: this.$store.getters.user.id
+        }
+        await resetPassword(payload)
+        this.passwords = {
+          current: '',
+          new: '',
+          confirm: '',
+        }
+        this.$toast.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Contraseña actualizada exitosamente.',
+          life: 3000
+        });
+        }catch(e){
+          if(e.response.status === 401 && e.response.data.message === 'Token Expired'){
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Ups algo paso, intentalo de nuevo',
+              life: 3000
+            });
+          }else{
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Contraseña actual incorrecta',
+              life: 3000
+            });
+          }
+        }
       },
       updateNotifications() {
         // Perform notification preferences update logic here

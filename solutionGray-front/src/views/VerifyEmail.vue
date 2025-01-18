@@ -36,17 +36,15 @@ export default {
       const url = window.location.href;
       const urlParams = new URLSearchParams(window.location.search);
       const tokenParam = urlParams.get('token');
-      const typeParam = url.split('type=')[1];
+      let typeParam = url.split('type=')[1];
       this.token = tokenParam;
       console.log('typeParam',typeParam)
       if (typeParam === 'lead') {
         response = await verifyChurchLead({ token: this.token });
       } else {
-        // Handle invitationBoarding type
+        typeParam = 'Invitation'
         response = await verifyInvitationBoarding({ token: this.token });
       }
-
-      document.cookie = `emailToken=${this.token}`; // Guarda el token en las cookies
 
        this.message = response.message; // Asigna el mensaje de la respuesta
        this.email = response.email; // Asigna el email de la respuesta
@@ -59,6 +57,7 @@ export default {
          life: 5000,
        });
        console.log('Respuesta de la invitación: ', response);
+       console.log('typeParam',typeParam)
        this.$store.dispatch('register', response);
        if (this.message === 'Ya Haz sido aceptado') {
          store.dispatch('loadInvitation', true);
