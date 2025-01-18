@@ -268,7 +268,6 @@ import Chart from 'primevue/chart';
 import RecordMonetaryIncome from '../subComponents/RecordMonetaryIncome.vue';
 import EditWorshipService from './EditWorshipService.vue';
 import SheduleNewPerson from '../subComponents/SheduleNewPerson.vue';
-import Chartjs from 'chart.js/auto';
 import jsPDF from 'jspdf';
 import formato from './format.b64.js';
 
@@ -448,78 +447,45 @@ export default {
     },
     
     GetReporte() {
-  try {
-    const doc = new jsPDF();
+      try {
+        const doc = new jsPDF();
 
-    // Validar formato de la imagen de fondo
-    if (!formato.startsWith("data:image/png;base64,")) {
-      console.error("El formato Base64 no es válido.");
-      return;
-    }
-    doc.addImage(formato, "PNG", 10, 10, 190, 277);
+        // Validar formato de la imagen de fondo
+        if (!formato.startsWith("data:image/png;base64,")) {
+          console.error("El formato Base64 no es válido.");
+          return;
+        }
+        doc.addImage(formato, "PNG", 10, 10, 190, 277);
 
-    // Extraer valores del array offerings
-    
-    const primicias = this.offerings.find(item => item.type_contribution === 'primicias')?.amount || 0.0;
-    const diezmos = this.offerings.find(item => item.type_contribution === 'diezmos')?.amount || 0.0;
-    const ofrendaGeneral = this.offerings.find(item => item.type_contribution === 'ofrendaGeneral')?.amount || 0.0;
-    const ofrendaEspecial = this.offerings.find(item => item.type_contribution === 'ofrendaEspecial')?.amount || 0.0;
-    const ofrendaPro = this.offerings.find(item => item.type_contribution === 'ofrendaPro')?.amount || 0.0;
-    
-    const totalGeneral = this.getTotalOfferings();
-         
-    const fontSize = 16;
-    doc.setFontSize(fontSize);
+        // Extraer valores del array offerings
+        
+        const primicias = this.offerings.find(item => item.type_contribution === 'primicias')?.amount || 0.0;
+        const diezmos = this.offerings.find(item => item.type_contribution === 'diezmos')?.amount || 0.0;
+        const ofrendaGeneral = this.offerings.find(item => item.type_contribution === 'ofrendaGeneral')?.amount || 0.0;
+        const ofrendaEspecial = this.offerings.find(item => item.type_contribution === 'ofrendaEspecial')?.amount || 0.0;
+        const ofrendaPro = this.offerings.find(item => item.type_contribution === 'ofrendaPro')?.amount || 0.0;
+        
+        const totalGeneral = this.getTotalOfferings();
+            
+        const fontSize = 16;
+        doc.setFontSize(fontSize);
+      
 
-    // Configuración del gráfico
-    const chartData = {
-      labels: ["Primicias", "Diezmos", "Ofrenda General", "Ofrenda Especial", "Ofrenda Pro"],
-      datasets: [
-        {
-          data: [primicias, diezmos, ofrendaGeneral, ofrendaEspecial, ofrendaPro],
-          backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
-          hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
-        },
-      ],
-    };
+        // Mostrar valores en el PDF
+        doc.text(`$${primicias}`, 150, 105);
+        doc.text(`$${diezmos}`, 150, 115);
+        doc.text(`$${ofrendaGeneral}`, 150, 125);
+        doc.text(`$${ofrendaEspecial}`, 150, 155);
+        doc.text(`$${ofrendaPro}`, 150, 165);
+        doc.text(`$${totalGeneral}`, 150, 196);
 
-    const chartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-    };
-
-    // Crear canvas temporal para el gráfico
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-
-    // Generar el gráfico con Chart.js
-    new Chartjs(context, {
-      type: "pie",
-      data: chartData,
-      options: chartOptions,
-    });
-
-    
-    
-    const image = canvas.toDataURL("image/png");
-
-      // Agregar gráfico al PDF
-      doc.addImage(image, "PNG", 10, 200, 180, 90); // Ajustar según necesites
-
-      // Mostrar valores en el PDF
-      doc.text(`$${primicias}`, 150, 105);
-      doc.text(`$${diezmos}`, 150, 115);
-      doc.text(`$${ofrendaGeneral}`, 150, 125);
-      doc.text(`$${ofrendaEspecial}`, 150, 155);
-      doc.text(`$${ofrendaPro}`, 150, 165);
-      doc.text(`$${totalGeneral}`, 150, 196);
-
-      // Descargar el PDF
-      doc.save("document.pdf");
+        // Descargar el PDF
+        doc.save("document.pdf");
     
   } catch (error) {
     console.error("Error al generar el reporte:", error);
   }
+  
 },
 },
 
