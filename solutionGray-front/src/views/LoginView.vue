@@ -1,6 +1,6 @@
 <template>
   <section class="w-full h-screen flex items-center justify-center ctn-cllg">
-    <VerifyCodePassword v-if="codePasswd" />
+    <VerifyCodePassword v-if="codePasswd" @resendCode="forgetPassword" @close="codePasswd = null"/>
     <div v-else
       class="w-[60vh] h-auto shadow-lg shadow-primary-900 rounded-lg bg-gradient-to-b from-primary-800 to-primary-600 p-8 flex flex-col items-center container"
     >

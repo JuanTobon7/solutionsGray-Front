@@ -57,12 +57,21 @@
             />
           </div>
         <!-- Botón para enviar -->
-        <button
-          @click="resetForgetPassword"
-          class="mt-6 bg-primary-500 text-white py-2 px-6 rounded-md hover:bg-primary-400 transition-colors"
-        >
-          Verificar
-        </button>
+         <div class="flex flex-col gap-2 items-center">
+            <button
+              @click="resetForgetPassword"
+              class=" mr-2 bg-primary-500 text-white py-2 px-6 rounded-md hover:bg-primary-400 transition-colors"
+              >
+              Cambiar Contraseña
+            </button>
+            <button
+              @click="resendCode"
+              class=" mr-2 bg-primary-500 text-white py-2 px-6 rounded-md hover:bg-primary-400 transition-colors"
+              >
+              Reenviar Código
+          </button>
+        </div>
+
       </div>
     </div>
   </template>
@@ -81,7 +90,8 @@ import { updatePassword, verifyCode } from '../apiServices/';
         code: null,
         step: 1,
         password: null,
-        passwordConfirmation: null
+        passwordConfirmation: null,
+        personId: null
       };
     },
     methods: {
@@ -96,7 +106,8 @@ import { updatePassword, verifyCode } from '../apiServices/';
                     code,
                     email: this.$store.getters.tempEmail
                 }
-                await verifyCode(data)
+                const response = await verifyCode(data)
+                this.personId = response.id
                 this.$toast.add({severity: 'success',summary:'Exito', detail: 'Código Verificado',life:3000})
                 this.step = 2
             }catch(e){
@@ -106,6 +117,11 @@ import { updatePassword, verifyCode } from '../apiServices/';
                     this.$toast.add({severity: 'error',summary:'Error', detail: e.response.data.message,life:3000})
                 }
             }
+        },
+        resendCode(){
+          this.code = null
+          this.step = 1
+          this.$emit('resendCode')
         },
         async resetForgetPassword(){
           try{
@@ -119,10 +135,12 @@ import { updatePassword, verifyCode } from '../apiServices/';
               return;
             }
             await updatePassword({
-            email: this.$store.getters.tempEmail,
+            personId: this.personId,
             password: this.password,
             passwordConfirmation: this.passwordConfirmation
           })
+          this.$toast.add({severity: 'success',summary:'Exito', detail: 'Contraseña Actualizada',life:3000})
+          this.$emit('close')
           }catch(e){
             if(e.response.status === 401 && e.respons.data.message === 'Token Expired'){
                     this.$toast.add({severity: 'error',summary:'Error', detail: 'Ups algo ocurrio, intentalo de nuevo',life:3000})    
