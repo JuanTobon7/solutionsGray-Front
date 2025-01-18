@@ -462,3 +462,30 @@ export const resetPassword = async (data) => {
   });
   return response.data;
 }
+
+export const forgetPassword = async (data) => {
+  const response = await api.post('/forgot-password', {
+    ...data,
+    client_secret: import.meta.env.VITE_SSR_CLIENT,
+    client_id: import.meta.env.VITE_SSR_CLIENT_ID
+  });
+  return response.data;
+}
+
+export const verifyCode = async (data) => {
+  const response = await api.post('/verify-code', {
+    ...data,
+    client_secret: import.meta.env.VITE_SSR_CLIENT,
+    client_id: import.meta.env.VITE_SSR_CLIENT_ID
+  });
+  return response.data;
+}
+
+export const updatePassword = async (data) => {
+  const response = await api.put('/update-forget-password', {
+    ...data,
+    client_secret: import.meta.env.VITE_SSR_CLIENT,
+    client_id: import.meta.env.VITE_SSR_CLIENT_ID
+  });
+  return response.data;
+}

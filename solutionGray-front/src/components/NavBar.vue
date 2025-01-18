@@ -4,7 +4,7 @@
       <!-- Logo and Name -->
       <div class="flex items-center gap-4 w-1/2">
         <img 
-          src="https://s3.us-east-2.amazonaws.com/viddefe.com/photos/solutionGrayLOGO-removebg.png" 
+          src="https://s3.us-east-2.amazonaws.com/viddefe/photos/solutionGrayLOGO-removebg.png" 
           alt="Logo" 
           class="h-12 w-12 rounded-full" 
         />
