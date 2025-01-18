@@ -7,7 +7,6 @@ export const start = async () => {
 }
 
 export const login = async (data) => {
-  console.log('secrets: ',import.meta.env)
   const response = await api.post('/login', { 
     email: data.email, 
     password: data.password,
@@ -16,6 +15,7 @@ export const login = async (data) => {
   });  
   if (response.data.name || response.data.email) {
     const user = {
+      id: response.data.id,
       firstName: response.data.firstName,
       lastName: response.data.lastName,
       email: response.data.email,
@@ -71,11 +71,6 @@ export const editInfoSheepById = async(id,data)=>{
 
 export const getServants = async()=>{
   const response = await api.get('/servants');
-  return response.data;
-}
-
-export const getServantById = async(id)=>{
-  const response = await api.get(`/servant/${id}`);
   return response.data;
 }
 
@@ -456,5 +451,14 @@ export const createChurch = async(data)=>{
 
 export const updateRolServant = async(data)=>{
   const response = await api.put(`/update-rol-servant/${data.id}`,data);
+  return response.data;
+}
+
+export const resetPassword = async (data) => {
+  const response = await api.put('/reset-password', {
+    ...data,
+    client_secret: import.meta.env.VITE_SSR_CLIENT,
+    client_id: import.meta.env.VITE_SSR_CLIENT_ID
+  });
   return response.data;
 }

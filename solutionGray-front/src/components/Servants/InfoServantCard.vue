@@ -55,9 +55,9 @@
    </div>
     <div class="w-full mb-4">      
       <h2 class="text-2xl text-second-800 font-semibold mb-4" >Estadisticas por sus Servicios</h2>
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">       
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">       
         <div v-for="item in services" :key="item.rol_servant" class="flex-grow">
-          <div class="bg-white shadow-lg shadow-gray-300 rounded-lg p-4 mb-4">          
+          <div class="bg-white shadow-lg shadow-gray-300 rounded-lg p-4 mb-4 h-full flex flex-col flex-wrap">          
             <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ item.rol_servant }}</h3>
             <Rating v-model="item.average_rating" :readonly="true" :stars="5" :cancel="false" />
           </div>

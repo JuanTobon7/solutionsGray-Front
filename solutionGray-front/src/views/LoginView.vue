@@ -66,23 +66,32 @@ export default{
     async loginUser(){
       try{        
         if(!this.email || !this.password){
-          this.message = 'Por favor ingresa todos los datos'
+          this.$toast.add({
+            severity:'error', 
+            summary: 'Error', 
+            detail: 'Por favor llene todos los campos',
+            life: 3000});
           return 
         }
         const email = this.email
         const password = this.password
         
-        const response = await login({email,password})
-        this.message = response.message
-        this.$router.push('/')
+        await login({email,password})
+        this.$router.push('/home')
 
       }catch(e){
-        this.message = e.message
+        if(e.response.status === 401){
+          this.$toast.add({
+            severity:'error', 
+            summary: 'Error', 
+            detail: e.response.data.message,
+            life: 3000});
+        }
       }
     }
+
   }
 }
-
 </script>
 
 <style scoped>
