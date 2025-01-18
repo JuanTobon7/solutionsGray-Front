@@ -1,10 +1,11 @@
 <template>
   <section class="w-full h-screen flex items-center justify-center ctn-cllg">
-    <div
+    <VerifyCodePassword v-if="codePasswd" />
+    <div v-else
       class="w-[60vh] h-auto shadow-lg shadow-primary-900 rounded-lg bg-gradient-to-b from-primary-800 to-primary-600 p-8 flex flex-col items-center container"
     >
       <div class="flex justify-center mb-4">
-        <img src="https://s3.us-east-2.amazonaws.com/viddefe.com/photos/solutionGrayLOGO-removebg.png" class="h-[30vh] w-[30vh]" />
+        <img src="https://s3.us-east-2.amazonaws.com/viddefe/photos/solutionGrayLOGO-removebg.png" class="h-[30vh] w-[30vh]" />
       </div>
       <div class="w-full flex flex-col items-center">
         <h1 class="text-center font-serif text-primary-50 text-5xl mb-8">
@@ -44,7 +45,7 @@
             </button>
           </div>
         </form>
-        <span>{{message}}</span>
+        <button @click="forgetPassword" class="text-primary-50 mb-1">¿Olvidaste tu contraseña?</button>
         <span class="text-primary-50 hover:">Terminos y Condiciones de Privacidad</span>
       </div>
     </div>
@@ -52,14 +53,19 @@
 </template>
 
 <script>
-import {login} from '../apiServices/index'
+import {login,forgetPassword} from '../apiServices/index'
+import VerifyCodePassword from '@/components/VerifyCodePassword.vue';
 
 export default{
+  components: {
+    VerifyCodePassword
+  },
   data(){
     return {
       message: null,
       email: null,
-      password: null
+      password: null,
+      codePasswd: false
     }
   },
   methods: {
@@ -88,15 +94,43 @@ export default{
             life: 3000});
         }
       }
+    },
+    async forgetPassword(){
+      try{
+        if(!this.email){
+          this.$toast.add({
+            severity:'error', 
+            summary: 'Error', 
+            detail: 'Por favor llene el campo de email',
+            life: 3000});
+          return 
+        }
+        const email = this.email
+        await forgetPassword({email})
+        this.$toast.add({
+          severity:'success', 
+          summary: 'Exito', 
+          detail: 'Se ha enviado un correo para restablecer tu contraseña',
+          life: 3000});
+        this.$store.dispatch('setTempEmail',email)
+        this.codePasswd = true
+      }catch(e){
+        if(e.response.status === 401){
+          this.$toast.add({
+            severity:'error', 
+            summary: 'Error', 
+            detail: e.response.data.message,
+            life: 3000});
+        }
+      }
     }
-
   }
 }
 </script>
 
 <style scoped>
 .ctn-cllg {
-  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png');
+  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe/photos/vid.png');
   background-position: left;
   background-size: cover;
   background-repeat: no-repeat;

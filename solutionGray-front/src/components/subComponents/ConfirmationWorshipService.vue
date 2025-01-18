@@ -4,7 +4,7 @@
     <div v-if="culto && culto.sermonTittle" class="flex items-center justify-center">
       <Card class="transition-transform duration-200 hover:-translate-y-2 shadow-md shadow-gray-400 overflow-hidden">
         <template #header>
-          <img src="https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png" alt="Culto Image" class="w-full h-44 object-cover" />
+          <img src="https://s3.us-east-2.amazonaws.com/viddefe/photos/vid.png" alt="Culto Image" class="w-full h-44 object-cover" />
         </template>
        <!-- Título y subtítulo -->
        <template #title>
