@@ -457,8 +457,16 @@ export default {
         }
         doc.addImage(formato, "PNG", 10, 10, 190, 277);
 
+        // Valores del culto (extraídos del template)
+        const sermonTitle = this.worshipService?.sermon_tittle || 'No definido';
+        const description = this.worshipService?.description || 'No definida';
+        const date = this.formatDate(this.worshipService?.date) || 'Fecha no definida';
+        const worshipName = this.worshipService?.worship_name || 'No definido';
+        const location = this.worshipService?.location || 'Ubicación no definida';
+        const numAttends = this.numAttends || 0;
+
+
         // Extraer valores del array offerings
-        
         const primicias = this.offerings.find(item => item.type_contribution === 'primicias')?.amount || 0.0;
         const diezmos = this.offerings.find(item => item.type_contribution === 'diezmos')?.amount || 0.0;
         const ofrendaGeneral = this.offerings.find(item => item.type_contribution === 'ofrendaGeneral')?.amount || 0.0;
@@ -467,24 +475,34 @@ export default {
         
         const totalGeneral = this.getTotalOfferings();
             
-        const fontSize = 16;
-        doc.setFontSize(fontSize);
+        
+        doc.setFontSize(16);
       
+        // Agregar datos al PDF
+        doc.text(`${sermonTitle}`, 40, 94);
+        doc.text(`${worshipName}`, 40, 107);
 
+        
+        doc.setFontSize(12);
+        doc.text(`${date}`, 36, 113.6);
+        doc.text(`${location}`, 45, 120);
+        doc.text(`${numAttends}`, 47, 126);
+        doc.text(`${description}`, 30, 175);
+        
         // Mostrar valores en el PDF
-        doc.text(`$${primicias}`, 150, 105);
-        doc.text(`$${diezmos}`, 150, 115);
-        doc.text(`$${ofrendaGeneral}`, 150, 125);
-        doc.text(`$${ofrendaEspecial}`, 150, 155);
-        doc.text(`$${ofrendaPro}`, 150, 165);
-        doc.text(`$${totalGeneral}`, 150, 196);
+        doc.text(`$${primicias}`, 150, 202);
+        doc.text(`$${diezmos}`, 150, 212);
+        doc.text(`$${ofrendaGeneral}`, 150, 222);
+        doc.text(`$${ofrendaEspecial}`, 150, 232);
+        doc.text(`$${ofrendaPro}`, 150, 242);
+        doc.text(`$${totalGeneral}`, 150, 260);
 
         // Descargar el PDF
         doc.save("document.pdf");
     
-  } catch (error) {
-    console.error("Error al generar el reporte:", error);
-  }
+      } catch (error) {
+        console.error("Error al generar el reporte:", error);
+      }
   
 },
 },
