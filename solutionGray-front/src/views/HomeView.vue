@@ -169,7 +169,7 @@
                 <h2 class="text-3xl flex items-center gap-2 text-second-900 mb-4">
                     <strong>¿Por qué VidDeFe?</strong>
                 </h2>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sequi modi culpa non. Beatae id quaerat earum architecto accusantium recusandae, saepe consectetur cum commodi nostrum tenetur quasi distinctio ipsam, sunt dolor?</p>
+                <p>VidDeFe nace con el propósito de facilitar la administración y gestión de iglesias, permitiendo a las comunidades enfocarse en lo más importante: su misión espiritual. Con herramientas innovadoras y un diseño intuitivo, ofrecemos una solución que transforma las tareas cotidianas en oportunidades para crecer y conectar más profundamente.</p>
             </div>
             <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div
@@ -339,13 +339,13 @@ export default{
 
 <style scoped>
 .bg-image-start {
-  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe/photos/vid.png');
+  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png');
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;
 }
 .bg-work {
-  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe/photos/work.jpg');
+  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe.com/photos/work.jpg');
   background-repeat: no-repeat;
   background-position: center left;
   background-size: cover;

@@ -41,10 +41,16 @@ const routes = [
     component: HomeUser,
     beforeEnter: (to, from, next) => {
       const user = store.state.user;
-      if (user) {
-        next();
-      } else {
+  
+      if (!user) {
+        // Si no hay usuario autenticado, redirige al feed
         next({ name: 'feed' });
+      } else if (user.rol === 'Admin App') {
+        // Si el usuario es "Admin App", redirige a administrative
+        next({ name: 'administrative' });
+      } else {
+        // En cualquier otro caso, permite el acceso a la ruta
+        next();
       }
     },
   },
@@ -77,6 +83,17 @@ const routes = [
     path: '/administrative',
     name: 'administrative',
     component: AdministrativeView,
+    beforeEnter: (to, from, next) => {
+      const user = store.state.user;
+  
+      if (user?.rol === 'Admin App') {
+        // Si el rol es "Admin App", permite el acceso
+        next();
+      } else {
+        // Si no, redirige al home
+        next({ name: 'home' });
+      }
+    },
   },
   {
     path: '/configuration',

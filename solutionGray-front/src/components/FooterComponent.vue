@@ -5,7 +5,7 @@
         <!-- Foto de la app -->
         <div class="flex justify-center md:justify-start">
           <img 
-            src="https://s3.us-east-2.amazonaws.com/viddefe/photos/solutionGrayLOGO-removebg.png" 
+            src="https://s3.us-east-2.amazonaws.com/viddefe.com/photos/solutionGrayLOGO-removebg.png" 
             alt="Logo de VidDeFe" 
             class="w-32 h-32 rounded-full" 
           />

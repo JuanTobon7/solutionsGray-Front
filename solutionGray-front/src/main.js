@@ -52,7 +52,7 @@ app.config.globalProperties.$hasRole = (role) => {
 app.config.globalProperties.$isAdminApp = () => {
     const session = store.getters.userSession;
     const user = JSON.parse(session);
-    return user.rol === 'AdminApp';
+    return user.rol === 'Admin App';
 }
 
 app.mount('#app')
