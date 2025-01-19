@@ -494,3 +494,8 @@ export const updatePassword = async (data) => {
   });
   return response.data;
 }
+
+export const sendNotificationWorshipService = async(data)=>{
+  const response = await api.post('/notification-worship-service',data);
+  return response.data;
+}

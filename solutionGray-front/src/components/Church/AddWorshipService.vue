@@ -38,6 +38,7 @@
                                 <div class="flex-grow flex flex-col">
                                     <ConfirmationWorshipService
                                         :group="group"
+                                        @worshipRegistered="close"
                                     />
                                 </div>
                                 <div class="flex justify-between mt-4 sm:mt-6">

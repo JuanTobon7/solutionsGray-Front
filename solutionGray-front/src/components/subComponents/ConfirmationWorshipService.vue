@@ -110,7 +110,7 @@ import { mapGetters } from 'vuex';
 import Avatar from 'primevue/avatar';
 import DataView from 'primevue/dataview';
 import Card from 'primevue/card';
-import { createWorshipService,createWorshipServiceGroup, assingService, updateWorshipService } from '@/apiServices/index';
+import { createWorshipService,createWorshipServiceGroup, assingService, updateWorshipService, sendNotificationWorshipService } from '@/apiServices/index';
 import { format } from 'date-fns-tz';
 
 
@@ -184,6 +184,21 @@ export default {
     removeAssignment(index) {
       this.assignedServices.splice(index, 1);
     },
+    async sendNotificationWorship(){
+      try{        
+        const dataEmail = {
+          sermonTittle: this.culto.sermonTittle,
+          date: this.formatDate(this.culto.date),
+          typeWorshipName: this.culto.selectedTypeWorshipName,  
+          churchName: this.$store.getters.user.churchName,
+        }
+        await sendNotificationWorshipService(dataEmail);
+      }catch(e){
+        if(e.response.status !== 401 && e.response.data.message === 'Token has expired'){
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al enviar la notificación.', life: 3000 });
+        }
+      }
+    },
     async createWorshipService() {
       try {
         console.log('culto in createWorshipService', this.culto);
@@ -213,7 +228,10 @@ export default {
 
         this.$store.dispatch('flushAssignedServices');
         this.$store.dispatch('flushWorshipService');
-        this.$emit('close');
+        if(!this.group){          
+          this.sendNotificationWorship();
+        }
+        this.$emit('worshipRegistered');
       } catch (e) {
         console.log(e);
         if (e.response.data.status !== 401 && e.response.data.message === 'Token has expired') {
