@@ -53,7 +53,7 @@
         </div>
       </div>
    </div>
-    <div class="w-full mb-4">      
+    <div class="w-full mb-4" v-if="$hasRole('SuperAdmin')">      
       <h2 class="text-2xl text-second-800 font-semibold mb-4" >Estadisticas por sus Servicios</h2>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">       
         <div v-for="item in services" :key="item.rol_servant" class="flex-grow">
@@ -65,7 +65,6 @@
       </div>    
     </div>
 
-    <!-- Cursos Hechos-->
     <div v-if="curses.length !== 0" class="w-full mb-4">      
       <h2 class="text-2xl text-second-800 font-semibold mb-4" >Cursos Aprobados</h2>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">        
@@ -189,41 +188,57 @@
         return first_name.charAt(0) + last_name.charAt(0);
       },
       async getSheeps() {
-          // Lógica para obtener las ovejas a cargo de un servidor
-        if(!this.servants && this.servants.cuantity_sheeps_guide <= 0){
+        try{
+          if(!this.servants && this.servants.cuantity_sheeps_guide <= 0){
           return
         }
         const id = this.servants.id;
         const sheeps = await getSheepsByServant(id);
         this.sheeps = sheeps;
+        }catch(e){
+          if(e.response.status === 401 && e.response.data.message === 'Token has expired'){
+            this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo de nuevo',life: 3000 }); 
+          }
+          this.sheeps = [];
+        }
+        
       },
       async getRating() {
-        if(!this.servants){
-          return
+        try{
+          if(!this.servants){
+            return
+          }
+          const id = this.servants.id;
+          const services = await getRatingByServant(id);
+          this.services = services;
+        }catch(e){
+          if(e.response.status === 401 && e.response.data.message === 'Token has expired'){
+            this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo de nuevo',life: 3000 }); 
+          }
+          this.services = [];
         }
-        const id = this.servants.id;
-        const services = await getRatingByServant(id);
-        this.services = services;
+        
       },
       async getCourses() {
-        if(!this.servants){
-          return
+       try{
+          if(!this.servants){
+            return
+          }
+          const id = this.servants.id;
+          const curses = await getCoursesByPeople(id);
+          this.curses = curses.filter((item) => item.status !== 'Reprobado');
+       }catch(e){
+          if(e.response.status === 401 && e.response.data.message === 'Token has expired'){
+            this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo de nuevo',life: 3000 }); 
+          }
+          this.curses = [];
         }
-        const id = this.servants.id;
-        const curses = await getCoursesByPeople(id);
-        this.curses = curses.filter((item) => item.status !== 'Reprobado');
       },
     },
     async mounted() {
-      try{        
-        await this.getSheeps();
-        await this.getRating();
-        await this.getCourses();
-      }catch(e){
-        await this.getSheeps();
-        await this.getRating();
-        await this.getCourses();
-      }
+      await this.getSheeps();
+      await this.getRating();
+      await this.getCourses();
     },
   };
   </script>

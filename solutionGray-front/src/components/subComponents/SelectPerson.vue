@@ -17,12 +17,13 @@
         filterDisplay="menu"
         selectionMode="single"
         :selection="selectedPerson" 
+        scrollable
         @update:selection="onPersonSelected" 
         dataKey="id"
         tableStyle="min-width: 50rem"
         emptyMessage="No hay personas registradas"
       >           
-        <Column field="first_name" header="Primer Nombre"></Column>
+        <Column field="first_name" header="Primer Nombre" frozen></Column>
         <Column field="last_name" header="Primer Apellido"></Column>
         <Column field="email" header="Email"></Column>
         <Column field="type_person" header="Tipo de Persona"></Column>

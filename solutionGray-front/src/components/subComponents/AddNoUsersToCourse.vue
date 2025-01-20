@@ -17,6 +17,7 @@
                         paginator
                         :rows="10"
                         filterDisplay="menu"
+                        scrollable
                         selectionMode="single"
                         v-model:selection="selectedPerson"
                         @update:selection="onPersonSelected"
@@ -24,7 +25,7 @@
                         tableStyle="min-width: 50rem"
                         :disabled="isLoading"
                     >
-                        <Column field="first_name" header="Nombre" class="p-4  border-b border-primary-200 text-second-800"></Column>
+                        <Column field="first_name" header="Nombre" class="p-4  border-b border-primary-200 text-second-800" frozen></Column>
                         <Column field="last_name" header="Apellido" class="p-4  border-b border-primary-200 text-second-800"></Column>
                         <Column field="email" header="Email" class="p-4  border-b border-primary-200 text-second-800"></Column>
                         <Column field="phone" header="Teléfono" class="p-4  border-b border-primary-200 text-second-800"></Column>

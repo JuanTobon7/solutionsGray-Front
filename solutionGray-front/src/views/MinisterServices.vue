@@ -15,15 +15,10 @@
           <strong>Yo me alegré con los que me decían: A la casa de Jehová iremos. Salmos 122:1</strong>
         </p>
       </div>
-
-      <!-- Barra de búsqueda y botones -->      
-
-      <!-- Cultos Programados -->      
       <DataView
         :value="cultos"
         :paginator="true"
         :rows="5"
-        emptyMessage="No hay cultos programados"
       >
         <template #header>
           <div class="flex flex-wrap justify-between items-center">
@@ -39,6 +34,7 @@
                  
               <button
                 @click="addWorshipService"
+                v-if="$hasRole('SuperAdmin')"
                 class="bg-primary-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base">
                 Agregar Culto
             </button>
@@ -46,7 +42,6 @@
           </div>
 
         </template>
-        <!-- Template para renderizar elementos en la lista -->
         <template #list="slotProps">
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             <div
@@ -57,34 +52,23 @@
                 class="transition-transform duration-200 hover:-translate-y-2 shadow-md shadow-gray-400 rounded-lg sm:rounded-2xl cursor-pointer w-full h-full overflow-hidden"
                 @click="showInfo(items)"
               >
-                <!-- Imagen de fondo -->
                 <div
                   class="relative w-full h-36 sm:h-48 bg-cover bg-center bg-image"                  
                 ></div>
-
-                <!-- Contenido del card -->
                 <div class="p-4">
-                  <!-- Título -->
                   <h2 class="text-lg sm:text-2xl font-semibold text-second-900">
                     {{ items.sermon_tittle }}
                   </h2>
-
-                  <!-- Subtítulo -->
                   <h3 class="text-base sm:text-xl text-second-800">
                     {{ items.worship_name }}
                   </h3>
-
-                  <!-- Detalles -->
                   <div class="flex flex-col mt-2">
-                    <!-- Fecha -->
                     <div class="flex items-center gap-2 sm:gap-3 mb-2">
                       <i class="material-symbols-outlined text-gray-700">event</i>
                       <span class="text-base sm:text-xl text-gray-800">
                         {{ formatDate(items.date) }}
                       </span>
                     </div>
-
-                    <!-- Descripción -->
                     <div class="flex items-center gap-2 text-gray-800">
                       <span class="material-symbols-outlined">book</span>
                       <p class="whitespace-normal break-words overflow-hidden text-sm sm:text-base">
@@ -101,8 +85,6 @@
 
        
       </div>
-
-      <!-- Componente para agregar culto -->
       <AddWorshipService
         v-if="showAddWorshipService"
         @close="closeAddWorhipService"
@@ -114,7 +96,6 @@
         @close="showEditService = false"
         @worshipServiceEdited="worshipServices"
       />
-
   </section>
 </template>
 

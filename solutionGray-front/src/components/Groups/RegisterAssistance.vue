@@ -62,11 +62,12 @@
             selectionMode="single"
             v-model:selection="selectedPerson"
             @update:selection="onPersonSelected"
+            scrollable
             dataKey="id"
             tableStyle="min-width: 50rem"
             :disabled="isLoading"
           >            
-            <Column header="Foto" class="p-4 border-b border-primary-200 text-second-800">
+            <Column header="Foto" class="p-4 border-b border-primary-200 text-second-800" frozen>
                 <template #body="slotProps">
                     <Avatar
                         v-if="slotProps.data.avatar"
