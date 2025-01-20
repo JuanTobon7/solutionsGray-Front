@@ -1,7 +1,5 @@
 <template>
   <section class="h-screen container">  
-    
-    <!-- Sección de estadísticas y control -->
     <div class="h-auto ">
       <h1 class="text-3xl sm:text-5xl mb-4 text-second-800 text-center"><strong>Servidores</strong></h1>
       <h2 class="text-xl sm:text-2xl text-second-800 text-center mb-6"><strong>Estadísticas e Información de los servidores</strong></h2>
@@ -13,16 +11,12 @@
         :servants="selectedServant" 
         />
       </div>
-
-      <!-- Botones para alternar entre DataTable y Card View -->
        <div v-else>        
-        <!-- Carga de datos (skeleton loader) -->
-        
-        <!-- Vista en DataTable -->
         <div v-if="tableView" class="p-4 sm:p-6 overflow-x-auto">
           <DataTable 
             :value="servantsInfo" 
             stripedRows
+            scrollable
             class="w-full border-collapse" 
             tableStyle="min-width: 40rem;"
           >           
@@ -33,13 +27,13 @@
                   <button @click="getServants" class="bg-second-500 text-white p-2 rounded-full material-symbols-outlined mr-2">
                     refresh
                   </button>
-                  <button @click="addServants" class="bg-second-500 text-white p-2 rounded-full material-symbols-outlined">
+                  <button v-if="$hasRole('Admin')" @click="addServants" class="bg-second-500 text-white p-2 rounded-full material-symbols-outlined">
                     person_add
                   </button>
                 </div>
               </div>
           </template>
-            <Column field="avatar" header="Foto" class="p-2 sm:p-4 text-center border-b border-primary-200 text-second-800">
+            <Column field="avatar" header="Foto" frozen class="p-2 text-center border-b border-primary-200 text-second-800">
               <template #body="slotProps">
                 <Avatar
                   v-if="slotProps.data.avatar"
@@ -57,25 +51,33 @@
                 />
               </template>
             </Column>
-            <Column field="first_name" header="Primer Nombre" class="p-2 sm:p-4 text-center border-b border-primary-200 text-second-800"></Column>
-            <Column field="last_name" header="Primer Apellido" class="p-2 sm:p-4 text-center border-b border-primary-200 text-second-800"></Column>
-            <Column field="email" header="Email" class="p-2 sm:p-4 text-center border-b border-primary-200 text-second-800"></Column>
-            <Column field="usual_rol" header="Rol Habitual" class="p-2 sm:p-4 text-center border-b border-primary-200 text-second-800">
+            <Column field="first_name" header="Primer Nombre"  class="p-2 text-center border-b border-primary-200 text-second-800"></Column>
+            <Column field="last_name" header="Primer Apellido" class="p-2 text-center border-b border-primary-200 text-second-800"></Column>
+            <Column field="email" header="Email" class="p-2 text-center border-b border-primary-200 text-second-800"></Column>
+            <Column  field="usual_rol" header="Rol Habitual" class="p-2 text-center border-b border-primary-200 text-second-800">
               <template #body="slotProps">
                 <Tag :value="slotProps.data.usual_rol">
                   {{ slotProps.data.usual_rol || 'No definido' }}
                 </Tag>
               </template>
             </Column>
-            <Column field="last_service" header="Último Servicio" class="p-2 sm:p-4 text-center border-b border-primary-200 text-second-800">
+            <Column field="last_service" header="Último Servicio" class="p-2 text-center border-b border-primary-200 text-second-800">
               <template #body="slotProps">
                 <Tag :value="slotProps.data.last_service">
                   {{ formatDate(slotProps.data.last_service)  || 'No definido'}}
                 </Tag>
               </template>
             </Column> 
-            <Column field="user_rol" header="Rol de Usuario" class="p-2 border-b border-primary-200 text-second-800">
-                <template #body="{ data }">
+            <Column field="user_rol" v-if="$hasRole('SuperAdmin')" class="border-b border-primary-200 text-second-800">
+              <template #header>
+                <div class="flex items-center gap-2">                  
+                  <span>Rol de Usuario</span>
+                  <button @click="spanRolesHelp = true" class=" text-gray-800 material-symbols-outlined">
+                    help
+                  </button>
+                </div>
+              </template>  
+              <template #body="{ data }">
                   <Dropdown 
                       @change="onStatusChange(data, $event)"
                       v-model="data.user_rol" 
@@ -108,13 +110,15 @@
         </div>
     </div>    
   </div>    
-
-
-    <!-- Componente para agregar servidores -->
     <AddServantCard 
       v-if="newServantsVisible" 
       @close="closeAddServantCard" 
     />
+    <spanRolesHelp 
+      v-if="spanRolesHelp" 
+      @close="spanRolesHelp = false"
+    />
+    
   </section>
 </template>
 
@@ -122,6 +126,7 @@
 import { getServants,updateRolServant} from '../apiServices/index'
 import AddServantCard from '@/components/Servants/AddServantCard.vue';
 import InfoServantCard from '@/components/Servants/InfoServantCard.vue';
+import spanRolesHelp from '@/components/Servants/spanRolesHelp.vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Tag from 'primevue/tag';
@@ -132,6 +137,7 @@ export default {
   components: {
     AddServantCard,
     InfoServantCard,
+    spanRolesHelp,
     DataTable,
     Dropdown,
     Column,
@@ -147,6 +153,7 @@ export default {
       loading:true,
       selectedServant: null,
       date: null,
+      spanRolesHelp: false,
       roles: [
         {user_rol_id: 1, user_rol: 'User'},
         {user_rol_id: 2, user_rol: 'Admin'},

@@ -160,7 +160,7 @@ export default {
   data() {
     return {
       user: {},
-      rating: {},
+      rating: [],
       selectedFile: null,
     };
   },
@@ -240,7 +240,7 @@ export default {
     renderRadarChart(){
       const ctx = document.getElementById('radarChart');
       const labels = this.rating.map((item) => item.rol_servant);
-      const data = this.rating.map((item) => item.rating);
+      const data = this.rating.map((item) => item.average_rating);
       new Chart(ctx, {
         type: 'radar',
         data: {

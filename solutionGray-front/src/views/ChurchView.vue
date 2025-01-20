@@ -1,7 +1,5 @@
 <template>
   <section class="min-h-screen container w-full mx-auto p-4">
-    <!-- Información General de la Iglesia -->
-        <!-- Church Info Header -->
       <div ref="report" class="p-2">
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3 text-3xl sm:text-5xl mb-4">
           <h1 class="text-second-800"><strong>Iglesia {{ churchName }}</strong></h1>
@@ -10,32 +8,23 @@
         <p class="text-primary-900 text-xl sm:text-3xl font-serif mb-2">
           <strong>Y el Señor añadía cada día al número de ellos los que iban siendo salvos. Hechos 2:47</strong>
         </p>
-        <!-- Church Metrics Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <!-- Card 1: Siervos -->
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Siervos</h3>
             <span class="text-3xl font-bold text-primary-800">{{ quantityservants || 0 }}</span>
           </div>
-
-          <!-- Card 2: Grupos -->
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Grupos</h3>
             <span class="text-3xl font-bold text-primary-800">{{ quantitygroups || 0 }}</span>
           </div>
-
-          <!-- Card 3: Ovejas -->
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Ovejas</h3>
             <span class="text-3xl font-bold text-primary-800">{{ quantitysheeps || 0 }}</span>
           </div>
-          
-          <!-- Card 4: Nuevos -->
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Nuevos</h3>
             <span class="text-3xl font-bold text-primary-800">{{ quantity_new_times || 0}}</span>
           </div>
-
           <div class="card">
             <h3 class="text-lg font-bold text-second-700">Cantidad de Estudiantes en Crecimiento</h3>
             <span class="text-3xl font-bold text-primary-800">{{ peopleInCourses.quantity_active_students || 0 }}</span>
@@ -61,7 +50,7 @@
               <span class="text-gray-500 text-sm">
                 * El año seleccionado se aplica a todas las gráficas.
               </span>
-              <button 
+              <button v-if="$hasRole('Admin')"
                 class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md flex items-center gap-2">
                 Descargar Reporte
                 <i class="material-symbols-outlined">download</i>
@@ -184,7 +173,11 @@ export default {
         if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el culto.', life: 3000 });
         }else{
-          this.assitance = [];
+          this.peopleInCourses = {
+            quantity_students: 0,
+            quantity_teachers: 0,
+            quantity_active_students: 0,
+          };
           this.renderAssistanceChart();
         }
       }

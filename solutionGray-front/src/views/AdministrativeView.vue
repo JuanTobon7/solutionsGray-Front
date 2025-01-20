@@ -12,8 +12,9 @@
             :value="filteredLeads"
             :paginator="true"
             :rows="10"
+            scrollable
         >
-            <Column field="first_name" header="Primer Nombre" v-if="hasData('first_name')"></Column>
+            <Column field="first_name" header="Primer Nombre" frozen v-if="hasData('first_name')"></Column>
             <Column field="last_name" header="Primer Apellido" v-if="hasData('last_name')"></Column>
             <Column field="email" header="Email" v-if="hasData('email')"></Column>
             <Column field="church_name" header="Nombre de Iglesia" v-if="hasData('church_name')"></Column>

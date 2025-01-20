@@ -20,10 +20,11 @@
                         :rows="10"
                         filterDisplay="menu"
                         selectionMode="single"
+                        scrollable
                         dataKey="id"
                         tableStyle="min-width: 50rem"
                     >
-                        <Column header="Foto" class="p-2 border-b border-primary-200 text-second-800">
+                        <Column header="Foto" class="p-2 border-b border-primary-200 text-second-800" frozen>
                             <template #body="{ data }">
                                 <Avatar
                                     v-if="data.avatar"
