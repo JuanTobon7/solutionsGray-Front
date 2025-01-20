@@ -147,7 +147,7 @@
             <div v-for="items in offerings" :key="items.type_contribution" class="bg-gray-50 p-4 rounded-md shadow-md text-center">
               <p class="text-sm font-semibold text-gray-800">{{items.type_contribution}}</p>
               <p class="text-2xl text-second-500">$ {{items.amount || '0.00'}}</p>
-            
+
             </div>
           </div>
         </div>
@@ -155,7 +155,7 @@
         <!-- Botón para gestionar ofrendas -->
         <div v-if="$hasRole('Admin')" class="flex flex-col sm:flex-row items-center justify-center mt-8 gap-4">
           <!-- Botón de descarga -->
-          <button class="bg-second-500 text-white px-5 py-2 rounded-md transition-all duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
+          <button @click="GetReporte" class="bg-second-500 text-white px-5 py-2 rounded-md transition-all duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
             Descargar Reporte
             <i class="material-symbols-outlined">download</i>
           </button>
@@ -268,8 +268,11 @@ import Chart from 'primevue/chart';
 import RecordMonetaryIncome from '../subComponents/RecordMonetaryIncome.vue';
 import EditWorshipService from './EditWorshipService.vue';
 import SheduleNewPerson from '../subComponents/SheduleNewPerson.vue';
+import jsPDF from 'jspdf';
+import formato from './format.b64.js';
 
 export default {
+  name: 'PDFGenerator',
   props: ['worshipService'],
   components: {
     Avatar,
@@ -293,8 +296,8 @@ export default {
       datasets: [
         {
           data: [],
-          backgroundColor: ['#6b9c7a', '#8b7d6b', '#524741', '#a3c4ac'],
-          hoverBackgroundColor: ['#4b7e5c', '#756759', '#483e3b', '#6b9c7a']
+          backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
+          hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
         }
       ]
     },
@@ -303,6 +306,7 @@ export default {
           maintainAspectRatio: false,
           plugins: {
             legend: {
+              display: true,
               position: 'top',
               labels: {
                 color: '#4A4A4A' // Color del texto de la leyenda
@@ -398,6 +402,7 @@ export default {
     this.chartData.datasets[0].backgroundColor = backgroundColor.slice(0, this.chartData.labels.length);
     this.chartData.datasets[0].hoverBackgroundColor = hoverBackgroundColor.slice(0, this.chartData.labels.length);
   },
+   
     getTotalOfferings(){      
       return this.offerings.reduce((acc, item) => acc + Number(item.amount ?? 0), 0).toFixed(2);
     },
@@ -439,9 +444,71 @@ export default {
       }catch(e){
         console.log(e);
       }
-    }
+    },
     
-  },
+    GetReporte() {
+      try {
+        const doc = new jsPDF();
+
+        // Validar formato de la imagen de fondo
+        if (!formato.startsWith("data:image/png;base64,")) {
+          console.error("El formato Base64 no es válido.");
+          return;
+        }
+        doc.addImage(formato, "PNG", 10, 10, 190, 277);
+
+        // Valores del culto (extraídos del template)
+        const sermonTitle = this.worshipService?.sermon_tittle || 'No definido';
+        const description = this.worshipService?.description || 'No definida';
+        const date = this.formatDate(this.worshipService?.date) || 'Fecha no definida';
+        const worshipName = this.worshipService?.worship_name || 'No definido';
+        const location = this.worshipService?.location || 'Ubicación no definida';
+        const numAttends = this.numAttends || 0;
+
+
+        // Extraer valores del array offerings
+        const primicias = this.offerings.find(item => item.type_contribution === 'primicias')?.amount || 0.0;
+        const diezmos = this.offerings.find(item => item.type_contribution === 'diezmos')?.amount || 0.0;
+        const ofrendaGeneral = this.offerings.find(item => item.type_contribution === 'ofrendaGeneral')?.amount || 0.0;
+        const ofrendaEspecial = this.offerings.find(item => item.type_contribution === 'ofrendaEspecial')?.amount || 0.0;
+        const ofrendaPro = this.offerings.find(item => item.type_contribution === 'ofrendaPro')?.amount || 0.0;
+        
+        const totalGeneral = this.getTotalOfferings();
+            
+        
+        doc.setFontSize(16);
+      
+        // Agregar datos al PDF
+        doc.text(`${sermonTitle}`, 40, 94);
+        doc.text(`${worshipName}`, 40, 107);
+
+        
+        doc.setFontSize(12);
+        doc.text(`${date}`, 36, 113.6);
+        doc.text(`${location}`, 45, 120);
+        doc.text(`${numAttends}`, 47, 126);
+        doc.text(`${description}`, 30, 175);
+        
+        // Mostrar valores en el PDF
+        doc.text(`$${primicias}`, 150, 202);
+        doc.text(`$${diezmos}`, 150, 212);
+        doc.text(`$${ofrendaGeneral}`, 150, 222);
+        doc.text(`$${ofrendaEspecial}`, 150, 232);
+        doc.text(`$${ofrendaPro}`, 150, 242);
+        doc.text(`$${totalGeneral}`, 150, 260);
+
+        // Descargar el PDF
+        doc.save("document.pdf");
+    
+      } catch (error) {
+        console.error("Error al generar el reporte:", error);
+      }
+  
+},
+},
+
+
+
   computed:{
     numAttends() {
       const attends = this.attends.filter((person) => person.isAttend === true);
