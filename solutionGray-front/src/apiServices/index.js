@@ -439,6 +439,11 @@ export const updatePhoto = async (data) => {
   return response.data;
 }
 
+export const deletePhoto = async (fileName) => {
+  const response = await api.delete(`/delete-photo/${encodeURIComponent(fileName)}`);
+  return response.data;
+}
+
 export const getParentsChurches = async()=>{
   const response = await api.get('/get-parents-churches');
   return response.data;
@@ -487,5 +492,10 @@ export const updatePassword = async (data) => {
     client_secret: import.meta.env.VITE_SSR_CLIENT,
     client_id: import.meta.env.VITE_SSR_CLIENT_ID
   });
+  return response.data;
+}
+
+export const sendNotificationWorshipService = async(data)=>{
+  const response = await api.post('/notification-worship-service',data);
   return response.data;
 }

@@ -221,7 +221,8 @@ export default {
             this.churchName = user.churchName;
             return
           }
-          this.createChurch = true;
+          
+          this.createChurch = user.rol !== 'Admin App' ? true : false;
          }
     },
     mounted() {
@@ -236,7 +237,7 @@ export default {
 <style scoped>
 
 .bg-image {
-  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe/photos/vid.png');
+  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png');
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;

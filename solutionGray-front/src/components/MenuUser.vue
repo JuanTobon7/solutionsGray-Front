@@ -10,13 +10,13 @@
 
     <!-- Logo y Rol -->
     <section class="flex flex-col items-center p-4">
-      <img src="https://s3.us-east-2.amazonaws.com/viddefe/photos/solutionGrayLOGO-removebg.png" class="sm:w-15 sm:h-15 md:w-60" alt="Logo">
+      <img src="https://s3.us-east-2.amazonaws.com/viddefe.com/photos/solutionGrayLOGO-removebg.png" class="sm:w-15 sm:h-15 md:w-60" alt="Logo">
       <h2 class="text-2xl font-semibold text-primary-50">{{ rol }}</h2>
     </section>
 
     <!-- Menú de Navegación -->
     <nav>
-      <ul class="text-primary-50 text-xl">
+      <ul v-if="!$isAdminApp()" class="text-primary-50 text-xl">
         <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4 cursor-pointer">
           <i class="material-symbols-outlined">home</i>
           <router-link to="/home" class="block hover:text-primary-300">Inicio</router-link>
@@ -112,7 +112,14 @@
           </ul>
         </div>
       </ul>
+      <ul v-else class="text-primary-50 text-xl">
+        <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4 cursor-pointer">
+          <i class="material-symbols-outlined">home</i>
+          <router-link to="/administrative" class="block hover:text-primary-300">Inicio</router-link>
+        </li>
+      </ul>
     </nav>
+
   </aside>
 </template>
 

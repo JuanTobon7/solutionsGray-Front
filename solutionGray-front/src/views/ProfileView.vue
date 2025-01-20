@@ -150,7 +150,7 @@
 <script>
 import Avatar from 'primevue/avatar';
 import { Chart } from 'chart.js';
-import {getRatingByServant,getMyprofile,updatePhoto} from '@/apiServices'
+import {getRatingByServant,getMyprofile,updatePhoto,deletePhoto} from '@/apiServices'
 
 export default {
   name: 'ProfileView',
@@ -175,6 +175,13 @@ export default {
         this.selectedFile = event.target.files[0];
         const formData = new FormData();
         formData.append('photo', this.selectedFile); // El nombre debe coincidir: 'file'
+        if(!['image/jpeg', 'image/png'].includes(this.selectedFile.type)){
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Solo se permiten imágenes en formato JPG o PNG' });
+          return
+        }
+        if(this.user.avatar){
+          await this.deleteAvatar()
+        }
         if(formData.get('photo').size > 5000000){
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'La imagen no debe pesar más de 5MB' });
           return
@@ -188,6 +195,19 @@ export default {
         }
       }
     },
+    async deleteAvatar() {
+      try {
+        const fileName = this.user.avatar;
+        await deletePhoto(fileName);
+        this.user.avatar = null;
+        this.$toast.add({ severity: 'success', summary: 'Éxito',
+          detail: 'Foto de perfil eliminada', life: 3000 });
+      } catch (e) {
+        if (e.response.status === 401 && e.response.data.message === 'Token Expired') {
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo de nuevo.' });
+        }
+      }
+    },    
     getInitials() {
       return (
         (this.user.first_name?.charAt(0) || '') + (this.user.last_name?.charAt(0) || '')

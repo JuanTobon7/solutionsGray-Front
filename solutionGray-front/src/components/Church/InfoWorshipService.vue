@@ -459,7 +459,7 @@ export default {
 
 <style scoped>
 .bg-image {
-  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe/photos/vid.png'); /* Imagen de fondo del culto */
+  background-image: url('https://s3.us-east-2.amazonaws.com/viddefe.com/photos/vid.png'); /* Imagen de fondo del culto */
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

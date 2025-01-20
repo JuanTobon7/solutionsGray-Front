@@ -5,7 +5,7 @@
       <!-- Logo -->
       <div class="flex justify-center mb-6">
         <img
-          src="https://s3.us-east-2.amazonaws.com/viddefe/photos/solutionGrayLOGO-removebg.png"
+          src="https://s3.us-east-2.amazonaws.com/viddefe.com/photos/solutionGrayLOGO-removebg.png"
           alt="Solution Gray Logo"
           class="h-[20vh] w-[20vh] object-contain"
         />
