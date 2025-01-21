@@ -60,7 +60,7 @@
 <script>
 import Dropdown from 'primevue/dropdown';
 import Tag from 'primevue/tag';
-import { getMyCourses } from '@/apiServices';
+import { getMyCourses,cancelStudentCourse } from '@/apiServices';
 
 export default {
   components: {
@@ -119,9 +119,15 @@ export default {
       // Acción para ver detalles del curso
       console.log('Ver detalles del curso:', course);
     },
-    unenroll(course) {
+    async unenroll(course) {
       // Acción para cancelar inscripción del curso
-      console.log('Cancelar inscripción en el curso:', course);
+      const user = this.$store.getters.user;
+      console.log('user', user.id);
+      const data = {
+        courseId: course.teachers_courses_id,
+        personId: user.id,
+      };
+      await cancelStudentCourse(data);
       course.status = 'Cancelado';
       this.filterCourses();
     },

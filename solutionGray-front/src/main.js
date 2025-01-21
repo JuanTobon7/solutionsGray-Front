@@ -36,7 +36,7 @@ app.use(ToastService)
 const ROLE_HIERARCHY = {
     User: 1,
     Admin: 2,
-    SuperAdmin: 3,
+    'Super Admin': 3,
     Pastor: 4,
 };
 

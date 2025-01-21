@@ -499,3 +499,8 @@ export const sendNotificationWorshipService = async(data)=>{
   const response = await api.post('/notification-worship-service',data);
   return response.data;
 }
+
+export const cancelStudentCourse = async(data)=>{
+  const response = await api.delete(`/cancel-course/${data.courseId}/${data.personId}`);
+  return response.data;
+}

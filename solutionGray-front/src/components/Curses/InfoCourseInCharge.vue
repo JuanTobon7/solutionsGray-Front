@@ -100,53 +100,61 @@
                     </div>
                  </template>
                 <template #list="slotProps">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
                         <div
                         v-for="(item, index) in slotProps.items"
                         :key="index"
                         class="bg-white shadow-lg rounded-lg"
                         >
-                            <div class="bg-primary-50 shadow-lg shadow-primary-300 rounded-lg overflow-hidden">
-                                <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-20"></div>
-                                <div class="px-4 py-6 -mt-14 relative">
-                                    <div class="bg-white p-6 rounded-lg shadow-lg">
-                                        <div class="flex flex-col md:flex-row items-center space-x-4">
-                                            <!-- Avatar o iniciales de la persona -->
-                                            <div class="w-16 h-16 rounded-full overflow-hidden">
-                                                <Avatar
+                        <div class="bg-primary-50 shadow-lg shadow-primary-300 rounded-lg overflow-hidden relative">                            
+                            <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-20"></div>
+                            <div class="px-4 py-6 -mt-14 relative">                                
+                                <div class="bg-white p-6 rounded-lg shadow-lg">                                    
+                                    <div class="flex flex-col md:flex-row items-center space-x-4 gap-2">
+                                        <!-- Avatar -->
+                                        <div class=" w-14 h-14 rounded-full">
+                                            <Avatar
                                                 v-if="item.avatar"
                                                 :image="item.avatar"
                                                 size="xlarge"
                                                 shape="circle"
-                                                />
-                                                <Avatar
+                                            />
+                                            <Avatar
                                                 v-else
                                                 :label="getInitials(item)"
                                                 class="bg-primary-100 flex items-center justify-center text-primary-800"
                                                 size="xlarge"
                                                 shape="circle"
-                                                />
-                                            </div>
-                                            <!-- Información de la persona -->
-                                            <div>
-                                                <h2 class="text-xl font-bold text-gray-900">
+                                            />
+                                        </div>
+                                        <!-- Información del estudiante -->
+                                        <div>
+                                            <h2 class="text-xl font-bold text-gray-900">
                                                 {{ item.first_name + ' ' + item.last_name }}
-                                                </h2>
-                                                <p class="text-sm text-gray-600">{{ item.email }}</p>
-                                                <p class="text-sm text-gray-600">{{ item.phone }}</p>
-                                                <div class="flex flex-col">                            
-                                                    <label for="asistencia">¿Asistió?</label>
-                                                    <InputSwitch 
+                                            </h2>
+                                            <p class="text-sm text-gray-600">{{ item.email }}</p>
+                                            <p class="text-sm text-gray-600">{{ item.phone }}</p>
+                                            <div class="flex flex-wrap items-center gap-2">                            
+                                                <label for="asistencia">¿Asistió?</label>
+                                                <InputSwitch 
                                                     id="asistencia"
                                                     v-model="item.isAttend"  
                                                     @change="onAttendChange(item)" 
                                                 />
-                                                </div>
+                                                <label for="delete">Cancelar Inscripción</label>
+                                                <button 
+                                                    id="delete"
+                                                    @click="onDelete(item)" 
+                                                    class="bg-red-500 text-white px-2 py-1 rounded-full shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                                                    title="Eliminar estudiante">
+                                                    <i class="pi pi-trash"></i>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
                         </div>
                     </div>
                 </template>
@@ -167,6 +175,7 @@ import { getStudentsCourse, getAttendanceCourse, registerAttendanceCourse, getCh
 import { format, parseISO } from 'date-fns';
 import AddNoUsersToCourse from '../subComponents/AddNoUsersToCourse.vue';
 import EvaluteStudents from '../subComponents/EvaluteStudents.vue';
+import { cancelStudentCourse } from '../../apiServices';
 
 export default {
     props: {
@@ -252,7 +261,24 @@ export default {
         },
     },
     methods: {        
-        // Método para obtener los estudiantes
+        async onDelete(item){
+            try{
+                alert('¿Estás seguro de eliminar este estudiante?')
+                const data = {
+                    courseId: this.course.teacher_course_id,
+                    personId: item.id
+                }
+                console.log('data to send',data)
+                await cancelStudentCourse(data);
+                this.$toast.add({ severity: 'success', summary: 'Estudiante eliminado', detail: 'Estudiante Eliminado', life: 3000 });
+                this.students = this.students.filter(student => student.student_course_id !== item.student_course_id);
+            }catch(e){
+                if(e.response && e.response.status === 401 && e.response.data.message === 'Token Expired'){
+                    this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo pasó. Intenta de nuevo', life: 3000 });
+                }
+            }
+        },
+        // Método para obtener los estudiantes        
         async getStudents() {
             try{
                 const students = await getStudentsCourse(this.course.teacher_course_id);
