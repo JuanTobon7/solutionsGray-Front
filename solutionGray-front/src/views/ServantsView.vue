@@ -68,7 +68,7 @@
                 </Tag>
               </template>
             </Column> 
-            <Column field="user_rol" v-if="$hasRole('SuperAdmin')" class="border-b border-primary-200 text-second-800">
+            <Column field="user_rol" v-if="$hasRole('Super Admin')" class="border-b border-primary-200 text-second-800">
               <template #header>
                 <div class="flex items-center gap-2">                  
                   <span>Rol de Usuario</span>
@@ -77,10 +77,11 @@
                   </button>
                 </div>
               </template>  
-              <template #body="{ data }">
+              <template #body="{ data }">                
                   <Dropdown 
                       @change="onStatusChange(data, $event)"
                       v-model="data.user_rol" 
+                      v-if="data.user_rol!== 'Pastor'"
                       :options="roles" 
                       optionValue="user_rol"
                       placeholder="Selecciona el Rol"
@@ -97,6 +98,7 @@
                           </div>
                       </template>
                     </Dropdown>
+                    <span v-else>{{data.user_rol}}</span>
                 </template>
             </Column>
             <Column header="Ver usuario" class="p-2 border-b border-primary-200 text-second-800">
@@ -158,7 +160,6 @@ export default {
         {user_rol_id: 1, user_rol: 'User'},
         {user_rol_id: 2, user_rol: 'Admin'},
         {user_rol_id:3,  user_rol: 'Super Admin'},
-        {user_rol_id:4,  user_rol: 'Pastor'}
       ]
     };
   },
@@ -166,7 +167,7 @@ export default {
     async getServants() {
       this.servantsInfo = await getServants();
       this.loading = false;
-    },
+    },    
     addServants() {
       this.newServantsVisible = true;
     },

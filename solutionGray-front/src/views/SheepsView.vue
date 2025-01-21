@@ -147,6 +147,7 @@ export default {
         if(e.response.status === 401 && e.resposnse.data.message === 'Token has expired'){
           this.$toast.add({severity:'error', summary:'Error', detail:'Ups algo paso, intentalo de nuevo', life: 3000});
         }
+        this.sheepsInfo = [];
       }finally {
         this.loading = false;
       }
