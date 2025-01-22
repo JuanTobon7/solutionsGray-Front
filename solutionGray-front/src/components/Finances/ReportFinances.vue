@@ -11,7 +11,7 @@
         alt="Logo de Vid de Fe" 
       />
       <h2 class="text-2xl font-semibold text-center">
-        Informe Financiero General {{ churchName }}
+        Informe Financiero General {{ churchNameF }}
       </h2>
     </div>
 
@@ -20,7 +20,7 @@
         Este informe financiero ha sido elaborado el día <span class="font-medium">{{ dateC }}</span>, 
         bajo la supervisión de <span class="font-medium">{{ userName }}</span>, 
         con base en los registros proporcionados por la iglesia 
-        <span class="font-medium">{{ churchName }}</span> a través de la aplicación 
+        <span class="font-medium">{{ churchNameF }}</span> a través de la aplicación 
         <strong class="text-primary-950">Vid de Fe</strong>.
       </p>
 
@@ -89,13 +89,12 @@ export default {
       const user = this.$store.getters.user;
       return `${user.firstName} ${user.lastName}`;
     },
+    churchNameF() {
+      return this.$store.getters.user.churchName;
+    },
   },
   props: {
     date: {
-      type: String,
-      required: true,
-    },
-    churchName: {
       type: String,
       required: true,
     },
@@ -104,12 +103,20 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      churchName: null,
+    };
+  },
   mounted() {
+    const user = this.$store.getters.user;
+    this.churchName = user.churchName;
     this.downloadReport();
     this.$toast.add({
       severity: 'success',
       summary: 'Informe descargado',
       detail: 'El informe financiero ha sido descargado con éxito.',
+      life: 3000,
     });
   },
   methods: {
