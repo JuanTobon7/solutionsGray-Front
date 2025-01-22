@@ -34,7 +34,7 @@
                  
               <button
                 @click="addWorshipService"
-                v-if="$hasRole('SuperAdmin')"
+                v-if="$hasRole('Super Admin')"
                 class="bg-primary-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base">
                 Agregar Culto
             </button>

@@ -59,13 +59,13 @@
               <div v-if="slotProps.value" class="flex flex-col md:flex-row items-center gap-4">
                 <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
                   <Avatar
-                    v-if="slotProps.option.avatar"
-                    :image="slotProps.option.avatar"
+                    v-if="slotProps.value.avatar"
+                    :image="slotProps.value.avatar"
                     shape="circle"
                   />
                   <Avatar
                     v-else
-                    :label="getInitials(slotProps.option)"
+                    :label="getInitials(slotProps.value)"
                     class="bg-primary-100 flex items-center justify-center text-primary-800"
                     shape="circle"
                   />
@@ -74,13 +74,13 @@
                 <!-- Información -->
                 <div class="flex flex-col sm:flex-row sm:items-center sm:gap-4 text-sm">
                   <p class="font-semibold text-gray-800">
-                    {{ slotProps.option.first_name + ' ' + slotProps.option.last_name }}
+                    {{ slotProps.value.first_name + ' ' + slotProps.value.last_name }}
                   </p>
                   <p class="text-gray-600">
-                    CC: {{ slotProps.option.cc }}
+                    CC: {{ slotProps.value.cc }}
                   </p>
                   <p class="text-gray-600">
-                    Phone: {{ slotProps.option.phone }}
+                    Phone: {{ slotProps.value.phone }}
                   </p>
                 </div>
               </div>

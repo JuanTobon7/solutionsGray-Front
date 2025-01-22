@@ -18,7 +18,6 @@ import WorshipServicesGroups from '@/views/WorshipServicesGroups.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import ConfigutarionView from '@/views/ConfigutarionView.vue'
 import AdministrativeView from '@/views/AdministrativeView.vue'
-import InfoChurchPDF from '@/components/Church/InfoChurchPDF.vue'
 
 import store from '@/store'
 
@@ -55,11 +54,6 @@ const routes = [
         next();
       }
     },
-  },
-  {
-    path: '/info-church',
-    name: 'info-church-pdf',
-    component: InfoChurchPDF,
   },
   {
     path: '/my-church',

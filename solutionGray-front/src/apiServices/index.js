@@ -504,3 +504,13 @@ export const cancelStudentCourse = async(data)=>{
   const response = await api.delete(`/cancel-course/${data.courseId}/${data.personId}`);
   return response.data;
 }
+
+export const getFinances = async(data)=>{
+  const response = await api.get(`/get-finances-year/:${data.minDateFormat}/:${data.maxDateFormat}`);
+  return response.data;
+}
+ 
+export const getReportOfferings = async(eventId)=>{
+  const response = await api.get(`/get-report-offerings/${eventId}`);
+  return response.data;
+}
