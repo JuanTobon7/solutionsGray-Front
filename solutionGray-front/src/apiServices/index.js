@@ -35,7 +35,6 @@ export const logout = async () => {
 }
 
 export const deleteAccount = async (id) => {
-  console.log('id: ',id)
   const response = await api.delete(`/delete-account/${id}`)
   return response.data;
 }
@@ -106,7 +105,6 @@ export const refreshToken = async()=>{
 
 export const createWorshipService = async(data)=>{
   const response = await api.post('/create-worship-service',data);
-  console.log('response from back: ',response)
   return response.data;
 }
 
@@ -141,25 +139,21 @@ export const assingService = async(data)=>{
 }
 
 export const getServices = async(eventId)=>{
-  console.log('eventID: ',eventId);
   const response = await api.get(`/assigned-services/${eventId}`);
   return response.data;
 }
 
 export const updateAssingServices = async(data)=>{
-  console.log('hehe hehe hehe')
   const response = await api.put('/update-assign-service',data)
   return response.data
 }
 
 export const updateWorshipService = async(data)=>{
-  console.log('here in update worship',data)
   const response = await api.put('/update-worship-services',data)
   return response.data
 }
 
 export const deleteAssingServices = async(serviceId)=>{
-  console.log('hehe hehe hehe delete', serviceId)
   const response = await api.delete(`/delete-assign-service/${serviceId}`)
   return response.data
 }
@@ -340,7 +334,6 @@ export const checkQualifiedRating = async(currentDate)=>{
 
 export const getRatingsByService = async(serviceId)=>{
   const response = await api.get(`/average-rating-servants/${serviceId}`);
-  console.log('response: ',response)
   return response.data;
 }
 
@@ -416,7 +409,6 @@ export const getServicesGroup = async(data)=>{
 
 export const createWorshipServiceGroup = async(data)=>{
   const response = await api.post('/create-worship-service-group',data);
-  console.log('response from back: ',response)
   return response.data;
 }
 

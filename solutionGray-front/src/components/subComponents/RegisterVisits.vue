@@ -73,12 +73,10 @@
     methods: {
       async submitVisit() {
         // Emitimos el evento con la información del registro de la visita
-        try{
-          console.log('aqui toi jeje')
+        try{          
             const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             const date = new Date(this.visitDate);            
             const visitDateISO = format(date, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
-            console.log(visitDateISO);
             const visit = {
                 date: visitDateISO,
                 description: this.progressDescription,

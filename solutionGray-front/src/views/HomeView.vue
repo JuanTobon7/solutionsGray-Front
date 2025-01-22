@@ -285,8 +285,8 @@ export default{
             try {
                 const response = await getCountries(); // Obtener países desde la BD
                 this.countries = response;
-            } catch (error) {
-                console.error('Error al cargar los países:', error);
+            } catch (e) {
+                this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo de nuevo', life: 3000 });
             }
         },
         async onCountryChange() {
@@ -295,17 +295,15 @@ export default{
                 const response = await getStatesByCountry(countryId); // Obtener estados según el país seleccionado
                 this.states = response;
             } catch (error) {
-                console.error('Error al cargar los estados:', error);
+                this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo de nuevo', life: 3000 });
             }
         },
         async createPerson() {
                 if (!this.newPerson.country_id || !this.newPerson.state_id || !this.newPerson.type_person_id || !this.newPerson.cc || !this.newPerson.first_name || !this.newPerson.last_name || !this.newPerson.email || !this.newPerson.phone) {
-                    console.log('this.newPerson:', this.newPerson);
                     this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor complete todos los campos', life: 3000 });
                     return;
                 }
                 const result = await savePeople(this.newPerson);
-                console.log('result of savePeople:', result);
                 const data = {
                     churchName: this.churchName, 
                     stateId: this.newPerson.state_id, 
@@ -316,7 +314,7 @@ export default{
                     personId: result.id
                 }
                 await sendLead({...data});
-                /*this.newPerson = {
+                this.newPerson = {
                     cc: null,
                     first_name: null,
                     last_name: null,
@@ -326,7 +324,7 @@ export default{
                     state_id: null,
                     type_person_id: 3,
                 };
-                this.churchName = null;*/
+                this.churchName = null;
                 this.$toast.add({ severity: 'success', summary: 'Persona creada', detail: 'La petición ha sido exitosa', life: 3000 });
         }
     },

@@ -168,8 +168,10 @@
       async getVisitsFun(){
         try{          
           this.visits = await getVisits(this.sheep.id);
-        }catch(error){
-          console.error(error);
+        }catch(e){
+          if(e){
+            this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo nuevamente' ,life: 3000 });
+          }
         }
       },
       async getCourses() {

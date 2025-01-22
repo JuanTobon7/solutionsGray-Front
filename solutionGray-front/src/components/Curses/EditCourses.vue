@@ -170,8 +170,6 @@
       },
       submitCourse() {
         const changes = this.detectChanges();
-        console.log('Cambios detectados:', changes);
-  
         // Enviar cambios al componente padre
         this.$emit('updateCourse', { course: this.course, changes });
   

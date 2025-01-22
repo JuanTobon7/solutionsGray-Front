@@ -1,6 +1,5 @@
 <template>
   <section ref="reportSection" class="container p-6 bg-white">
-    <!-- Encabezado con logo e información -->
     <div class="grid grid-cols-3 mb-8 items-center">
       <img 
         src="https://s3.us-east-2.amazonaws.com/viddefe.com/photos/solutionGrayLOGO-removebg.png" 
@@ -11,8 +10,6 @@
         Informe General {{ churchName }}
       </h2>
     </div>
-
-    <!-- Introducción -->
     <div>
       <p class="text-lg mb-4">
         Este informe ha sido elaborado el día <span class="font-medium">{{ dateC }}</span>, 
@@ -29,8 +26,6 @@
         integral del impacto generado por el cuerpo de Cristo en esta comunidad.
       </p>
     </div>
-
-    <!-- Reconocimientos -->
     <div class="mb-10">
       <p class="text-lg">
         Agradecemos a todos los miembros de la iglesia por su compromiso en la obra de Dios. Su fidelidad y esfuerzo 
@@ -44,9 +39,7 @@
           <img :src="items.image" :alt="items.tittle" />
         </div>
       </div>
-
     </div>
-    <!-- Inspiración espiritual -->
     <div>
       <p class="text-lg mb-6">
         Invitamos a continuar utilizando <strong class="text-primary-950">Vid de Fe</strong> como una herramienta 
@@ -167,8 +160,10 @@ export default {
         // Descargar el archivo PDF
         pdf.save(`Informe_${this.churchName}_${this.dateC}.pdf`);
         this.$emit('close');
-      } catch (error) {
-        console.error('Error al generar el informe:', error);
+      } catch (e) {
+        if(e){
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo ha pasado, intentelo de nuevo',life: 3000 });
+        }
       }
     }
 

@@ -162,8 +162,13 @@ export default {
 
         // Descargar el archivo PDF
         pdf.save(`Informe_${this.churchName}_${this.date}.pdf`);
-      } catch (error) {
-        console.error('Error al generar el informe:', error);
+      } catch (e) {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Error al descargar el informe',
+          detail: 'Ocurrió un error al descargar el informe financiero. Por favor, inténtalo de nuevo.',
+          life: 3000,
+        });
       }
     },
   },

@@ -208,7 +208,9 @@ export default {
         const response = await getCurrencies();
         this.currencies = response;
       } catch (e) {
-        console.log(e);
+        if(e.response.status === 401 && e.response.message === 'Token Expired'){
+        this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo nuevamente', life: 3000 });
+        }
       }
     },
     async getPeopleFun() {
@@ -216,7 +218,9 @@ export default {
         const response = await getPeople();
         this.people = response;
       } catch (e) {
-        console.log(e);
+        if(e.response.status === 401 && e.response.message === 'Token Expired'){
+        this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo nuevamente', life: 3000 });
+        }
       }
     },
     async getTypesOfferings() {
@@ -224,7 +228,9 @@ export default {
         const response = await getTypesContributions();
         this.types_offerings = response;
       } catch (e) {
-        console.log(e);
+        if(e.response.status === 401 && e.response.message === 'Token Expired'){
+        this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo nuevamente', life: 3000 });
+        }
       }
     },
     addOffering() {

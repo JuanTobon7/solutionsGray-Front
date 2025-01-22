@@ -75,7 +75,7 @@ export default {
           const marker = L.marker([lat, lng]).addTo(this.map);
           marker.bindPopup(this.createPopup(group)); // Crear popup dinámico
         } else {
-          console.warn(`Coordenadas inválidas para el grupo ${group.name}`);
+          this.$toast.add()
         }
       });
     },
@@ -105,16 +105,13 @@ export default {
     },
     groupById(id) {
       this.showInfoGroup = true;
-      console.log('ID del grupo seleccionado:', id);
       // Aquí podrías navegar a una vista específica o abrir un modal
     },
     async getGroups() {
       try {
         const response = await getGroups();
         this.groups = response.filter((group) => group.latitude && group.longitude); // Filtrar grupos válidos
-        console.log('Grupos cargados:', this.groups);
       } catch (e) {
-        console.error('Error al cargar los grupos:', e);
         if (e.response && e.response.status !== 401 && e.response.data.message === 'Token has expired') {
           this.$toast.add({
             severity: 'error',

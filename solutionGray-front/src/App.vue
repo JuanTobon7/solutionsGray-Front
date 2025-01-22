@@ -62,7 +62,6 @@ export default {
   methods: {
     toggleMenu(value) {
       this.showMenuUser = value
-      console.log('toggleMenu', value)
     }
   }
 };

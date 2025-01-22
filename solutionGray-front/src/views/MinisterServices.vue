@@ -164,7 +164,6 @@ export default {
     },
     async worshipServices() {
       try {
-        console.log(this.dates);
         if(!this.dates[1]) return;
         const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const minDate = format(this.dates[0], "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });

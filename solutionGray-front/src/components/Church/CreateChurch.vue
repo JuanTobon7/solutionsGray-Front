@@ -10,8 +10,6 @@
             <i class="material-symbols-outlined text-gray-800">close</i>
           </button>
         </div>
-
-        <!-- Información de la iglesia -->
         <div>
           <h3 class="text-lg font-semibold text-gray-700 mb-2">Información de la iglesia</h3>
           <div class="flex flex-col flex-grow mb-2 sm:mb-4 gap-2">
@@ -120,23 +118,29 @@ export default {
     async loadCountries() {
       try {
         this.countries = await getCountries();
-      } catch (error) {
-        console.error('Error al cargar los países:', error);
+      } catch (e) {
+        if(e){
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo ha pasado, intentelo de nuevo',life: 3000 });
+        }
       }
     },
     async onCountryChange() {
       try {
         this.states = await getStatesByCountry(this.churchData.countryId);
-      } catch (error) {
-        console.error('Error al cargar los estados:', error);
+        } catch (e) {
+        if(e){
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo ha pasado, intentelo de nuevo',life: 3000 });
+        }
       }
     },
     async loadParentChurches() {
       try {
         this.churches = await getParentsChurches();
-      } catch (error) {
-        console.error('Error al cargar las iglesias padre:', error);
-      }
+      } catch (e) {
+        if(e){
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo ha pasado, intentelo de nuevo',life: 3000 });
+        }
+      }      
     },
     async createChurch(){
       try {

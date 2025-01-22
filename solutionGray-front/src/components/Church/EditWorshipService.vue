@@ -102,7 +102,9 @@ export default {
             })
             store.dispatch('addAssignedServices', service)
         }catch(e){
-            console.log(e)
+            if(e){
+                this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo ha pasado, intentelo de nuevo',life: 3000 });
+            }
         }
     }
   },

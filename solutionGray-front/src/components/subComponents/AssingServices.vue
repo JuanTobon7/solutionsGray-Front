@@ -1,8 +1,6 @@
 <template>
   <div>
     <h3 class="text-2xl font-semibold text-gray-800 mb-4">Asignar Servicios</h3>
-
-    <!-- Formulario para asignar servicios -->
     <div class="mb-6">
       <div class="mb-4">
         <label for="service" class="block text-gray-700 text-sm font-bold mb-2">Servicio</label>
@@ -239,7 +237,6 @@ export default {
             new: true
           };
           this.assignedServices.push(newAssignment);
-          console.log("Assigned services:", this.assignedServices);
           this.$store.dispatch('addAssignedServices', [...this.assignedServices]);
           this.selectedService = null;
           this.selectedServant = null;
@@ -250,8 +247,8 @@ export default {
       if (index >= 0 && index < this.assignedServices.length) {
         this.editingIndex = index;
         this.editDialogVisible = true;
-      } else {
-        console.error("Invalid index for assigned service:", index);
+      } else {        
+        this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo nuevamente', life: 3000 });        
       }
     },
     saveEditedAssignment(updatedAssignment) {
@@ -283,7 +280,6 @@ export default {
           this.$toast.add({ severity: 'success', summary: 'Success', detail: 'Assigned service deleted successfully', life: 5000 });
         }
       } catch (error) {
-        console.error("Error deleting assigned service:", error);
         if (error.response && error.response.status === 400) {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: error.response.data.message, life: 5000 });
         }
@@ -294,7 +290,9 @@ export default {
         const response = await getRolesServices();
         this.services = response;
       } catch (error) {
-        console.error("Error fetching services:", error);
+        if (error.response && error.response.status === 400) {
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo nuevamente', life: 5000 });
+        }
       }
     },
     async getServants() {
@@ -302,24 +300,17 @@ export default {
         const response = await getServants();
         this.servants = response;
       } catch (error) {
-        console.error("Error fetching servants:", error);
+        if (error.response && error.response.status === 400) {
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo nuevamente', life: 5000 });
+        }
       }
     },
     async getRatingsByServiceFun() {
       if (!this.selectedService) return;
 
-      try {
-        console.log("Selected service:", this.selectedService.id);
-        
-        // Obtener respuesta
+      try {                
         const response = await getRatingsByService(this.selectedService.id);
-        console.log("Ratings by service:", response);
-
-        // Verifica si response tiene una estructura esperada
         const ratingsArray = Array.isArray(response) ? response : Array(response); // Ajusta según estructura
-        console.log("Ratings array:", ratingsArray);
-
-        // Actualizar los sirvientes con ratings
         this.servants = this.servants.map((servant) => {
           const rating = ratingsArray.find((rating) => rating.servant_id	 === servant.id);
           return {
@@ -328,10 +319,11 @@ export default {
             rating: rating ? Math.round(rating.average_rating) : 0,
           };
         });
-        console.log("Servants with ratings:", this.servants);
       } catch (e) {
         this.servants = this.servants.map((servant) => ({ ...servant, rating: 0 }));
-        console.error("Error fetching ratings:", e);
+        if (e.response && e.response.status === 400) {
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo nuevamente', life: 5000 });
+        }
       }
     },
 

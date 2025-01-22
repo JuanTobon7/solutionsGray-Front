@@ -120,13 +120,16 @@ export default {
     methods: {
         async getServicesFun(serviceWorshipId) {
             if (!serviceWorshipId) {
-                console.warn('serviceWorshipId is null or undefined.');
+                this.$toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'No se pudo seleccionar tu servicio intentlo nuevamente',
+                    life: 3000,
+                });
                 return;
             }
             try {
-                console.log('Fetching services for ID:', serviceWorshipId);
                 const response = await getServices(serviceWorshipId);
-                console.log('response in span',response)
                 this.servicesAssigned = response.map((service)=>{
                     return {
                         ...service,
@@ -150,7 +153,6 @@ export default {
         },
         async onRatingChange(person){
             try{
-                console.log(person)
                 const {rating,service_id} = person;
                 if(!rating || !service_id){
                     this.$toast.add({severity:'error', summary: 'Error', detail: 'Ups algo paso intentalo denuevo',life: 3000});

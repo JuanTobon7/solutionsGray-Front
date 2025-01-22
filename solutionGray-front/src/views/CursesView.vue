@@ -164,8 +164,15 @@ export default {
     async getCourses() {
       try {
         this.courses = await getCourses();
-      } catch (error) {
-        console.error(error);
+      } catch (e) {
+        if(e.response.status === 401 && e.response.data.message === 'Token has expired') {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Ups, inténtalo de nuevo',
+            life: 3000,
+          });
+        }
       }
     },
   },

@@ -3,10 +3,7 @@
     <div class="container h-[95vh] w-full sm:px-6 flex items-center justify-center">
       <div class="bg-white p-6 sm:p-8 rounded-lg shadow-lg w-full sm:min-w-[70%] flex flex-col max-h-full overflow-y-auto">
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Crear Nuevo Curso</h2>
-
-        <!-- Formulario para la creación del curso -->
         <form @submit.prevent="submitCourse">
-          <!-- Nombre del curso -->
           <div class="mb-4">
             <label for="courseName" class="block text-gray-600 font-semibold mb-2">Nombre del Curso</label>
             <input
@@ -30,8 +27,6 @@
               required
             />
           </div>
-
-          <!-- Descripción del curso -->
           <div class="mb-4">
             <label for="courseDescription" class="block text-gray-600 font-semibold mb-2">Descripción del Curso</label>
             <textarea
@@ -43,11 +38,9 @@
             ></textarea>
           </div>
 
-          <!-- Módulos del curso -->
           <h3 class="text-xl font-semibold text-gray-800 mb-4">Módulos del Curso</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">                
               <div v-for="(module, index) in course.modules" :key="index" class="flex items-center gap-2">
-                  <!-- Número del capítulo -->
                   <span class="text-gray-600 font-bold">Cap {{ module.numbChapter }}:</span>
                   <input
                     type="text"
@@ -71,7 +64,6 @@
             Añadir Módulo ó Capítulo
           </button>
 
-          <!-- Botones de acción -->
           <div class="flex justify-end gap-4 mt-6">
             <button type="button" @click="$emit('close')" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition">
               Cancelar
@@ -133,7 +125,9 @@ export default {
         this.$toast.add({ severity: 'success', summary: 'Capitulos Asociados', detail: response.message, life: 3000 });
         this.$emit('updateCourses');
       } catch (e) {
-        console.log(e);
+        if(e){
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo ha pasado, intentelo de nuevo',life: 3000 });
+        }
       }
     }
   }

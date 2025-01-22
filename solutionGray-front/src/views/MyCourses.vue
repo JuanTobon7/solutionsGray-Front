@@ -81,8 +81,10 @@ export default {
         const response = await getMyCourses();
         this.courses = this.filterDuplicateCourses(response);
         this.filterCourses();
-      } catch (error) {
-        console.error('Error fetching courses:', error);
+      } catch (e) {         
+        if(e.response.status === 401 && e.response.data.message === 'Token has expired'){
+          this.$toast.add({severity:'error', summary:'Error', detail:'Ups algo paso, intentalo nuevamente', life: 3000});
+        }
       }
     },
     filterDuplicateCourses(courses) {
@@ -117,12 +119,10 @@ export default {
     },
     viewDetails(course) {
       // Acción para ver detalles del curso
-      console.log('Ver detalles del curso:', course);
     },
     async unenroll(course) {
       // Acción para cancelar inscripción del curso
       const user = this.$store.getters.user;
-      console.log('user', user.id);
       const data = {
         courseId: course.teachers_courses_id,
         personId: user.id,

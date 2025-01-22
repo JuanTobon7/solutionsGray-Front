@@ -121,7 +121,6 @@ export default {
         }
     },
     async mounted() {        
-        console.log(this.course)
         await this.getPeople();
         this.markPeopleStudents();
     },

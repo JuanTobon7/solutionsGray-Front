@@ -268,7 +268,6 @@ export default {
                     courseId: this.course.teacher_course_id,
                     personId: item.id
                 }
-                console.log('data to send',data)
                 await cancelStudentCourse(data);
                 this.$toast.add({ severity: 'success', summary: 'Estudiante eliminado', detail: 'Estudiante Eliminado', life: 3000 });
                 this.students = this.students.filter(student => student.student_course_id !== item.student_course_id);
@@ -383,7 +382,6 @@ export default {
 
                 this.$toast.add({ severity: 'success', summary: 'Asistencia registrada', detail: 'La asistencia ha sido registrada', life: 3000 });
             } catch (e) {                
-                console.error(e);
                 if (
                     e.response &&
                     (e.response.status === 400 || e.response.status === 401 || e.response.data.message === 'Token Expired')
@@ -434,7 +432,6 @@ export default {
                     status: att.status,
                     numb_chapter: att.numb_chapter
                 }));
-                console.log('attendance:',this.attendance)
             }catch(e){
                 if(e.response && e.response.status === 401 && e.response.data.message === 'Token Expired'){
                     this.attendance = [];

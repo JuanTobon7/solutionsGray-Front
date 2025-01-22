@@ -92,7 +92,6 @@
       async getShedulesCoursesFun() {
         try {
             const response = await getShedulesCourses(this.course.id);
-            console.log('Datos obtenidos:', response);
 
             // Group data by `teacher_course_id`
             const groupedData = response.reduce((acc, schedule) => {
@@ -139,7 +138,6 @@
                 life: 3000 
             });
         } catch (e) {
-            console.error('Error al obtener horarios:', e);
             if (e.response?.status === 400) {
                 this.$toast.add({
                     severity: 'error',
@@ -153,7 +151,6 @@
 
       async sheduleCourseFun(prof) {
         try{
-          console.log('Inscribiendo al curso:', prof);
           const response = await sheduleCourses({teacherCourseId:prof.teacherCourseId});
           this.$toast.add({
             severity: 'success',
@@ -162,7 +159,6 @@
             life: 3000
           });
         }catch(e){
-          console.error('Error al inscribirme:', e);
           this.$toast.add({
             severity: 'error',
             summary: 'Inscripción a Curso',

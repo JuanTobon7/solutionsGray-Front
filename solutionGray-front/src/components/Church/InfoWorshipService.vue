@@ -1,17 +1,12 @@
 <template>
   <section class="container w-full">
     <div class="flex flex-wrap w-full items-center justify-between gap-6 mb-10">
-      <!-- Card de Culto (1/4 del ancho en pantallas medianas y grandes) -->
       <Card class="flex-grow shadow-md shadow-gray-400 rounded-lg">
         <div class="relative w-full h-48 bg-cover bg-center bg-image rounded-t-lg">          
         </div>
-
-        <!-- Contenido del culto -->
         <div class="p-4">
           <h2 class="text-2xl font-semibold text-second-900">{{ worshipService.sermon_tittle }}</h2>
           <h3 class="text-xl text-second-800">{{ worshipService.worship_name }}</h3>
-
-          <!-- Fecha y Descripción -->
           <div class="flex items-center gap-2 mt-4 text-gray-800">
             <i class="material-symbols-outlined">event</i>
             <span class="text-lg">{{ formatDate(worshipService.date) }}</span>
@@ -21,8 +16,6 @@
           </p>
         </div>
       </Card>
-
-      <!-- Resumen del Culto (3/4 del ancho en pantallas medianas y grandes) -->
       <div class="w-3/4 bg-second-50 p-6 rounded-lg shadow-md shadow-gray-300 flex-grow">
         <h2 class="text-2xl font-semibold text-second-800 mb-4 text-center">Resumen del Culto</h2>
 
@@ -37,8 +30,6 @@
            <strong> {{items.type_contribution}}:</strong> $ {{items.amount || '0.00'}}
           </p>        
         </div>
-
-         <!-- Botón para editar culto y servicios -->
          <div class="flex items-center justify-center mb-4 gap-4">
            <button @click="$emit('close')" class="bg-second-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
              Volver
@@ -52,8 +43,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Carrusel de Privilegios asignados -->
     <div class="flex flex-col w-full h-auto mb-4">
       <div class="flex items-center gap-2 mb-1">        
         <i class="material-symbols-outlined text-second-800">event</i>
@@ -70,20 +59,16 @@
         }" 
     >
     <template #list="slotProps">
-    <!-- Contenedor de las tarjetas -->
     <div class="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-      <!-- Iteración sobre los elementos -->
       <div
         v-for="(item, index) in slotProps.items"
         :key="index"
         class="bg-second-50 shadow-lg shadow-primary-300 rounded-lg overflow-hidden w-auto"
       >
-        <!-- Tarjeta del ítem -->
         <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-20"></div>
         <div class="px-4 py-6 -mt-14">
           <div class="bg-white p-6 rounded-lg shadow-lg">
             <div class="flex flex-col md:flex-row items-center space-x-4">
-              <!-- Avatar o iniciales de la persona -->
               <div class="w-16 h-16 rounded-full overflow-hidden">
                 <Avatar
                   v-if="item.person.avatar"
@@ -99,7 +84,6 @@
                   shape="circle"
                 />
               </div>
-              <!-- Información de la persona -->
               <div class="text-wrap">
                 <h2 class="text-xl font-bold text-gray-900">
                   {{ item.person.first_name }} {{ item.person.last_name }}
@@ -107,7 +91,6 @@
                 <p class="text-sm text-gray-600">{{ item.person.email }}</p>
                 <p class="text-sm text-gray-600">{{ item.person.phone }}</p>
                 <p class="text-sm text-gray-600">{{ item.person.type_person }}</p>
-                <!-- Servicio asignado -->
                 <p class="text-sm text-primary-900 font-semibold mt-2">
                   {{ item.service.name }}
                 </p>
@@ -116,28 +99,20 @@
           </div>
         </div>
       </div>
-      <!-- Fin de cada tarjeta -->
     </div>
   </template>
     </DataView>
-
     </div>
-    
-    <!-- Gráfico Pie para los datos de las Ofrendas -->
       <div class="mb-6 bg-second-50 shadow-lg rounded-lg py-6">
         <div class="flex items-center gap-2 mb-6">
           <i class="material-symbols-outlined text-second-800">attach_money</i>
           <h2 class="text-2xl text-second-800 font-semibold">Detalle de Ofrendas</h2>
         </div>
-
-        <!-- Contenido del mini dashboard -->
         <div class="flex flex-wrap items-center justify-evenly gap-6 px-6">
           <!-- Gráfica Pie -->
           <div class="flex items-center justify-center">
             <canvas id="chart" ref="chart"></canvas>
           </div>
-
-          <!-- Indicadores KPIs -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
             <div class="bg-gray-50 p-4 rounded-md shadow-md text-center">
               <p class="text-sm font-semibold text-gray-800">Total General</p>
@@ -150,24 +125,17 @@
             </div>
           </div>
         </div>
-
-        <!-- Botón para gestionar ofrendas -->
         <div v-if="$hasRole('Admin')" class="flex flex-col sm:flex-row items-center justify-center mt-8 gap-4">
-          <!-- Botón de descarga -->
           <button @click="toggleDownload" class="bg-second-500 text-white px-5 py-2 rounded-md transition-all duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
             Descargar Reporte
             <i class="material-symbols-outlined">download</i>
           </button>
-
-          <!-- Botón de gestionar ofrendas -->
           <button @click="showMonetaryIncome = !showMonetaryIncome" class="bg-second-500 text-white px-5 py-2 rounded-md transition-all duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
             Gestionar Ofrendas
             <i class="material-symbols-outlined">payments</i>
           </button>
         </div>
       </div>
-      
-      <!-- Título de la sección de Asistentes al Culto -->
     <div class="flex items-center gap-2 mb-6">
       <i class="material-symbols-outlined text-second-800">people</i>
       <h2 class="text-xl text-second-800 font-semibold">
@@ -175,8 +143,6 @@
       </h2>
       <button @click="showShduleNewPerson = true" class="material-symbols-outlined rounded-md p-1 bg-second-500 text-white">person_add</button>
     </div>
-
-    <!-- Carrusel de Asistentes al Culto -->
     <div class="flex flex-col w-full overflow-x-auto mb-4">
       <DataView
         :value="attends"
@@ -188,7 +154,6 @@
         }"
       >
         <template #list="slotProps">
-          <!-- Contenedor con un grid para ajustar el ancho -->
           <div class="grid grid-cols-1  md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
             <div
               v-for="(item, index) in slotProps.items"
@@ -200,7 +165,6 @@
                 <div class="px-4 py-6 -mt-14 relative">
                   <div class="bg-white p-6 rounded-lg shadow-lg">
                     <div class="flex flex-wrap items-center justify-center                                                           lg:justify-between space-x-4">
-                      <!-- Avatar o iniciales de la persona -->
                       <div class="w-16 h-16 rounded-full overflow-hidden">
                         <Avatar
                           v-if="item.avatar"
@@ -216,7 +180,6 @@
                           shape="circle"
                         />
                       </div>
-                      <!-- Información de la persona -->
                       <div>
                         <h2 class="text-xl font-bold text-gray-900">
                           {{ item.first_name + ' ' + item.last_name }}
@@ -327,12 +290,13 @@ export default {
         }));
         this.servicesAssigned = service;
       } catch (e) {
-        console.log(e);
+        if(e){
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo ha pasado, intentelo de nuevo',life: 3000 });
+        }
       }
     },
     getInitials(person) {
-      if (!person) return '';
-      console.log('es aqui',person.person)
+      if (!person) return '';  
       return person.first_name.charAt(0) + person.last_name.charAt(0);
     },
     async getPeopleFun() {
@@ -343,7 +307,9 @@ export default {
           isAttend: false
         }));
       } catch (e) {
-        console.log(e);
+        if(e){
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo ha pasado, intentelo de nuevo',life: 3000 });
+        }
       }
     },
     async getAttendanceFun (){
@@ -357,7 +323,9 @@ export default {
           return person;
         });
       }catch(e){
-        console.log(e);
+        if(e){
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo ha pasado, intentelo de nuevo',life: 3000 });
+        }
       }
     },
     async registerAttendance(personId) {
@@ -365,7 +333,9 @@ export default {
         const response = await saveAttendance({personId,eventId:this.worshipService.id});
         return response
       } catch (e) {
-        console.log('e')
+        if(e){
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo ha pasado, intentelo de nuevo',life: 3000 });
+        }
         throw e
       }
     },
@@ -431,15 +401,15 @@ export default {
         const response = await deleteAttendance({personId,eventId:this.worshipService.id});
         return response
       } catch (e) {
-        console.log('e')
+        if(e){
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo ha pasado, intentelo de nuevo',life: 3000 });
+        }
 
         throw e
       }
     },
     async onAttendChange(person) {
       try{        
-        console.log('heyy',person)
-        console.log('heyy',this.attends)
         if (person.isAttend) {
           await this.registerAttendance(person.id);          
         } else {
@@ -462,7 +432,9 @@ export default {
         this.offerings = response;
         this.updateChartData();
       }catch(e){
-        console.log(e);
+        if(e){
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo ha pasado, intentelo de nuevo',life: 3000 });
+        }
       }
     },
     toggleDownload() {

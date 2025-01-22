@@ -89,8 +89,5 @@ export default {
         this.$emit('close');
     }
   },
-  mounted(){
-    console.log('group in AddWorshipService',this.group);
-  }
 }
 </script>

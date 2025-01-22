@@ -38,7 +38,6 @@ export default {
       const tokenParam = urlParams.get('token');
       let typeParam = url.split('type=')[1];
       this.token = tokenParam;
-      console.log('typeParam',typeParam)
       if (typeParam === 'lead') {
         response = await verifyChurchLead({ token: this.token });
       } else {
@@ -56,22 +55,26 @@ export default {
          detail: this.message,
          life: 5000,
        });
-       console.log('Respuesta de la invitación: ', response);
-       console.log('typeParam',typeParam)
        this.$store.dispatch('register', response);
        if (this.message === 'Ya Haz sido aceptado') {
          store.dispatch('loadInvitation', true);
          // Redireccionar y pasar el email usando state
          store.dispatch('setTempEmail', this.email);
-         console.log('email', this.email);
          this.$router.push({ 
            name: 'sing-in',
            params: { email: this.email,type:typeParam },
          });
        }
-     } catch (error) {
-       console.log('Error en la invitación: ', error);
+     } catch (e) {
+      if (e.response.status === 401) {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Ups! Algo salio mal',
+          life: 5000,
+        });
      }
+    }
    },   
  },
  mounted() {

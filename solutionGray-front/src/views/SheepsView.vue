@@ -165,8 +165,10 @@ export default {
       try {
         const sheepsInfo = await getSheepById(event.data.id);
         this.sheepInfoById = sheepsInfo;
-      } catch (error) {
-        console.error(error);
+      } catch (e) {
+        if(e.response.status === 401 && e.resposnse.data.message === 'Token has expired'){
+          this.$toast.add({severity:'error', summary:'Error', detail:'Ups algo paso, intentalo de nuevo', life: 3000});
+        }
       }
     },
     formatDate(dateString) {

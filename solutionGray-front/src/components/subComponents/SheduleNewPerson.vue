@@ -124,16 +124,20 @@ export default {
       try {
         const response = await getTypesPeople();
         this.typesPeople = response;
-      } catch (error) {
-        console.error(error);
+      } catch (e) {
+        if(e.response.status === 401 && e.response.message === 'Token Expired'){
+        this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo nuevamente', life: 3000 });
+        }
       }
     },
     async loadCountries() {
       try {
         const response = await getCountries(); // Obtener países desde la BD
         this.countries = response;
-      } catch (error) {
-        console.error('Error al cargar los países:', error);
+      } catch (e) {
+        if(e.response.status === 401 && e.response.message === 'Token Expired'){
+        this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo nuevamente', life: 3000 });
+        }
       }
     },
     async onCountryChange() {
@@ -141,8 +145,10 @@ export default {
       try {
         const response = await getStatesByCountry(countryId); // Obtener estados según el país seleccionado
         this.states = response;
-      } catch (error) {
-        console.error('Error al cargar los estados:', error);
+      } catch (e) {
+        if(e.response.status === 401 && e.response.message === 'Token Expired'){
+        this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo nuevamente', life: 3000 });
+        }
       }
     },
     async createPerson() {
@@ -156,8 +162,7 @@ export default {
         this.$toast.add({ severity: 'success', summary: 'Persona creada', detail: 'La persona ha sido exitosamente guardada', life: 3000 });
         this.newPerson = null
         this.$emit('personCreated', response);                
-      } catch (error) {
-        console.error(error);
+      } catch (error) {       
         if (error.response && error.response.status === 400) {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: error.response.data.message, life: 3000 });
         }

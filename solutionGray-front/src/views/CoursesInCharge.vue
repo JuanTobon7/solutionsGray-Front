@@ -120,8 +120,15 @@
           const response = await getCoursesInCharge();
           this.courses = response;
           this.filterCourses();
-        } catch (error) {
-          console.error('Error fetching courses:', error);
+        } catch (e) {
+          if(e.response.status === 401 && e.response.data.message === 'Token has expired') {
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Ups, inténtalo de nuevo',
+              life: 3000,
+            });
+         }
         }
       },
       filterCourses() {

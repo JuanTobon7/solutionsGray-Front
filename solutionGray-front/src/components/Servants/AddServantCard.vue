@@ -161,9 +161,7 @@ export default {
       try {
         const response = await getPeople();
         // Filtra las personas con `type_person_id` igual a 4 o 5
-        console.log(response);
         const people = response.filter((person) => person.type_person_id == 5 || person.type_person_id == 4);
-        console.log(people);
         this.people = people;
       } catch (error) {
         if(error.response.status === 401 && error.response.message === 'Token has expired') {
@@ -184,7 +182,6 @@ export default {
             closable: true,
           });
         }
-        console.error(error); // Añade esto para ver el error detallado
       }
     },
 

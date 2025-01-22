@@ -229,7 +229,9 @@ export default {
         const response = await getPeople();        
         this.people = response.filter(person => person.type_person === 'Usuario');
       } catch (e) {
-        console.error(e);
+        if(e){
+          this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo ha pasado, intentelo de nuevo',life: 3000 });
+        }
       }
     },
     getInitials(person) {

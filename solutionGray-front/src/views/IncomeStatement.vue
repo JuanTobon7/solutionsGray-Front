@@ -143,7 +143,6 @@
         const groupedData = this.finances.reduce((acc, entry) => {
           // Validar que `entry` no sea nulo y tenga las propiedades necesarias
           if (!entry || !entry.currency || !entry.month || !entry.amount) {
-            console.warn("Registro inválido:", entry);
             return acc;
           }
 
@@ -304,7 +303,6 @@
         this.charts.forEach((chart, index) => {
           const canvas = document.getElementById(`chart-${index}`);
           if (!canvas) {
-            console.error(`Canvas con id "chart-${index}" no encontrado.`);
             return;
           }else if(canvas.chartInstance){
             canvas.chartInstance.destroy()

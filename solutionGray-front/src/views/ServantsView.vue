@@ -217,8 +217,6 @@ export default {
       return `${year}-${month}-${day}`;
     },
     async onStatusChange(servant, newStatus) {
-      console.log('servant', servant);
-      console.log('newStatus', newStatus);
       const rolId = this.roles.find((rol) => rol.user_rol === newStatus.value).user_rol_id;
       const payload = { id: servant.id, userRolId: rolId };
       await updateRolServant(payload);

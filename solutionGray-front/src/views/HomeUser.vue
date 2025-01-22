@@ -159,9 +159,6 @@ export default {
                 const response = await getWorshipServices({minDate, maxDate});
                 this.worshipServices = response;                  
               } catch (e) {
-                  console.log('heyyy',e.response.data)
-                  console.log(e.response.status)
-                  console.log(e.response.data.message)
                   if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
                       this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Intentalo de nuevo.', life: 3000 });
                   }
@@ -171,18 +168,13 @@ export default {
               try {
                   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
                   const currentDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
-                  const response = await checkQualifiedRating(currentDate);
-                  console.log('heloo',response);
+                  await checkQualifiedRating(currentDate);
                   this.checkQualified = true
               } catch (e) {
-                  console.log('heyyy',e.response.data)
-                  console.log(e.response.status)
-                  console.log(e.response.data.message)
                   if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
                       this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Intentalo de nuevo.', life: 3000 });
                   }else if(e.response.status === 400 && e.response.data.message === 'No ha calificado'){
                       this.serviceWorshipId = e.response.data.id
-                      console.log('serviceWorshipId in Home',this.serviceWorshipId)
                       this.checkQualified = false
                   }
               }
@@ -191,14 +183,9 @@ export default {
             try {
                 const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
                 const date = format(new Date(), "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
-                console.log('date',date);
                 const response = await getMyLastServices(date);
                 this.privileges = response
-                console.log('heloo',response);
             } catch (e) {
-              console.log('heyyy',e.response.data)
-              console.log(e.response.status)
-              console.log(e.response.data.message)
               if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
                   this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Intentalo de nuevo.', life: 3000 });
               }else if(e.response.status === 400 && e.response.data.message === 'No hay servicios asignados'){

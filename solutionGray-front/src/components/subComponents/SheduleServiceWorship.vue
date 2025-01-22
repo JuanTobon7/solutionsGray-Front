@@ -206,8 +206,10 @@ export default {
       try {
         const response = await getTypesWorship();
         this.typesWorship = response;
-      } catch (error) {
-        console.log(error.response?.data || error.message);
+      } catch (e) {
+        if(e.response.status === 401 && e.response.message === 'Token Expired'){
+        this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo nuevamente', life: 3000 });
+        }
       }
     },
     checkIfEdited() {

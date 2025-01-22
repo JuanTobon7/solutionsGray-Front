@@ -138,7 +138,6 @@ export default {
   watch: {
     async date() {
       const date = this.date;
-      console.log("Fecha seleccionada:", date); // Fecha seleccionada: Mon Jan 01 2024 00:00:00 GMT-0500 (hora estándar de Colombia)
       const selectedYear = new Date(date).getFullYear();
       const minDate = new Date(selectedYear, 0, 1, 0, 0, 0, 0);
       const maxDate = new Date(selectedYear, 11, 31, 23, 59, 59, 999);
@@ -317,13 +316,11 @@ export default {
       // Obtener el canvas y verificar si ya hay una instancia de Chart
       const canvas = document.getElementById("stadisticAssitanceChurchChart");
       if (!canvas) {
-        console.error("Canvas no encontrado. Asegúrate de que existe en el DOM.");
         return;
       }
 
       // Si ya existe un gráfico, actualizamos sus datos
       if (canvas.chartInstance) {
-        console.log("Actualizando gráfico existente...");
 
         // Actualizar etiquetas y datos
         canvas.chartInstance.data.labels = labels; // Nuevas etiquetas
@@ -333,8 +330,6 @@ export default {
         canvas.chartInstance.update(); // Método de Chart.js para actualizar el gráfico
         return;
       }
-
-      console.log("Creando nuevo gráfico...");
 
       // Crear un nuevo gráfico si no existe uno
       const ctx = canvas.getContext("2d");

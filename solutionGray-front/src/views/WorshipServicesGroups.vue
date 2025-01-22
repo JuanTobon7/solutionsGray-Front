@@ -153,7 +153,6 @@ export default {
     async getMyInfoGroup() {
       try {
         const response = await getMyInfoGroup();
-        console.log('grouppp',response);
         this.group = response;
       } catch (e) {
         if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
@@ -163,8 +162,6 @@ export default {
     },
     async getServicesGroup() {
       try {
-        console.log(this.dates);
-        console.log('group in services Group',this.group.id);
         if(!this.dates[1]) return;
         const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const minDate = format(this.dates[0], "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });

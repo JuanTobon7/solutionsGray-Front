@@ -154,7 +154,6 @@ export default {
   },
   mounted() {
     this.initializeData();
-    console.log('group in ConfirmationWorshipService', this.group);
   },
   beforeUnmount() {
     this.cleanupComponent();
@@ -201,7 +200,6 @@ export default {
     },
     async createWorshipService() {
       try {
-        console.log('culto in createWorshipService', this.culto);
         if (!this.culto || !this.culto.sermonTittle || !this.culto.date || !this.culto.description || !this.assignedServices.length) {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Por favor, complete todos los campos.', life: 3000 });
           return;
@@ -233,7 +231,6 @@ export default {
         }
         this.$emit('worshipRegistered');
       } catch (e) {
-        console.log(e);
         if (e.response.data.status !== 401 && e.response.data.message === 'Token has expired') {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el culto.', life: 3000 });
         }
@@ -253,7 +250,6 @@ export default {
         response = await assingService({assignedServices: newAssignedServices, id: this.culto.id});
         this.$toast.add({ severity: 'success', summary: 'Éxito', detail: response.message, life: 3000 });
       }catch(e){
-        console.log(e);
         if (e.response.status !== 401 && e.response.data.message === 'Token has expired') {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el culto.', life: 3000 });
         }

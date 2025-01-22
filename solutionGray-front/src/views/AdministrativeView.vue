@@ -72,7 +72,6 @@ export default {
                     churchName:lead.church_name
                 };
                 await updateLead(payload);
-                console.log('hello im interesting')
                 this.$toast.add({
                     severity: 'success',
                     summary: 'Éxito',
@@ -95,7 +94,9 @@ export default {
             try {
                 this.leads = await getLeads();
             } catch (error) {
-                console.error('Error al cargar los leads:', error);
+                if(error.response.status === 401 && error.response.message === 'Token Expired'){
+                    this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo nuevamente', life: 3000 });
+                }
             }
         },
         hasData(field) {

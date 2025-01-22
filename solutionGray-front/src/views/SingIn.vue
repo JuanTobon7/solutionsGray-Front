@@ -89,10 +89,6 @@ export default {
   },
   mounted(){
     this.isAuthInvitation = this.$store.getters.authInvitation ? true : false;
-    console.log(this.$route.state?.email);
-    console.log('newUser',this.newUser);
-    const router = this.$router;
-    console.log('params router',router.params);
   },
   methods: {
     async validateForm() {
@@ -122,14 +118,6 @@ export default {
     },
     async registerUser() {
     try{      
-      // Aquí puedes proceder con el registro (por ejemplo, enviar los datos a la API)
-      console.log('Registrando usuario con los datos:', {
-        email: this.email,
-        password: this.password,
-        birthday: this.birdthday,
-        genero: this.genero
-      });
-
       const response = await createUsers({
         emailToken: this.newUser.id, //el id es el mismo token del email
         email: this.email,
@@ -146,9 +134,7 @@ export default {
       });
       await new Promise(resolve => setTimeout(resolve, 3000));
       this.$router.push({ name: 'login' });
-      console.log(response);
     }catch(error){
-      console.log(error);
       this.$toast.add({
         severity: 'error',
         summary: 'Error',
