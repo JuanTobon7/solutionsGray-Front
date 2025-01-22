@@ -1,5 +1,9 @@
 <template>
-  <section ref="reportSection" class="container p-4 bg-white">
+    <section 
+        ref="reportSection" 
+        class="container p-4 bg-white absolute top-[-9999px]"
+    >
+
       <div class="grid grid-cols-3 mb-8 items-center">
             <img 
             src="https://s3.us-east-2.amazonaws.com/viddefe.com/photos/solutionGrayLOGO-removebg.png" 
@@ -181,7 +185,10 @@ export default {
             })
         );
         await Promise.all(promises);
-        const canvas = await html2canvas(section, { scale: 4 });
+        const canvas = await html2canvas(section, { 
+            scale: 4, 
+            useCORS: true 
+        });
         const imageData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('p', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth();

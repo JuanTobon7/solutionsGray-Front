@@ -23,7 +23,7 @@
         <i class="material-symbols-outlined">file_download</i>
       </button>
     </div>
-    <div class="mb-8">
+    <div  class="mb-8">
       <h2 class="text-xl font-semibold text-center mb-4">Ingresos Totales</h2>
       <canvas class="mb-4 min-h-[30vh] w-full" id="totalIncomeChart"></canvas>
     </div>
@@ -37,7 +37,7 @@
         <canvas :id="`chart-${index}`" class="flex items-center" style="max-width: 400px; max-height: 400px;"></canvas>        
       </div>
       <div>
-            <h2>Ingresos por Tipo de Culto</h2>
+            <h2 v-if="finish">Ingresos por Tipo de Culto</h2>
             <canvas class="flex items-center" style="max-width: 300px; max-height: 300px;" id="incomeByServiceChart"></canvas>
         </div>
     </div>
@@ -106,28 +106,35 @@
       async getFinances(data){
         try{
           const result = await getFinances(data)
-          this.finances = result
+          this.finances = result         
+          this.tableData = this.tableDataFun()
+          this.finish = true
+        }catch(e){
+          if(e.response.status === 401 && e.response.data.message === "Token has expired"){
+            this.$toast.add({severity: "error", summary: "Error", detail: "Ups algo ha pasado, intentalo de nuevo",life:3000});
+          }
+          this.finish = false
+
+          this.finances = []
+          this.tableData = []
+        }finally{
           this.renderTotalIncomeChart();
           this.renderIncomeByServiceChart();
           this.generateChartsData()
           this.$nextTick(()=>{
             this.renderCharts()
           })
-          this.tableData = this.tableDataFun()
-        }catch(e){
-          if(e.response.status === 401 && e.response.data.message === "Token has expired"){
-            this.$toast.add({severity: "error", summary: "Error", detail: "Ups algo ha pasado, intentalo de nuevo",life:3000});
-          }
         }
       },
       renderTotalIncomeChart() {
-        const ctx = document.getElementById("totalIncomeChart").getContext("2d");
-
-        // Validar que los datos existan y sean un arreglo
-        if (!Array.isArray(this.finances) || this.finances.length === 0) {
-          console.error("No se encontraron datos para generar el gráfico.");
-          return;
+        const canvas = document.getElementById("totalIncomeChart")
+        if(!canvas){
+          return
         }
+        if(canvas.chartInstance){
+          canvas.chartInstance.destroy()
+        }
+        const ctx = canvas.getContext("2d");
 
         // Lista de meses para el eje X
         const months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
@@ -160,12 +167,6 @@
           return acc;
         }, {});
 
-        // Verificar si groupedData tiene contenido
-        if (Object.keys(groupedData).length === 0) {
-          console.error("No se pudieron agrupar los datos correctamente.");
-          return;
-        }
-
         // Crear datasets para Chart.js
         const datasets = Object.keys(groupedData).map((currency) => {
           const group = groupedData[currency];
@@ -177,7 +178,7 @@
         });
 
         // Crear gráfico
-        new Chart(ctx, {
+        canvas.chartInstance = new Chart(ctx, {
           type: "bar",
           data: {
             labels: months,
@@ -233,8 +234,12 @@
         const data = Object.values(groupedData); // [200000, ...]
 
         // Crear el gráfico
-        const ctx = document.getElementById("incomeByServiceChart").getContext("2d");
-        new Chart(ctx, {
+        const canvas = document.getElementById("incomeByServiceChart")
+        if(canvas.chartInstance){
+          canvas.chartInstance.destroy()
+        }
+        const ctx = canvas.getContext("2d");
+        canvas.chartInstance = new Chart(ctx, {
           type: "pie", // Gráfico de pastel
           data: {
             labels: labels, // Etiquetas para cada tipo de contribución
@@ -281,11 +286,16 @@
       }, {});
 
       // Crear configuraciones para cada gráfico
-      this.charts = Object.keys(groupedData).map((type) => ({
-        title: `Gráfico de ${type}`, // Título del gráfico
-        data: groupedData[type], // Datos acumulados por mes
-        typeContribution: type, // Tipo de contribución
-      }));
+      const charts = Object.keys(groupedData).map((typeContribution) => {
+        return {
+          typeContribution,
+          data: groupedData[typeContribution],
+        };
+      });
+      if(charts.length === 0){
+        return this.charts = []
+      }
+      this.charts = charts;
     },
 
 
@@ -296,9 +306,12 @@
           if (!canvas) {
             console.error(`Canvas con id "chart-${index}" no encontrado.`);
             return;
+          }else if(canvas.chartInstance){
+            canvas.chartInstance.destroy()
           }
           const ctx = canvas.getContext("2d");
-          new Chart(ctx, {
+
+          canvas.chartInstance = new Chart(ctx, {
             type: "line",
             data: {
               labels: months,
