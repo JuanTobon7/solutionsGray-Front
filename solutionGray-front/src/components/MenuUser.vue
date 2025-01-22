@@ -118,14 +118,22 @@
           <router-link to="/administrative" class="block hover:text-primary-300">Inicio</router-link>
         </li>
       </ul>
+      <div class="p-2">
+        <AddsComponent class=" flex items-center gap-4"/>
+      </div>
     </nav>
 
   </aside>
 </template>
 
 <script>
+import AddsComponent from '@/components/AddsComponent.vue';
+
 export default {
   name: 'MenuUser',
+  components: {
+    AddsComponent,
+  },
   props: {
     isCloseProp: {
       type: Boolean,

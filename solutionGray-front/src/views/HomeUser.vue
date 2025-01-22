@@ -112,15 +112,7 @@
           </DataView>
           <!-- Añadir más privilegios si es necesario -->
         </div>
-  
-      <!-- Pie de página -->
-      <footer class="text-center mt-8">
-        <p class="text-gray-500 text-sm">
-          © {{ new Date().getFullYear() }} Mi Iglesia. Todos los derechos reservados.
-        </p>
-      </footer>
-    </section>
-  
+    </section>  
     <spanRatingService v-if="!checkQualified" :serviceWorshipId = "serviceWorshipId" @close="checkQualified=true"/>    
     <CreateChurch v-if="createChurch" @close="createChurch = false"/>
 </template>
