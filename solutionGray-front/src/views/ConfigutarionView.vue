@@ -61,7 +61,7 @@
   </template>
   
   <script>
-import { resetPassword } from '@/apiServices';
+import { resetPassword,deleteAccount } from '@/apiServices';
 
   export default {
     name: 'ConfigurationView',
@@ -129,10 +129,17 @@ import { resetPassword } from '@/apiServices';
         // Perform notification preferences update logic here
         alert('Preferencias de notificaciones actualizadas.');
       },
-      deleteAccount() {
+      async deleteAccount() {
         if (confirm('¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.')) {
-          // Perform account deletion logic here
-          alert('Cuenta eliminada exitosamente.');
+          await deleteAccount()
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Cuenta eliminada exitosamente.',
+            life: 3000
+          });
+          this.$store.dispatch('logout');
+          this.$router.push('/');
         }
       },
     },

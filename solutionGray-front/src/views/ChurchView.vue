@@ -153,7 +153,7 @@ export default {
   },
   computed: {
     dataReady() {
-      return this.assitance.length > 0 && this.churchName && this.chartImages.length > 0;
+      return this.assitance.length > 0 && this.churchName && this.chartImages.length >= 3;
     },
   },
   methods: {    
@@ -284,7 +284,7 @@ export default {
           },
           animation: {
             onComplete: ()=>{
-              this.chartImages.push(canvas.toDataURL("image/png"));
+              this.chartImages.push({image:canvas.toDataURL("image/png"),tittle:'Estadistica Personas'});
             }
           }
         },
@@ -359,7 +359,7 @@ export default {
           maintainAspectRatio: false,
           animation: {
             onComplete: ()=>{
-              this.chartImages.push(canvas.toDataURL("image/png"));
+              this.chartImages.push({image: canvas.toDataURL("image/png"),tittle: 'Estadistica Asistencia' });
             }
           },
           scales: {
@@ -427,7 +427,7 @@ export default {
         options: {
           animation: {
             onComplete: ()=>{
-              this.chartImages.push(canvas.toDataURL("image/png"));
+              this.chartImages.push({image: canvas.toDataURL("image/png"),tittle: 'Estadistica Cursos' });
             }
           },
           responsive: true,

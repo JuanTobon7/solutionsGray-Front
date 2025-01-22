@@ -101,11 +101,16 @@
                     <span v-else>{{data.user_rol}}</span>
                 </template>
             </Column>
-            <Column header="Ver usuario" class="p-2 border-b border-primary-200 text-second-800">
+            <Column header="Acciones" class="p-2 border-b border-primary-200 text-second-800">
               <template #body="{ data }">
-                <button @click="handleServantsInfo(data)" class="bg-second-500 text-white p-1 rounded-full material-symbols-outlined">
-                  visibility
-                </button>
+                <div class="flex items-center justify-center gap-4">
+                  <button @click="handleServantsInfo(data)" class="bg-second-500 text-white p-1 rounded-full material-symbols-outlined">
+                    visibility
+                  </button>
+                  <button @click="deleteServant(data)" v-if="$hasRole('Super Admin') && data.user_rol !== 'Pastor'" class="bg-red-500 text-white p-1 rounded-full material-symbols-outlined">
+                    delete
+                  </button>
+                </div>
               </template>
             </Column>
           </DataTable>
@@ -125,7 +130,7 @@
 </template>
 
 <script>
-import { getServants,updateRolServant} from '../apiServices/index'
+import { getServants,updateRolServant,deleteAccount} from '../apiServices/index'
 import AddServantCard from '@/components/Servants/AddServantCard.vue';
 import InfoServantCard from '@/components/Servants/InfoServantCard.vue';
 import spanRolesHelp from '@/components/Servants/spanRolesHelp.vue';
@@ -173,6 +178,26 @@ export default {
     },
     closeAddServantCard() {
       this.newServantsVisible = false;
+    },
+    async deleteServant(servant){
+      try{        
+        if(!confirm(`¿Estás seguro de eliminar a ${servant.first_name} ${servant.last_name}?`)) return;-
+        await deleteAccount(servant.id);
+        this.$toast.add({
+          severity: 'success',
+          summary: 'Servidor eliminado',
+          detail: 'El servidor ha sido eliminado correctamente',
+          life: 3000,
+        });
+        this.getServants();
+      }catch(e){
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Error al eliminar',
+          detail: 'Ha ocurrido un error, intentalo de nuevo',
+          life: 3000,
+        });
+      }
     },
     toggleView() {
       this.tableView = !this.tableView;

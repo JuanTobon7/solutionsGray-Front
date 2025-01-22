@@ -1,220 +1,247 @@
 <template>
-    <div class="container mx-auto p-6">
-      <!-- Título -->
-      <h1 class="text-3xl font-bold mb-4 text-center">Reporte Financiero de la Iglesia</h1>
-      
-      <!-- Descripción General -->
-      <p class="text-gray-600 mb-8 text-center">
-        Este reporte presenta un resumen detallado de los ingresos totales, diezmos y ofrendas recibidos en la iglesia, desglosados por mes y año.
-        Use los filtros para ajustar los datos y descargue los reportes en formato PDF o Excel para su análisis.
-      </p>
-  
-      <!-- Botón de Reporte General -->
-      
-  
-      <!-- Filtros -->
-      <div class="flex justify-between items-center mb-8">
-        <div>
-          <label for="month" class="font-medium">Mes:</label>
-          <select
-            id="month"
-            v-model="selectedMonth"
-            class="border border-gray-300 rounded px-2 py-1"
-          >
-            <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
-          </select>
-        </div>
-        <div>
-          <label for="year" class="font-medium">Año:</label>
-          <select
-            id="year"
-            v-model="selectedYear"
-            class="border border-gray-300 rounded px-2 py-1"
-          >
-            <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
-          </select>
-        </div>
+  <div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-4 text-center">Reporte Financiero de la Iglesia</h1>
+    <p class="text-gray-600 mb-8 text-center">
+      Este reporte presenta un resumen detallado de los ingresos totales, diezmos y ofrendas recibidos en la iglesia, desglosados por mes y año.
+      Use los filtros para ajustar los datos y descargue los reportes en formato PDF o Excel para su análisis.
+    </p>
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">      
+      <div>
+        <label for="date" class="mr-2">Seleccione un año:</label>
+        <Calendar
+          v-model="date" 
+          view="year" 
+          dateFormat="yy" 
+          class="border border-gray-300 py-1 pl-2 rounded-md" 
+        />
       </div>
-  
-      <!-- Resumen General con Tarjetas -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div class="p-6 bg-white rounded-lg shadow flex flex-col items-center">
-          <h2 class="text-lg font-bold text-gray-700 mb-2">Ingresos Totales</h2>
-          <p class="text-2xl text-green-600 font-semibold">$ {{ totalIncome }}</p>
-        </div>
-        <div class="p-6 bg-white rounded-lg shadow flex flex-col items-center">
-          <h2 class="text-lg font-bold text-gray-700 mb-2">Diezmos</h2>
-          <p class="text-2xl text-blue-600 font-semibold">$ {{ tithesIncome }}</p>
-        </div>
-        <div class="p-6 bg-white rounded-lg shadow flex flex-col items-center">
-          <h2 class="text-lg font-bold text-gray-700 mb-2">Ofrendas</h2>
-          <p class="text-2xl text-yellow-600 font-semibold">$ {{ offeringsIncome }}</p>
-        </div>
-      </div>
-  
-      <!-- Gráfico de Ingresos Totales -->
-      <div class="p-3 shadow-md rounded bg-white mb-8">
-        <h2 class="text-xl font-semibold text-center mb-4">Ingresos Totales</h2>
-        <canvas         
-        class="mb-4 min-h-[30vh] w-full" id="totalIncomeChart"></canvas>            
-      </div>
-  
-      <!-- Tabla Desglose por Categoría -->
-      <div class="p-6 shadow-md rounded bg-white mb-8">
-        <h2 class="text-xl font-semibold mb-4 text-center">Desglose de Ingresos</h2>
-        <table class="w-full border-collapse border border-gray-200 text-center mb-4">
-          <thead>
-            <tr class="bg-gray-100">
-              <th class="p-2 border">Categoría</th>
-              <th class="p-2 border">Monto</th>
-              <th class="p-2 border">Porcentaje</th>
-            </tr>
-          </thead>
-          <tbody>
-              <td class="p-2 border">Diezmos</td>
-              <tr>
-              <td class="p-2 border">$ {{ tithesIncome }}</td>
-            </tr>
-            <tr>
-              <td class="p-2 border">Ofrendas</td>
-              <td class="p-2 border">$ {{ offeringsIncome }}</td>
-            </tr>
-            <tr>
-              <td class="p-2 border font-bold">Total</td>
-              <td class="p-2 border font-bold">$ {{ totalIncome }}</td>
-              <td class="p-2 border font-bold">100%</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="flex justify-end">
-        <button
-          class="flex items-center gap-2 bg-green-500 hover:bg-green-600 px-4 py-2 text-white font-medium rounded-md shadow-md"
-          @click="downloadGeneralReport"
-        >
-          Descargar Reporte General
-          <i class="material-symbols-outlined">file_download</i>
-        </button>
-      </div>
-      </div>    
-      <!-- Gráficos por Categoría -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-         <!-- Gráfico de Pie -->
-        <div class="p-6 bg-white rounded-lg shadow mb-8">
-          <h2 class="text-xl font-semibold text-center mb-4">Ingresos por Tipo de Culto</h2>
-          <canvas style="max-width: 300px; max-height: 300px;"
-
-          id="incomeByServiceChart"></canvas>
-          <div class="flex justify-end mt-4">
-            <button
-              class="bg-green-500 hover:bg-green-600 px-4 py-2 text-white font-medium rounded-md shadow-md"
-              @click="downloadReport('Ingresos por Tipo de Culto', 'incomeByServiceChart')"
-            >
-              Descargar Reporte
-            </button>
-          </div>
-        </div>
-        <!-- Diezmos -->
-        <div class="p-6 shadow-md rounded bg-white">
-            <div class="mb-4">                
-                <h2 class="text-lg font-semibold text-center mb-4">Ingresos de Diezmos</h2>
-                <canvas id="tithesIncomeChart"></canvas>
-            </div>
-            <div class="flex justify-end mb-4">
-            <button
-              class="flex items-center gap-2 bg-green-500 hover:bg-green-600 px-4 py-2 text-white rounded-md"
-              @click="downloadReport('Ingresos de Diezmos', 'tithesIncomeChart')"
-            >
-              Descargar Reporte
-              <i class="material-symbols-outlined">download</i>
-            </button>
-          </div>          
-        </div>
-  
-        <!-- Ofrendas -->
-        <div class="p-6 shadow-md rounded bg-white">
-            <h2 class="text-lg font-semibold text-center mb-4">Ingresos de Ofrendas</h2>
-            <canvas class="mb-4" id="offeringsIncomeChart"></canvas>
-            <div class="flex justify-end mb-4">
-            <button
-              class="flex items-center gap-2 bg-green-500 hover:bg-green-600 px-4 py-2 text-white rounded-md"
-              @click="downloadReport('Ingresos de Ofrendas', 'offeringsIncomeChart')"
-            >
-              Descargar Reporte
-              <i class="material-symbols-outlined">download</i>
-            </button>
-          </div>          
-        </div>
-      </div>
+      <button
+        class="flex items-center gap-2 bg-second-500 hover:bg-second-600 px-4 py-2 text-white font-medium rounded-md shadow-md"
+        @click="toggleDownloadReport"
+      >
+        Descargar Reporte
+        <i class="material-symbols-outlined">file_download</i>
+      </button>
     </div>
-  </template>
-  
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold text-center mb-4">Ingresos Totales</h2>
+      <canvas class="mb-4 min-h-[30vh] w-full" id="totalIncomeChart"></canvas>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div
+        v-for="(chart, index) in charts"
+        :key="index"
+        class="chart-item"
+      >
+        <h3 class="chart-title">{{ chart.title }}</h3>
+        <canvas :id="`chart-${index}`" class="flex items-center" style="max-width: 400px; max-height: 400px;"></canvas>        
+      </div>
+      <div>
+            <h2>Ingresos por Tipo de Culto</h2>
+            <canvas class="flex items-center" style="max-width: 300px; max-height: 300px;" id="incomeByServiceChart"></canvas>
+        </div>
+    </div>
+  </div>
+  <ReportFinances v-if="downloadCtrl" :date="date" :tableData="tableData" />
+</template>
     
-  <script>
-  import { Chart, registerables } from "chart.js";
-  import jsPDF from "jspdf";
-  
-  Chart.register(...registerables);
-  
+<script>
+  import Calendar from "primevue/calendar";
+  import { Chart } from "chart.js";
+  import ReportFinances from "@/components/Finances/ReportFinances.vue";
+  import { format } from "date-fns";
+  import { getFinances } from "@/apiServices";
+    
   export default {
+    components: {
+      ReportFinances,
+      Calendar,
+    },
+    watch: {
+      date(){
+        const date = this.date
+        const selectedYear = new Date(date).getFullYear();
+        const minDate = new Date(selectedYear, 0, 1, 0, 0, 0, 0);
+        const maxDate = new Date(selectedYear, 11, 31, 23, 59, 59, 999);
+        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const minDateFormat = format(minDate, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
+        const maxDateFormat = format(maxDate, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: userTimeZone });
+        this.getFinances({maxDateFormat, minDateFormat})
+      }
+    },
     data() {
       return {
         // Opciones de filtros
-        months: [
-          "Enero",
-          "Febrero",
-          "Marzo",
-          "Abril",
-          "Mayo",
-          "Junio",
-          "Julio",
-          "Agosto",
-          "Septiembre",
-          "Octubre",
-          "Noviembre",
-          "Diciembre",
-        ],
-        years: [2023, 2024],
-        selectedMonth: "Enero",
-        selectedYear: 2023,
-
-        // Ingresos simulados
-        totalIncome: 3000,
-        tithesIncome: 1500,
-        offeringsIncome: 1200,
-        incomeByService: [
-        { name: "Culto Dominical", amount: 1500 },
-        { name: "Culto de Oracion", amount: 1200 },
-        { name: "Culto Especial", amount: 300 },
-      ],
-
-  
-        // Datos simulados
-        incomes: [
-          { date: "2023-01-15", category: "Diezmos", amount: 1500 },
-          { date: "2023-01-20", category: "Ofrendas", amount: 1200 },
-          { date: "2023-02-10", category: "Diezmos", amount: 2000 },
-          { date: "2023-02-15", category: "Ofrendas", amount: 1000 },
-        ],
+        date: null,
+        finances: [],
+        charts: [],
+        tableData: [],
+        downloadCtrl: false,
       };
     },
     mounted() {
-      this.renderTotalIncomeChart();
-      this.renderTithesIncomeChart();
-      this.renderOfferingsIncomeChart();
-        this.renderIncomeByServiceChart();
+      this.date = new Date()      
     },
     methods: {
+      tableDataFun() {
+        const finances = this.finances;
+
+        // Agrupar por tipo de contribución y moneda
+        const groupedData = finances.reduce((acc, { type_contribution, currency, amount }) => {
+          const key = `${type_contribution}-${currency}`; // Clave única basada en tipo y moneda
+          if (!acc[key]) {
+            acc[key] = {
+              type_contribution,
+              currency,
+              total: 0, // Inicializar el total
+            };
+          }
+          acc[key].total += parseFloat(amount); // Acumular el monto
+          return acc;
+        }, {});
+
+        // Convertir el objeto agrupado en un arreglo
+        return Object.values(groupedData);
+      },
+      async getFinances(data){
+        try{
+          const result = await getFinances(data)
+          this.finances = result
+          this.renderTotalIncomeChart();
+          this.renderIncomeByServiceChart();
+          this.generateChartsData()
+          this.$nextTick(()=>{
+            this.renderCharts()
+          })
+          this.tableData = this.tableDataFun()
+        }catch(e){
+          if(e.response.status === 401 && e.response.data.message === "Token has expired"){
+            this.$toast.add({severity: "error", summary: "Error", detail: "Ups algo ha pasado, intentalo de nuevo",life:3000});
+          }
+        }
+      },
       renderTotalIncomeChart() {
         const ctx = document.getElementById("totalIncomeChart").getContext("2d");
+
+        // Validar que los datos existan y sean un arreglo
+        if (!Array.isArray(this.finances) || this.finances.length === 0) {
+          console.error("No se encontraron datos para generar el gráfico.");
+          return;
+        }
+
+        // Lista de meses para el eje X
+        const months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+
+        // Agrupar los datos por moneda y mes
+        const groupedData = this.finances.reduce((acc, entry) => {
+          // Validar que `entry` no sea nulo y tenga las propiedades necesarias
+          if (!entry || !entry.currency || !entry.month || !entry.amount) {
+            console.warn("Registro inválido:", entry);
+            return acc;
+          }
+
+          const { currency, symbol, month, amount } = entry;
+
+          // Crear un grupo para la moneda si no existe
+          if (!acc[currency]) {
+            acc[currency] = {
+              symbol,
+              data: Array(12).fill(0), // Inicializar con 0 para los 12 meses
+            };
+          }
+
+          // **Calcular el índice del mes de forma segura**
+          const [year, monthPart] = month.split("-"); // Dividir "2025-01" en ["2025", "01"]
+          const monthIndex = parseInt(monthPart, 10) - 1; // Convertir "01" en índice (0 para enero)
+
+          // Asignar el monto correspondiente al mes
+          acc[currency].data[monthIndex] += parseFloat(amount);
+
+          return acc;
+        }, {});
+
+        // Verificar si groupedData tiene contenido
+        if (Object.keys(groupedData).length === 0) {
+          console.error("No se pudieron agrupar los datos correctamente.");
+          return;
+        }
+
+        // Crear datasets para Chart.js
+        const datasets = Object.keys(groupedData).map((currency) => {
+          const group = groupedData[currency];
+          return {
+            label: `${group.symbol} ${currency}`,
+            data: group.data,
+            backgroundColor: this.getRandomColor(), // Generar color aleatorio
+          };
+        });
+
+        // Crear gráfico
         new Chart(ctx, {
           type: "bar",
           data: {
-            labels: this.months,
+            labels: months,
+            datasets: datasets,
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: "top",
+              },
+            },
+            scales: {
+              x: {
+                stacked: true, // Para agrupar barras por mes
+              },
+              y: {
+                stacked: true, // Mostrar datos apilados
+                beginAtZero: true,
+              },
+            },
+          },
+        });
+      },
+      getRandomColor() {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      },        
+      renderIncomeByServiceChart() {
+        const finances = this.finances;
+
+        // Agrupar los datos por tipo de contribución y moneda
+        const groupedData = finances.reduce((acc, { type_contribution, amount, currency }) => {
+          const key = `${type_contribution} (${currency})`;
+
+          // Si no existe el tipo de contribución en el acumulador, inicializarlo en 0
+          if (!acc[key]) {
+            acc[key] = 0;
+          }
+
+          // Sumar el monto acumulado
+          acc[key] += parseFloat(amount);
+
+          return acc;
+        }, {});
+
+        // Extraer las etiquetas (tipos de contribuciones + moneda) y los valores (montos acumulados)
+        const labels = Object.keys(groupedData); // ["Ofrenda pro-templo (COP)", ...]
+        const data = Object.values(groupedData); // [200000, ...]
+
+        // Crear el gráfico
+        const ctx = document.getElementById("incomeByServiceChart").getContext("2d");
+        new Chart(ctx, {
+          type: "pie", // Gráfico de pastel
+          data: {
+            labels: labels, // Etiquetas para cada tipo de contribución
             datasets: [
               {
-                label: "Ingresos Totales",
-                data: [3000, 4000, 5000, 6000, 7000, 8000],
-                backgroundColor: "#4CAF50",
+                data: data, // Valores acumulados
+                backgroundColor: labels.map(() => this.getRandomColor()), // Colores aleatorios para cada segmento
               },
             ],
           },
@@ -222,78 +249,86 @@
             responsive: true,
             plugins: {
               legend: { position: "top" },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    const label = context.label || "";
+                    const value = context.raw || 0;
+                    return `${label}: ${value.toLocaleString()}`;
+                  },
+                },
+              },
             },
           },
         });
       },
-      renderTithesIncomeChart() {
-        const ctx = document.getElementById("tithesIncomeChart").getContext("2d");
-        new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: this.months,
-            datasets: [
-              {
-                label: "Diezmos",
-                data: [1500, 2000, 1800, 2200, 2100, 2300],
-                borderColor: "#FF9800",
-                backgroundColor: "rgba(255, 152, 0, 0.2)",
-                fill: true,
-              },
-            ],
-          },
-          options: { responsive: true, plugins: { legend: { position: "top" } } },
-        });
-      },
-      renderOfferingsIncomeChart() {
-        const ctx = document.getElementById("offeringsIncomeChart").getContext("2d");
-        new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: this.months,
-            datasets: [
-              {
-                label: "Ofrendas",
-                data: [1200, 1400, 1600, 1800, 2000, 2200],
-                borderColor: "#03A9F4",
-                backgroundColor: "rgba(3, 169, 244, 0.2)",
-                fill: true,
-              },
-            ],
-          },
-          options: { responsive: true, plugins: { legend: { position: "top" } } },
-        });
-      },
-      renderIncomeByServiceChart() {
-      const ctx = document.getElementById("incomeByServiceChart").getContext("2d");
-      new Chart(ctx, {
-        type: "pie", // Gráfico de pastel
-        data: {
-          labels: this.incomeByService.map((service) => service.name),
-          datasets: [
-            {
-              label: "Ingresos",
-              data: this.incomeByService.map((service) => service.amount),
-              backgroundColor: ["#4CAF50", "#FF9800", "#03A9F4"],
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: "top" },
-          },
-        },
-      });
+      generateChartsData() {
+      // Lista de meses para el eje X
+      const months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+
+      // Agrupar datos por tipo de contribución
+      const groupedData = this.finances.reduce((acc, { type_contribution, amount, month }) => {
+        if (!acc[type_contribution]) {
+          acc[type_contribution] = Array(12).fill(0); // Inicializar 12 meses en 0
+        }
+        
+        // Asegurarse de que el índice del mes sea correcto
+        const [year, monthPart] = month.split('-'); // Dividir el mes en año y mes
+        const monthIndex = parseInt(monthPart, 10) - 1; // Restar 1 para que enero sea 0
+
+        acc[type_contribution][monthIndex] += parseFloat(amount); // Sumar el monto al mes correspondiente
+        return acc;
+      }, {});
+
+      // Crear configuraciones para cada gráfico
+      this.charts = Object.keys(groupedData).map((type) => ({
+        title: `Gráfico de ${type}`, // Título del gráfico
+        data: groupedData[type], // Datos acumulados por mes
+        typeContribution: type, // Tipo de contribución
+      }));
     },
-      downloadReport(reportTitle, canvasId) {
-        const canvas = document.getElementById(canvasId);
-        const canvasImage = canvas.toDataURL("image/png");
-  
-        const pdf = new jsPDF();
-        pdf.text(reportTitle, 10, 10);
-        pdf.addImage(canvasImage, "PNG", 10, 20, 190, 100);
-        pdf.save(`${reportTitle}.pdf`);
+
+
+      renderCharts() {
+        const months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+        this.charts.forEach((chart, index) => {
+          const canvas = document.getElementById(`chart-${index}`);
+          if (!canvas) {
+            console.error(`Canvas con id "chart-${index}" no encontrado.`);
+            return;
+          }
+          const ctx = canvas.getContext("2d");
+          new Chart(ctx, {
+            type: "line",
+            data: {
+              labels: months,
+              datasets: [
+                {
+                  label: chart.typeContribution,
+                  data: chart.data,
+                  borderColor: this.getRandomColor(),
+                  backgroundColor: "rgba(0, 0, 0, 0.1)",
+                  fill: true,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: { position: "top" },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                },
+              },
+            },
+          });
+        });
+      },
+      toggleDownloadReport() {
+        this.downloadCtrl = !this.downloadCtrl
+
       },
     },
   };

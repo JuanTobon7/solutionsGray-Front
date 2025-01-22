@@ -1,6 +1,9 @@
 <template>
-  <section ref="reportSection" class="container p-6 bg-white">
-    <!-- Encabezado con logo e información -->
+    <section
+      ref="reportSection"
+      class="container p-6 bg-white"
+      style="position: absolute; top: -9999px; left: -9999px;"
+    >
     <div class="grid grid-cols-3 mb-8 items-center">
       <img 
         src="https://s3.us-east-2.amazonaws.com/viddefe.com/photos/solutionGrayLOGO-removebg.png" 
@@ -8,55 +11,51 @@
         alt="Logo de Vid de Fe" 
       />
       <h2 class="text-2xl font-semibold text-center">
-        Informe General {{ churchName }}
+        Informe Financiero General {{ churchName }}
       </h2>
     </div>
 
-    <!-- Introducción -->
     <div>
       <p class="text-lg mb-4">
-        Este informe ha sido elaborado el día <span class="font-medium">{{ dateC }}</span>, 
+        Este informe financiero ha sido elaborado el día <span class="font-medium">{{ dateC }}</span>, 
         bajo la supervisión de <span class="font-medium">{{ userName }}</span>, 
         con base en los registros proporcionados por la iglesia 
         <span class="font-medium">{{ churchName }}</span> a través de la aplicación 
         <strong class="text-primary-950">Vid de Fe</strong>.
       </p>
-  
-      <p class="text-lg mb-4">
-        Este documento tiene como propósito presentar un resumen detallado sobre las actividades, 
-        tasas de crecimiento y logros alcanzados por la congregación durante el año <strong>{{ yearProp }}</strong> evaluado.  
-        Está dirigido tanto a la iglesia local como a la iglesia madre, para proporcionar una visión 
-        integral del impacto generado por el cuerpo de Cristo en esta comunidad.
-      </p>
-    </div>
 
-    <!-- Reconocimientos -->
+      <p class="text-lg mb-4">
+        Este documento tiene como propósito presentar un resumen detallado sobre los ingresos, 
+        gastos y estado financiero de la congregación durante el año <strong>{{ yearProp }}</strong> evaluado. 
+        Está dirigido tanto a la iglesia local como a la iglesia madre, proporcionando una visión 
+        integral del uso de los recursos y su impacto en el ministerio.
+      </p>
+    </div>        
+
     <div class="mb-10">
       <p class="text-lg">
-        Agradecemos a todos los miembros de la iglesia por su compromiso en la obra de Dios. Su fidelidad y esfuerzo 
-        han permitido alcanzar nuevas almas, fortalecer la fe y ampliar el ministerio de la iglesia.
+        Agradecemos a todos los contribuyentes y miembros de la iglesia por su compromiso con la obra de Dios. 
+        Su fidelidad y generosidad han permitido financiar actividades ministeriales, alcanzar nuevas almas 
+        y mantener el crecimiento de la iglesia.
       </p>
     </div>
-    <div class="flex flex-wrap gap-2">
-      <div v-for="items in chartImages" :key="items.tittle">
-        <h3 class="text-2xl text-second-800 font-semibold">{{ items.tittle }}</h3>
-        <div class="chart-container">
-          <img :src="items.image" :alt="items.tittle" />
-        </div>
-      </div>
 
-    </div>
-    <!-- Inspiración espiritual -->
+    <DataTable :value="tableData" class="mb-12">
+      <Column field="type_contribution" header="Tipo de Contribución" />
+      <Column field="currency" header="Moneda" />
+      <Column field="total" header="Total" />
+    </DataTable>
+
     <div>
       <p class="text-lg mb-6">
         Invitamos a continuar utilizando <strong class="text-primary-950">Vid de Fe</strong> como una herramienta 
-        que facilita la administración y promueve el crecimiento espiritual de nuestra comunidad.
+        que facilita la administración financiera y promueve el crecimiento espiritual de nuestra comunidad.
       </p>
       <p class="text-md text-center italic">
-        "Así que ni el que planta es algo, ni el que riega, sino Dios, que da el crecimiento."
+        "Dad, y se os dará; medida buena, apretada, remecida y rebosando darán en vuestro regazo. Porque con la medida con que medís, os será medido."  
       </p>
       <p class="text-md text-center font-semibold mb-10">
-        1 Corintios 3:7
+        Lucas 6:38
       </p>
       <p class="text-center">
         Este informe ha sido generado automáticamente por la aplicación <strong>Vid de Fe</strong>. 
@@ -70,9 +69,15 @@
 
 <script>
 import jsPDF from 'jspdf';
+import DataTable from 'primevue/datatable';
 import html2canvas from 'html2canvas';
+import Column from 'primevue/column';
 
 export default {
+  components: {
+    DataTable,
+    Column,
+  },
   computed: {
     dateC() {
       return new Date().toLocaleDateString();
@@ -86,10 +91,6 @@ export default {
     },
   },
   props: {
-    externalRef: {
-      type: Object,
-      required: true,
-    },
     date: {
       type: String,
       required: true,
@@ -98,19 +99,17 @@ export default {
       type: String,
       required: true,
     },
-    chartImages: {
+    tableData: {
       type: Array,
       required: true,
     },
   },
   mounted() {
-    // Esperar a que la sección se renderice
     this.downloadReport();
     this.$toast.add({
       severity: 'success',
-      summary: 'Descarga iniciada',
-      detail: 'El informe se está generando, por favor espere...',
-      life: 5000,
+      summary: 'Informe descargado',
+      detail: 'El informe financiero ha sido descargado con éxito.',
     });
   },
   methods: {
@@ -118,35 +117,25 @@ export default {
       const section = this.$refs.reportSection;
 
       try {
-        // Asegurarse de que las imágenes estén cargadas
-        const promises = Array.from(section.querySelectorAll('img')).map((img) =>
-          new Promise((resolve, reject) => {
-            if (img.complete) {
-              resolve();
-            } else {
-              img.onload = resolve;
-              img.onerror = reject;
-            }
-          })
-        );
-        await Promise.all(promises);
-
         // Crear canvas con html2canvas
         const canvas = await html2canvas(section, {
-          scale: 2,
-          useCORS: true,
-          logging: true,
+          scale: 2, // Mejora la resolución del PDF
+          useCORS: true, // Permite cargar imágenes externas como el logo
         });
 
+        // Convertir el canvas a imagen
         const imageData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
 
+        // Crear el archivo PDF con jsPDF
+        const pdf = new jsPDF('p', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
 
+        // Calcular proporciones de la imagen
         const canvasRatio = canvas.width / canvas.height;
         const adjustedHeight = pdfWidth / canvasRatio;
 
+        // Agregar la imagen al PDF
         if (adjustedHeight > pdfHeight) {
           const pages = Math.ceil(adjustedHeight / pdfHeight);
           for (let i = 0; i < pages; i++) {
@@ -165,21 +154,12 @@ export default {
         }
 
         // Descargar el archivo PDF
-        pdf.save(`Informe_${this.churchName}_${this.dateC}.pdf`);
-        this.$emit('close');
+        pdf.save(`Informe_${this.churchName}_${this.date}.pdf`);
       } catch (error) {
         console.error('Error al generar el informe:', error);
       }
-    }
-
-},
-
+    },
+  },
 
 };
 </script>
-
-<style scoped>
-.chart-container {
-  @apply w-full h-96 mb-10;
-}
-</style>

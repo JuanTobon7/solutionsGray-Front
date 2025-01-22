@@ -72,12 +72,12 @@
     >
     <template #list="slotProps">
     <!-- Contenedor de las tarjetas -->
-    <div class="grid grid-cols-1 md:grid-rows-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full sm:grid-rows-2">
+    <div class="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
       <!-- Iteración sobre los elementos -->
       <div
         v-for="(item, index) in slotProps.items"
         :key="index"
-        class="bg-second-50 shadow-lg shadow-primary-300 rounded-lg overflow-hidden"
+        class="bg-second-50 shadow-lg shadow-primary-300 rounded-lg overflow-hidden w-auto"
       >
         <!-- Tarjeta del ítem -->
         <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-20"></div>
@@ -101,7 +101,7 @@
                 />
               </div>
               <!-- Información de la persona -->
-              <div>
+              <div class="text-wrap">
                 <h2 class="text-xl font-bold text-gray-900">
                   {{ item.person.first_name }} {{ item.person.last_name }}
                 </h2>
@@ -132,10 +132,10 @@
         </div>
 
         <!-- Contenido del mini dashboard -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 px-6">
+        <div class="flex flex-wrap items-center justify-evenly gap-6 px-6">
           <!-- Gráfica Pie -->
           <div class="flex items-center justify-center">
-            <Chart type="pie" :data="chartData" :options="chartOptions"  class="w-full md:w-[40rem] lg:w-[40rem] h-[20rem]"/>
+            <canvas id="chart" ref="chart"></canvas>
           </div>
 
           <!-- Indicadores KPIs -->
@@ -155,7 +155,7 @@
         <!-- Botón para gestionar ofrendas -->
         <div v-if="$hasRole('Admin')" class="flex flex-col sm:flex-row items-center justify-center mt-8 gap-4">
           <!-- Botón de descarga -->
-          <button @click="GetReporte" class="bg-second-500 text-white px-5 py-2 rounded-md transition-all duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
+          <button @click="toggleDownload" class="bg-second-500 text-white px-5 py-2 rounded-md transition-all duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
             Descargar Reporte
             <i class="material-symbols-outlined">download</i>
           </button>
@@ -190,17 +190,17 @@
       >
         <template #list="slotProps">
           <!-- Contenedor con un grid para ajustar el ancho -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
+          <div class="grid grid-cols-1  md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
             <div
               v-for="(item, index) in slotProps.items"
               :key="index"
               class="bg-white shadow-lg rounded-lg"
             >
-              <div class="bg-primary-50 shadow-lg shadow-primary-300 rounded-lg overflow-hidden">
+              <div class="bg-primary-50 shadow-lg shadow-primary-300 rounded-lg overflow-hidden w-full h-full">
                 <div class="bg-gradient-to-r from-primary-500 to-primary-800 h-20"></div>
                 <div class="px-4 py-6 -mt-14 relative">
                   <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <div class="flex flex-col md:flex-row items-center space-x-4">
+                    <div class="flex flex-wrap items-center justify-center                                                           lg:justify-between space-x-4">
                       <!-- Avatar o iniciales de la persona -->
                       <div class="w-16 h-16 rounded-full overflow-hidden">
                         <Avatar
@@ -257,6 +257,7 @@
       </div>
     </div>
   </section>
+  <OfferingsPdf v-if="validateDownload" :wh="worshipService" :peopleProp="attends" :chartImage="chartImage" :offerings="offerings" @closeDownload="toggleDownload"/>
 </template>
 
 <script>
@@ -264,21 +265,20 @@ import { getServices,getPeople,saveAttendance,deleteAttendance,getAttendance,get
 import Avatar from 'primevue/avatar';
 import DataView from 'primevue/dataview';
 import InputSwitch from 'primevue/inputswitch';
-import Chart from 'primevue/chart';
+import { Chart } from "chart.js/auto";
 import RecordMonetaryIncome from '../subComponents/RecordMonetaryIncome.vue';
 import EditWorshipService from './EditWorshipService.vue';
 import SheduleNewPerson from '../subComponents/SheduleNewPerson.vue';
-import jsPDF from 'jspdf';
-import formato from './format.b64.js';
+import OfferingsPdf from './OfferingsPdf.vue';
 
 export default {
   name: 'PDFGenerator',
   props: ['worshipService'],
   components: {
-    Avatar,
+    Avatar,    
     DataView,
     InputSwitch,
-    Chart,
+    OfferingsPdf,    
     RecordMonetaryIncome,
     EditWorshipService,
     SheduleNewPerson
@@ -290,31 +290,11 @@ export default {
       showMonetaryIncome: false,
       showEditService: false,
       showShduleNewPerson: false,
-    offerings: [],
-    chartData: {
-      labels: [],
-      datasets: [
-        {
-          data: [],
-          backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
-          hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF"],
-        }
-      ]
-    },
-    chartOptions:  {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: true,
-              position: 'top',
-              labels: {
-                color: '#4A4A4A' // Color del texto de la leyenda
-              }
-            }
-          }
-        },
+      offerings: [],
       attends: [],
+      chartImage: '',
+      chartInstance: null,
+      download: false
     }
   },
   methods: {
@@ -391,18 +371,59 @@ export default {
       }
     },
     updateChartData() {
-    // Genera las etiquetas y datos dinámicamente
-    this.chartData.labels = this.offerings.map(item => item.type_contribution);
-    this.chartData.datasets[0].data = this.offerings.map(item => item.amount ?? 0);
+  const canvas = document.getElementById("chart");
+  const ctx = canvas.getContext("2d");
 
-    // Ajusta los colores según la cantidad de tipos de contribución
-    const backgroundColor = ['#6b9c7a', '#8b7d6b', '#524741', '#a3c4ac'];
-    const hoverBackgroundColor = ['#4b7e5c', '#756759', '#483e3b', '#6b9c7a'];
-    
-    this.chartData.datasets[0].backgroundColor = backgroundColor.slice(0, this.chartData.labels.length);
-    this.chartData.datasets[0].hoverBackgroundColor = hoverBackgroundColor.slice(0, this.chartData.labels.length);
-  },
-   
+  // Crear o actualizar el gráfico
+  const chart = new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: this.offerings.map(item => item.type_contribution),
+      datasets: [
+        {
+          label: "Ofrendas",
+          data: this.offerings.map(item => item.amount),
+          backgroundColor: [
+            "#FF6384",
+            "#36A2EB",
+            "#FFCE56",
+            "#FF6384",
+            "#36A2EB",
+            "#FFCE56",
+          ],
+          hoverOffset: 4,
+        },
+      ],
+    },
+    options: {
+      animation: {
+        onComplete: () => {
+          this.chartImage = canvas.toDataURL("image/png");
+        },
+      },
+      responsive: true,
+      maintainAspectRatio: false, // Ajusta el gráfico al contenedor
+      plugins: {
+        legend: {
+          display: true, // Mostrar la leyenda
+        },
+      },
+      scales: {
+        y: {
+          display: false, // Ocultar el eje Y (incluyendo la cuadrícula)
+        },
+        x: {
+          display: false, // Ocultar el eje X (incluyendo la cuadrícula)
+        },
+      },
+    },
+  });
+
+  // Guardar la referencia al gráfico si necesitas actualizarlo más adelante
+  this.chartInstance = chart;
+},
+
+
     getTotalOfferings(){      
       return this.offerings.reduce((acc, item) => acc + Number(item.amount ?? 0), 0).toFixed(2);
     },
@@ -444,6 +465,10 @@ export default {
       }catch(e){
         console.log(e);
       }
+    },
+    toggleDownload() {
+      this.download = !this.download;
+    }
     },
     
     GetReporte() {
@@ -510,6 +535,12 @@ export default {
 
 
   computed:{
+    validateDownload(){
+      if(this.attends.length > 0 && this.chartImage  && this.offerings && this.download){        
+        return true
+      }
+      return false
+    },
     numAttends() {
       const attends = this.attends.filter((person) => person.isAttend === true);
       return attends.length;

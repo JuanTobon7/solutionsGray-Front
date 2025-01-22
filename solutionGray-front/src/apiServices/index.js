@@ -34,6 +34,12 @@ export const logout = async () => {
   return response.data;
 }
 
+export const deleteAccount = async (id) => {
+  console.log('id: ',id)
+  const response = await api.delete(`/delete-account/${id}`)
+  return response.data;
+}
+
 export const sendLead = async (data) => {
   const response = await api.post('/save-leads-church', data);
   return response.data;
@@ -502,5 +508,15 @@ export const sendNotificationWorshipService = async(data)=>{
 
 export const cancelStudentCourse = async(data)=>{
   const response = await api.delete(`/cancel-course/${data.courseId}/${data.personId}`);
+  return response.data;
+}
+
+export const getFinances = async(data)=>{
+  const response = await api.get(`/get-finances-year/:${data.minDateFormat}/:${data.maxDateFormat}`);
+  return response.data;
+}
+ 
+export const getReportOfferings = async(eventId)=>{
+  const response = await api.get(`/get-report-offerings/${eventId}`);
   return response.data;
 }
