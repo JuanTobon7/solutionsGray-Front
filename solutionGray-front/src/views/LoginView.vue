@@ -92,6 +92,12 @@ export default{
             summary: 'Error', 
             detail: e.response.data.message,
             life: 3000});
+        }else if(e.response.status === 404){
+          this.$toast.add({
+            severity:'error', 
+            summary: 'Error', 
+            detail: e.response.data.message,
+            life: 3000});
         }
       }
     },
