@@ -20,6 +20,7 @@ import ConfigutarionView from '@/views/ConfigutarionView.vue'
 import AdministrativeView from '@/views/AdministrativeView.vue'
 
 import store from '@/store'
+import NotFoundView from '@/views/NotFound.vue'
 
 const routes = [
   
@@ -155,7 +156,21 @@ const routes = [
     path: '/my-group',
     name: 'my-group',
     component: MyGroup,
-  }
+  },
+  {
+    path: '/terms',
+    beforeEnter() {
+      // Redirigir directamente a "terminos.html"
+      window.location.href = '/terminos.html';
+    },
+  },
+
+  // Ruta para manejar 404
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFoundView,
+  },
 ];
 
 const router = createRouter({
