@@ -46,7 +46,7 @@
           </div>
         </form>
         <button @click="forgetPassword" class="text-primary-50 mb-1">¿Olvidaste tu contraseña?</button>
-        <span class="text-primary-50 hover:">Terminos y Condiciones de Privacidad</span>
+        <a href="/terms" target="_blank"  class="text-primary-50 hover:">Terminos y Condiciones de Privacidad</a>
       </div>
     </div>
   </section>
