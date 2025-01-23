@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     showNavBar() {
-      const excludedPaths = ['login', 'verify-email','sing-in'];
+      const excludedPaths = ['login', 'verify-email','sing-in','NotFound'];
       return !excludedPaths.includes(this.$route.name);
     },
     userSession() {
