@@ -35,7 +35,7 @@
              Volver
              <i class="material-symbols-outlined text-primary-50">arrow_back</i>
            </button>
-          <button v-if="$hasRole('SuperAdmin')" @click="editServiceAndWorship" class="bg-second-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
+          <button v-if="$hasRole('Super Admin')" @click="editServiceAndWorship" class="bg-second-500 text-white px-4 py-2 rounded-md transition-transform duration-200 hover:bg-second-600 hover:scale-105 text-sm sm:text-base flex items-center gap-2">
             Editar Culto y Servicios
             <i class="material-symbols-outlined">edit</i>
           </button>

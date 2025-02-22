@@ -38,25 +38,7 @@
               {{ item.label }}
             </li>
           </ul>
-        </div>
-        <li 
-          @click="toggleMenu('groups')" 
-          class="px-4 py-2 flex items-center justify-between gap-4 hover:bg-primary-600 cursor-pointer" 
-          :class="{ 'bg-primary-600': activeMenu === 'groups' }"
-        >
-          <div class="flex items-center gap-4">
-            <i class="material-symbols-outlined">communities</i>
-            <span>Grupos</span>
-          </div>
-          <i class="material-symbols-outlined transition-transform duration-300" :class="{ 'rotate-90': activeMenu === 'groups' }">chevron_right</i>
-        </li>
-        <div v-if="activeMenu === 'groups'" class="pl-6 transition-all duration-300 overflow-hidden">
-          <ul>
-            <li v-for="item in menuItemsGroups" :key="item.label" @click="redirectTo(item.path)" class="list-disc  list-inside hover:bg-primary-600 px-2 py-2 rounded-md cursor-pointer hover:text-primary-300">
-              {{ item.label }}
-            </li>
-          </ul>
-        </div>
+        </div>        
         <li 
           @click="toggleMenu('people')" 
           class="px-4 py-2 flex items-center justify-between gap-4 hover:bg-primary-600 cursor-pointer" 
@@ -92,25 +74,11 @@
               {{ item.label }}
             </li>
           </ul>
-        </div>
-        <li 
-          @click="toggleMenu('ingresos')" 
-          class="px-4 py-2 flex items-center justify-between gap-4 hover:bg-primary-600 cursor-pointer" 
-          :class="{ 'bg-primary-600': activeMenu === 'ingresos' }"
-        >
-          <div class="flex items-center gap-4">
-            <i class="material-symbols-outlined">payments</i>
-            <span>Ingresos</span>
-          </div>
-          <i class="material-symbols-outlined transition-transform duration-300" :class="{ 'rotate-90': activeMenu === 'ingresos' }">chevron_right</i>
+        </div>       
+        <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4 cursor-pointer">
+          <i class="material-symbols-outlined">payments</i>
+          <router-link to="/income-statement" class="block hover:text-primary-300">Ingresos</router-link>
         </li>
-        <div v-if="activeMenu === 'ingresos'" class="pl-6 transition-all duration-300 overflow-hidden">
-          <ul>
-            <li v-for="item in menuItemsIngresos" :key="item.label" @click="redirectTo(item.path)" class="list-disc  list-inside hover:bg-primary-600 px-2 py-2 rounded-md cursor-pointer hover:text-primary-300">
-              {{ item.label }}
-            </li>
-          </ul>
-        </div>
       </ul>
       <ul v-else class="text-primary-50 text-xl">
         <li class="px-4 py-2 hover:bg-primary-600 flex items-center gap-4 cursor-pointer">
@@ -162,11 +130,7 @@ export default {
         { label: 'Cursos', path: '/courses' },
         { label: 'Mis Cursos', path: '/my-courses' },
         {label: 'Cursos a Cargo',path: '/courses-in-charge'},
-      ],
-      menuItemsIngresos: [
-        { label: 'Reportes', path: '/income-statement' },
-        { label: 'Transacciones', path: '/transactions' },
-      ],
+      ],      
     };
   },
   methods: {

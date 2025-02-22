@@ -73,7 +73,7 @@
                   </a>
                   <a 
                     v-if="dev.gmail" 
-                    :href="dev.gamil" 
+                    :href="dev.gmail" 
                     target="_blank" 
                     class="flex items-center gap-2 cursor-pointer hover:text-gray-800">
                     <i class="pi pi-google text-xl"></i>

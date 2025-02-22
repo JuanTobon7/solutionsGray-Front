@@ -1,5 +1,5 @@
 <template>
-  <div id="ad-container" class="h-auto px-4 py-2 bg-white rounded">
+  <div id="ad-container" class="h-auto px-4 py-2 rounded">
     <!-- Contenedor del anuncio -->
     <ins class="adsbygoogle"
          style="display:block"

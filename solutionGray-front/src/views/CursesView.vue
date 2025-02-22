@@ -22,7 +22,7 @@
             placeholder="Buscar por nombre o descripción" 
             class="w-full p-2 border border-gray-200 focus:border-green-300 rounded-md"
           />         
-          <button v-if="$hasRole('SuperAdmin')" @click="toggleAddCourse" class="material-symbols-outlined p-1 rounded-md bg-second-500 text-white font-semibold">
+          <button v-if="$hasRole('Super Admin')" @click="toggleAddCourse" class="material-symbols-outlined p-1 rounded-md bg-second-500 text-white font-semibold">
             add
           </button>
         </div>

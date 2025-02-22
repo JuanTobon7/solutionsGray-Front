@@ -193,6 +193,7 @@ export default {
         if (e.response.status === 401 && e.response.data.message === 'Token Expired') {
           this.$toast.add({ severity: 'error', summary: 'Error', detail: 'Ups algo paso, intentalo de nuevo.' });
         }
+        console.log(e)
       }
     },
     async deleteAvatar() {
